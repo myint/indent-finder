@@ -29,7 +29,11 @@ set sts=0 | set tabstop=4 | set noexpandtab | set shiftwidth=4
 
 """
 
+### used when it can not compute the exact value of the indentation
 default = ("space", 4 )
+
+### Used when indentation is tab, to set tabstop
+vim_preferred_tabstop_value = 4
 
 
 class IndentFinder:
@@ -141,11 +145,12 @@ class IndentFinder:
 		tab_width=4
 		# tab:
 		#   => set sts to 0
+		#   => set tabstop to preferred value
 		#   => set expandtab to false
 		#   => set shiftwidth to tabstop
 		#   tabstop should not be touched.
 		if ts == "tab":
-			return "set sts=0 | set noexpandtab | set shiftwidth=%d" % tab_width
+			return "set sts=0 | set tabstop=%d | set noexpandtab | set shiftwidth=%d" % (vim_preferred_tabstop_value, tab_width)
 
 def main():
 	fi = IndentFinder()

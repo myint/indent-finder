@@ -61,7 +61,7 @@ int DiffModel::parseDiff( enum Kompare::Format format, const QStringList& lines 
 /**  */
 int DiffModel::parseContextDiff( const QStringList& list )
 {
-	kdDebug() << "Context diff parsing:" << endl;
+		kdDebug() << "Context diff parsing:" << endl;
 
 	// '  ' unchanged (context info)
 	// '- ' removed in new file

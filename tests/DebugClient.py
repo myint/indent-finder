@@ -29,7 +29,7 @@ def DebugClientPreEventLoopHook():
 		a = \
 			1 + \
 			1
- 
+
 def DebugClientPostEventLoopHook():
     """Called by PyQt just after the Qt event loop is left.
     """
