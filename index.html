@@ -1,0 +1,203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+   "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<meta name="generator" content="vim 6.1">
+<meta name="keywords" content="indent; python; find; indenter; vim; vi">
+<meta name="description" content="Indentation finder">
+<link rel="stylesheet" href="../main.css">
+<title>Indent finder</title>
+</head>
+
+<body>
+
+
+<!-- ****************** Doc heading ************* -->
+<div class="docheading">
+<p align=center class=title>
+<h1 align=center>Indent Finder</h1>
+<div align=center> <i>The end of your indentation's nightmare</i> </div>
+<BR>
+<BR>
+<p align=right><a href="mailto:pfremy at freehackers dot org">by Philippe Fremy </a><p>
+</p>
+</div>
+
+
+<!-- ****************** Content ************* -->
+<div class="content">
+
+
+	<h2>Introduction</h2>
+	Indentation of external program sources is a common problem. Some people use 2
+	spaces, some 4 spaces, some tabulations, some (horror!) mix tab and spaces.
+	Text editors have usually options helping to deal with the way you indent
+	your files. Pressing tab will yield a different result depending on your
+	settings. However, it only works properly with your own files, which have
+	been indented in your own way.
+	<p>
+	As soon as you start editing external sources, you are likely to face a
+	different indentation. Then your careful editor setting will simply fuck
+	up the file you edit unless the guy did use the same indentation as yours.
+	And you may not notice it. For example if I use always tab but display
+	them as four rows. So if I edit a file indented with 4 spaces, all the
+	lines I create will be indented with tab. They will render fine on my
+	editor, but probably not on someone else's editor.  <p>
+	I haven't found (yet) an editor that deals properly with this problem. The
+	solution is simple: the text editor must find the indentation used within a
+	file and tune its settings according to this. This is what this program is
+	about.
+<p>
+<p>
+<h2>Program</h2>
+Indent Finder is a python script that reads a file and tells
+you what indentation is used inside the file. It is not tied to any
+particular language. It was tested successfully with C, C++, python and Java
+code.
+<p>
+The current versions provides helps for the integration with vim. I hope other
+editors will pick either the script or the idea, and that auto-detecting
+indentation will become common amongst text editors. I am releasing the code
+under the BSD License to encourage this.
+<p>
+The script is written in python because it was quick and easy way to write it.
+The algorithm is pretty simple, and could be rewritten in C to avoid the small
+(almost unnoticeable) delay due to the python interpreter starting. If you do
+that, please tell me.
+<br>
+<br>
+
+<h2>How it works</h2>
+	Indent Finder scans each line of the entry file for a space character (white space or
+	tab) repeated until a non space character is found. Such a line
+	is considered to be a properly indented line of code. Blank lines and
+	mixed indentation lines are safely ignored. Lines coming after a line
+	ending in '\\' have higher chance of being not properly indented, and are
+	thus ignored too.
+	<P>
+	An array stores the number of lines that have a specific indentation: tab,
+	number of spaces between 2 and 8. For space indentation, a line is
+	considered indented with a base of x if the number of spaces modulo x
+	yields zero. Thus, an indentaiton of 4 spaces increases the 2-spaces and
+	the 4-spaces indentation line count.
+	<p>
+	At the end of the scan phase, the indentation that was used with the
+	highest number of lines is taken. For spaces, to avoid the problemes of
+	multiples like 2 and 4, the highest indentation number is preferred. A
+	lower number is chosen if it reports at least 10% more lines with this
+	indentation.
+	<p>
+	If IndentFinder ever reports wrong indentation, send me immediately a <a
+		href="mailto:pfremy at freehackers dot org">mail</a>, if possible with
+	the offending file.
+<br>
+<br>
+<h2>Download &amp; Install</h2>
+The program was tested successfully on windows with python 2.2 and vim 6.1,
+and on a gentoo linux with python 2.2 and vim XX
+<tr>
+<table border=1>
+	<tr>
+		<th>Date</th>
+		<th>Version</th>
+		<th>Download</th>
+		<th>Change description</th>
+	</tr>
+
+	<tr>
+		<td> 22/11/2002
+		<td> 1.0
+		<td><a href="indent_finder.tgz">indent_finder.tgz</a> (XXX kb)
+		<td> Initial release</td>
+	</tr>
+</table>
+
+<br>
+<br>
+<h2>Usage</h2>
+To use it with vim, install the python script (python setup.py install) and
+drop the file indent_finder.vim inside your vim plugin directory. All new
+opened buffer will be scanned by Indent Finder, which will set the vim settings
+appropriately. The settings modified are shiftwidth, tabstop, softtabstop and
+expandtab.
+<p>
+In command line mode, it produces simple output like:
+<tt>space 4</tt> or <tt>tab 8</tt>. I really hope other code editors will pick
+this.
+
+<h2>Feedback</h2>
+<p>
+Bugs, suggestions, patch, I am open to feedback: <a href="mailto:pfremy at
+	freehackers dot org">Mail me</a>.
+</p>
+
+
+<br>
+<br>
+<br>
+
+<p align=left>
+<hr align=center width=100%>
+Last modification : $Date$ - $Author$ 
+
+</div>
+
+<!-- SidebarStart -->
+
+<div class="sidebar"> 
+
+  <div class="sidebarblock"> 
+     <p class="title">Personal</p>
+	 <p class="items">
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/index.html">Main page</a><br />
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/photos/photos.html">Some Photos </a><br />
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/jjg/index.html">Jean-Jacques Goldman</a><br />
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/cv/index.html">Resume</a><br />
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/cool-stuff.html">Cool stuff</a><br />
+	</p>
+  </div>
+<p>
+  <div class="sidebarblock"> 
+	<p class="title">Writings</p>
+	<p class="items">
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/writings.html">Main Page</a><br />
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/kde/qt-vs-mfc.html">Qt vs MFC</a><br />
+<!-- &nbsp;-&nbsp;<a href="http://phil.freehackers.org/kde/facts.html">Gnome / KDE facts</a><br /> -->
+&nbsp;-&nbsp;<a href="http://developer.kde.org/documentation/other/developer-faq.html">KDE Developer Faq</a><br/>
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/linux-expo-2002.html">Paris Linux Expo 2002</a><br />
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/kde/kpart-techno/kpart-techno.html">KPart Demonstration</a><br />
+
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/kde/cmp-toolkits.html">From Gtk to PyQt</a><br />
+	</p>
+  </div>
+<p>
+  <div class="sidebarblock"> 
+	<p class="title">Interviews</p>
+	<p class="items">
+&nbsp;-&nbsp;<a href="http://www.freehackers.org/interviews/kdevelop-2002-08/">KDevelop team</a><br />
+&nbsp;-&nbsp;<a href="http://www.freehackers.org/fosdem2002/koffice.html">KOffice team</a><br />
+&nbsp;-&nbsp;<a href="http://www.freehackers.org/fosdem2002/guido.html">Guido van Rossum</a><br />
+&nbsp;-&nbsp;<a href="http://www.freehackers.org/fosdem2002/raphael.html">Fosdem organiser</a><br />
+&nbsp;-&nbsp;<a href="http://dot.kde.org/1001294012/">Trolltech CEO</a><br />
+	</p>
+  </div>
+
+  <div class="sidebarblock"> 
+	<p class="title">Projects</p>
+	<p class="items">
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/projects.html">Main Page</a><br />
+&nbsp;-&nbsp;<a href="http://www.freehackers.org/kvim/index.html">KVim</a><br />
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/pretty-make/index.html">Pretty Make</a><br />
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/qcppunit/index.html">QCppUnit</a><br />
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/klotski/index.html">Klotski</a><br />
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/kmerge/index.html">KMerge</a><br />
+&nbsp;-&nbsp;<a href="http://phil.freehackers.org/tools.html">Good tools</a><br />
+	</p>
+  </div>
+
+</div>
+<!-- SidebarEnd -->
+</body>
+</html>
+
