@@ -1,6 +1,8 @@
+#!/usr/bin/env python
 
 from indent_finder import IndentFinder
 
+import os
 from unittest import *
 
 class Test_find_indent( TestCase ):
