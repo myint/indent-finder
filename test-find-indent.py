@@ -31,7 +31,7 @@ class Test_find_indent( TestCase ):
 
 	def check_file( self, fname, result ):
 		fi = IndentFinder()
-		fi.parse_file( "Tests\\" + fname )
+		fi.parse_file( os.path.join( "tests", fname  ) )
 		res = str(fi)
 		self.assertEquals( res, result )
 
