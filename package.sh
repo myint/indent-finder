@@ -1,37 +1,28 @@
 #!/bin/bash
 
-package_windows='1'
 
-orig_pwd=$PWD
-release_name='indent-finder-1_1'
+release_name='indent_finder-1.2'
 
-if [ $package_windows ];
-then
-    rm -f $release_name.zip
-    echo 'Packaging for windows'
-    python.exe setup.py bdist_wininst
-    cp -f dist/* .
-else
-    echo 'Packaging for unix'
-    rm -f $release_name.tgz
-fi
-echo '[Press enter]'
-read a
+rm -rf $release_name
+mkdir $release_name
 
-dist=/tmp/indent_finder
-rm -rf $dist
-mkdir $dist
+echo '====== Packaging Indent Finder '
+rm -f $release_name.zip
+rm -f $release_name.tgz
+cp -a indent_finder.py indent_checker.py setup.py test_*.py tests $release_name  
+cp -a indent_finder.vim LICENSE.txt README.txt $release_name  
 
-cp -a * $dist
-
-cd $dist
+cd $release_name
 rm -rf CVS
+rm -rf .hg
+rm -rf hg.diff
 rm -rf build
 rm -rf dist
 rm -rf tests/CVS
 rm -rf *.pyc
 rm -rf package*
 rm -rf .cvsignore
+rm -rf .hgignore
 rm -rf *.zip
 rm -rf *.tgz
 rm -rf *.tar.gz
@@ -40,28 +31,26 @@ then
     rm -rf *.exe
 fi
 
-echo 'Package content:'
-find $dist
+echo '====== Package content:'
+find .
 echo '[Press enter]'
 read a
 
 
-echo 'Generating archive'
+echo '====== Generating archive'
 cd ..
-if [ ! $package_windows ] ;
-then
-    tar zcvf $orig_pwd/$release_name.tgz indent_finder/* 
-else
-    zip -r $orig_pwd/$release_name.zip indent_finder/*
-fi
+zip -r $release_name.zip $release_name/*
+tar zcvf $release_name.tgz $release_name/* 
 
-cd $orig_pwd
-echo 'Package content:'
-if [ ! $package_windows ] ;
-then
-    tar tvfz $release_name.tgz
-else
-    unzip -l $release_name.zip
-fi
+echo '====== Archive content:'
+unzip -l $release_name.zip
+tar tvfz $release_name.tgz
 echo '[Press enter]'
 read a
+
+echo '====== Cleaning'
+rm -rf build dist
+rm -rf $release_name
+rm -rf *.pyc
+
+

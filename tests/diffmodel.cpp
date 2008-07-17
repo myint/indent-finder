@@ -18,13 +18,13 @@
 ***************************************************************************/
 
 #include <qregexp.h>
-
+
 #ifndef QT_ONLY
 #include <kdebug.h>
-#include <klocale.h>
-#else
-#include "../qtonly/compat.h"
-#pragma warning( disable : 4150 )  
+#include <klocale.h>
+#else
+#include "../qtonly/compat.h"
+#pragma warning( disable : 4150 )  
 #endif
 
 #include "difference.h"
@@ -671,9 +671,9 @@ void DiffModel::setModified( bool modified )
 {
 	m_modified = modified;
 }
-
+
 #ifndef QT_ONLY
-#include "diffmodel.moc"
+#include "diffmodel.moc"
 #endif
 
 /* vim: set ts=4 sw=4 noet: */
