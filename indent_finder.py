@@ -111,8 +111,8 @@ class IndentFinder:
 
         self.nb_processed_lines = 0
         self.nb_indent_hint = 0
-        self.indent_re  = re.compile( r"^(\s+)(\S*)" )
-        self.mixed_re  = re.compile( "^(\t+)( +)$" )
+        self.indent_re  = re.compile( "^([ \t]+)([^ \t]+)" )
+        self.mixed_re  = re.compile(  "^(\t+)( +)$" )
         self.skip_next_line = False
         self.previous_line_info = None
 
@@ -122,13 +122,13 @@ class IndentFinder:
         The function will reject improperly formatted lines (mixture of tab and space for example)
         and comment lines.
         '''
-
         mixed_mode = False
         tab_part = ''
         space_part = ''
 
         mo = self.indent_re.match( line )
         if not mo: 
+            dbg( 'analyse_line_type: line is not indented' )
             return None
 
         indent_part = mo.group(1)
@@ -141,6 +141,10 @@ class IndentFinder:
         if not len(text_part):
             # skip empty lines
             return None
+
+        dbg( 'indent_part="%s" text_part="%s"' % 
+            (indent_part.replace(' ', '.').replace('\t','\\t').replace('\n', '\\n' ),
+                text_part ) )
 
         if text_part[0] == '*': 
             # continuation of a C/C++ comment, unlikely to be indented correctly
@@ -180,12 +184,14 @@ class IndentFinder:
         assert False, 'We should never get there !'
 
     def analyse_line( self, line ):
+        if line[-1:] == '\n':
+            line = line[:-1]
         dbg( 'Analysing: "%s"' % line.replace(' ', '.' ).replace('\t','\\t') )
         self.nb_processed_lines += 1
 
         skip_current_line = self.skip_next_line
         self.skip_next_line = False
-        if line[-2:] == "\\\n" or line[-1:] == '\\': 
+        if line[-1:] == '\\': 
             dbg( 'Ignoring next line!' )
             # skip lines after lines ending in \
             self.skip_next_line = True
@@ -238,25 +244,28 @@ class IndentFinder:
             if len(current_line_info[1]) == 1:
                 # more than one tab on the line --> not mixed mode !
                 nb_space = len(current_line_info[1])*8 - len(previous_line_info[1])
-                key = 'mixed%d' % nb_space
-                self.lines[ key ] += 1
-                return key
+                if 1 < nb_space <= 8:
+                    key = 'mixed%d' % nb_space
+                    self.lines[ key ] += 1
+                    return key
 
         elif t == (LineType.TabOnly, LineType.Mixed):
             tab_part, space_part = tuple(current_line_info[1:3])
             if len(previous_line_info[1]) == len(tab_part):
                 nb_space = len(space_part)
-                key = 'mixed%d' % nb_space
-                self.lines[ key ] += 1
-                return key
+                if 1 < nb_space <= 8:
+                    key = 'mixed%d' % nb_space
+                    self.lines[ key ] += 1
+                    return key
 
         elif t == (LineType.Mixed, LineType.TabOnly):
             tab_part, space_part = previous_line_info[1:3]
             if len(tab_part)+1 == len(current_line_info[1]):
                 nb_space = 8-len(space_part)
-                key = 'mixed%d' % nb_space
-                self.lines[ key ] += 1
-                return key
+                if 1 < nb_space <= 8:
+                    key = 'mixed%d' % nb_space
+                    self.lines[ key ] += 1
+                    return key
         else:
             pass
 
