@@ -18,54 +18,41 @@ class Test_many_files( TestCase ):
 
     def check_file( self, fname, result ):
         ifi = IndentFinder()
-        ifi.VERBOSE = True
         ifi.parse_file( fname )
         res = str(ifi)
         self.assertEquals( res, result )
 
     def test_file_DebugClient_py( self ):
-        self.check_file( "tests/DebugClient.py", 'space 4' )
+        self.check_file( "test_files/DebugClient.py", 'space 4' )
 
     def test_file_diffmodel_cpp( self ):
-        self.check_file( "tests/diffmodel.cpp", 'tab %d' % DEFAULT_TAB_WIDTH )
+        self.check_file( "test_files/diffmodel.cpp", 'tab %d' % DEFAULT_TAB_WIDTH )
 
     def test_file_IOtest_java( self ):
-        self.check_file( "tests/IOtest.java", 'space 4')
+        self.check_file( "test_files/IOtest.java", 'space 4')
 
     def test_file_pretty_make_py( self ):
-        self.check_file( "tests/pretty-make.py", 'tab %d' % DEFAULT_TAB_WIDTH )
+        self.check_file( "test_files/pretty-make.py", 'tab %d' % DEFAULT_TAB_WIDTH )
 
     def test_file_TestRunner_cpp( self ):
-        self.check_file( "tests/TestRunner.cpp", 'space 2' )
+        self.check_file( "test_files/TestRunner.cpp", 'space 2' )
 
     def test_file_cml_py( self ):
-        self.check_file( "tests/cml.py", 'space 4' )
+        self.check_file( "test_files/cml.py", 'space 4' )
 
-    def test_file_vim_files( self ):
-        other_indent = [
-            'dlldata.c',
-            'nbdebug.c', 
-            'os_w32dll.c', 
-            'pathdef.c', 
-            'wsdebug.c', 
-            'iid_ole.c', 
-            'integration.c', 
-        ]
-
+    def test_file_tab( self ):
         l = []
-        l += glob.glob( 'tests/vim_files/*.h' )
-        # l += glob.glob( 'tests/vim_files/*.c' )
+        l += glob.glob( 'test_files/tab/*.c' )
         for f in l:
-            if os.path.basename( f ) in other_indent:
-                print 'ignoring: ', f
-                # special check
-                pass
-            else:
-                print 'checking: ', f
-                try:
-                    self.check_file( f, 'mixed tab 8 space 4' )
-                except AssertionError:
-                    print 'Error!'
+            print 'checking: ', f
+            self.check_file( f , 'tab %d' % DEFAULT_TAB_WIDTH )
+
+    def test_file_vim_files_c( self ):
+        l = []
+        l += glob.glob( 'test_files/vim_files/*.c' )
+        for f in l:
+            print 'checking: ', f
+            self.check_file( f, 'mixed tab 8 space 4' )
         
 
 if __name__ == "__main__":

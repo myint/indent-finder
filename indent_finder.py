@@ -9,13 +9,6 @@
 import sys
 import re
 
-VERBOSE_QUIET   = 0
-VERBOSE_INFO    = 1
-VERBOSE_DEBUG   = 2
-VERBOSE_DEEP_DEBUG   = 3
-
-VERBOSITY = VERBOSE_DEBUG
-
 help = \
 """Usage : %s [ --separate ] [ --vim-output ] [ --verbose ] file1 file2 ... fileN
 
@@ -39,18 +32,18 @@ set sts=0 | set tabstop=4 | set noexpandtab | set shiftwidth=4
 
 """
 
-def dbg( s ): log( VERBOSE_DEBUG, s )
-def deepdbg( s ): log( VERBOSE_DEEP_DEBUG, s )
-
-def log( level, s ):
-    if level <= VERBOSITY:
-        print s
-
 ### Used when indentation is tab, to set tabstop
 DEFAULT_TAB_WIDTH = 4
 
 ### default values for files where indentation is not meaningful (empty files)
 DEFAULT_RESULT = ('space', 4 )
+
+VERBOSE_QUIET   = 0
+VERBOSE_INFO    = 1
+VERBOSE_DEBUG   = 2
+VERBOSE_DEEP_DEBUG   = 3
+
+DEFAULT_VERBOSITY = VERBOSE_INFO
 
 ###
 class LineType:
@@ -58,6 +51,14 @@ class LineType:
     TabOnly         = 'TabOnly'
     Mixed           = 'Mixed'
     BeginSpace      = 'BeginSpace'
+
+def info( s ): log( VERBOSE_INFO, s )
+def dbg( s ): log( VERBOSE_DEBUG, s )
+def deepdbg( s ): log( VERBOSE_DEEP_DEBUG, s )
+
+def log( level, s ):
+    if level <= IndentFinder.VERBOSITY:
+        print s
 
 class IndentFinder:
     """
@@ -97,6 +98,8 @@ class IndentFinder:
 
     def __init__(self):
         self.clear()
+
+    VERBOSITY = DEFAULT_VERBOSITY
 
     def parse_file_list( self, file_list ):
         for fname in file_list:
@@ -324,8 +327,7 @@ class IndentFinder:
             # space based indentation 
             result = ('tab', DEFAULT_TAB_WIDTH) 
 
-        if VERBOSITY: 
-            print "Result = ", result
+        info( "Result: %s" % str( result ) )
         return result
 
     def __str__ (self):
@@ -371,18 +373,15 @@ space_indent )
 
 
 def main():
-    global VERBOSITY 
-
     SEPARATE = 0
     VIM_OUTPUT = 0
-    VERBOSITY = 0
 
     fi = IndentFinder()
     file_list = []
     for opt in sys.argv[1:]:
         if opt == "--separate": SEPARATE = 1
         elif opt == "--vim-output": VIM_OUTPUT = 1
-        elif opt == "--verbose": VERBOSITY = 1
+        elif opt == "--verbose": IndentFinder.VERBOSITY = VERBOSE_INFO
         elif opt[0] == "-": 
             print help % sys.argv[0]
             return
