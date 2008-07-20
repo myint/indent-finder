@@ -9,8 +9,12 @@
 import sys
 import re
 
-VERBOSE = True
-VERBOSE = False
+VERBOSE_QUIET   = 0
+VERBOSE_INFO    = 1
+VERBOSE_DEBUG   = 2
+VERBOSE_DEEP_DEBUG   = 3
+
+VERBOSITY = VERBOSE_DEBUG
 
 help = \
 """Usage : %s [ --separate ] [ --vim-output ] [ --verbose ] file1 file2 ... fileN
@@ -35,9 +39,12 @@ set sts=0 | set tabstop=4 | set noexpandtab | set shiftwidth=4
 
 """
 
-def dbg( s ):
-    if VERBOSE:
-        print s    
+def dbg( s ): log( VERBOSE_DEBUG, s )
+def deepdbg( s ): log( VERBOSE_DEEP_DEBUG, s )
+
+def log( level, s ):
+    if level <= VERBOSITY:
+        print s
 
 ### Used when indentation is tab, to set tabstop
 DEFAULT_TAB_WIDTH = 4
@@ -128,7 +135,7 @@ class IndentFinder:
 
         mo = self.indent_re.match( line )
         if not mo: 
-            dbg( 'analyse_line_type: line is not indented' )
+            deepdbg( 'analyse_line_type: line is not indented' )
             return None
 
         indent_part = mo.group(1)
@@ -142,7 +149,7 @@ class IndentFinder:
             # skip empty lines
             return None
 
-        dbg( 'indent_part="%s" text_part="%s"' % 
+        deepdbg( 'indent_part="%s" text_part="%s"' % 
             (indent_part.replace(' ', '.').replace('\t','\\t').replace('\n', '\\n' ),
                 text_part ) )
 
@@ -186,24 +193,24 @@ class IndentFinder:
     def analyse_line( self, line ):
         if line[-1:] == '\n':
             line = line[:-1]
-        dbg( 'Analysing: "%s"' % line.replace(' ', '.' ).replace('\t','\\t') )
+        deepdbg( 'Analysing: "%s"' % line.replace(' ', '.' ).replace('\t','\\t') )
         self.nb_processed_lines += 1
 
         skip_current_line = self.skip_next_line
         self.skip_next_line = False
         if line[-1:] == '\\': 
-            dbg( 'Ignoring next line!' )
+            deepdbg( 'Ignoring next line!' )
             # skip lines after lines ending in \
             self.skip_next_line = True
 
         if skip_current_line: 
-            dbg( 'Ignoring current line!' )
+            deepdbg( 'Ignoring current line!' )
             return
 
         ret = self.analyse_line_indentation( line )
         if ret:
             self.nb_indent_hint += 1
-        dbg( 'Result of line analysis: %s' % str(ret) )
+        deepdbg( 'Result of line analysis: %s' % str(ret) )
         return ret
 
     def analyse_line_indentation( self, line ):
@@ -212,11 +219,11 @@ class IndentFinder:
         self.previous_line_info = current_line_info
 
         if current_line_info == None or previous_line_info == None:
-            dbg('Not enough line info to analyse line: %s, %s' % (str(previous_line_info), str(current_line_info)))
+            deepdbg('Not enough line info to analyse line: %s, %s' % (str(previous_line_info), str(current_line_info)))
             return 
         
         t = (previous_line_info[0], current_line_info[0])
-        dbg( 'Indent analysis: %s %s' % t )
+        deepdbg( 'Indent analysis: %s %s' % t )
         if t == (LineType.TabOnly, LineType.TabOnly):
             if len(current_line_info[1]) - len(previous_line_info[1]) == 1 :
                 self.lines['tab'] += 1
@@ -272,14 +279,12 @@ class IndentFinder:
         return None
         
     def results( self ):
-        if VERBOSE:
-            print "Nb of scanned lines : %d" % self.nb_processed_lines
-            print "Nb of lines with tab indentation: %d" % self.lines['tab']
-            for i in range(2,9):
-                print "Nb of points for space %d indentation: %d" % (i, self.lines['space%d'%i])
-            for i in range(2,9):
-                print "Nb of points for mixed %d indentation: %d" % (i, self.lines['mixed%d'%i])
-
+        dbg( "Nb of scanned lines : %d" % self.nb_processed_lines )
+        dbg( "Nb of indent hint : %d" % self.nb_indent_hint )
+        dbg( "Collected data:" )
+        for key in self.lines:
+            if self.lines[key] > 0:
+                dbg( '%s: %d' % (key, self.lines[key] ) )
 
         max_line_space = max( [ self.lines['space%d'%i] for i in range(2,9) ] )
         max_line_mixed = max( [ self.lines['mixed%d'%i] for i in range(2,9) ] )
@@ -319,7 +324,7 @@ class IndentFinder:
             # space based indentation 
             result = ('tab', DEFAULT_TAB_WIDTH) 
 
-        if VERBOSE: 
+        if VERBOSITY: 
             print "Result = ", result
         return result
 
@@ -366,18 +371,18 @@ space_indent )
 
 
 def main():
-    global VERBOSE 
+    global VERBOSITY 
 
     SEPARATE = 0
     VIM_OUTPUT = 0
-    VERBOSE = 0
+    VERBOSITY = 0
 
     fi = IndentFinder()
     file_list = []
     for opt in sys.argv[1:]:
         if opt == "--separate": SEPARATE = 1
         elif opt == "--vim-output": VIM_OUTPUT = 1
-        elif opt == "--verbose": VERBOSE = 1
+        elif opt == "--verbose": VERBOSITY = 1
         elif opt[0] == "-": 
             print help % sys.argv[0]
             return
