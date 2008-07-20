@@ -22,32 +22,31 @@ class Test_many_files( TestCase ):
         res = str(ifi)
         self.assertEquals( res, result )
 
-    def test_file_DebugClient_py( self ):
-        self.check_file( "test_files/DebugClient.py", 'space 4' )
+    def test_file_space4( self ):
+        l = []
+        l += glob.glob( 'test_files/space4/*.py' )
+        l += glob.glob( 'test_files/space4/*.java' )
+        for f in l:
+            print 'checking: ', f
+            self.check_file( f , 'space 4' )
 
-    def test_file_diffmodel_cpp( self ):
-        self.check_file( "test_files/diffmodel.cpp", 'tab %d' % DEFAULT_TAB_WIDTH )
-
-    def test_file_IOtest_java( self ):
-        self.check_file( "test_files/IOtest.java", 'space 4')
-
-    def test_file_pretty_make_py( self ):
-        self.check_file( "test_files/pretty-make.py", 'tab %d' % DEFAULT_TAB_WIDTH )
-
-    def test_file_TestRunner_cpp( self ):
-        self.check_file( "test_files/TestRunner.cpp", 'space 2' )
-
-    def test_file_cml_py( self ):
-        self.check_file( "test_files/cml.py", 'space 4' )
+    def test_file_space2( self ):
+        l = []
+        l += glob.glob( 'test_files/space2/*.cpp' )
+        for f in l:
+            print 'checking: ', f
+            self.check_file( f , 'space 2' )
 
     def test_file_tab( self ):
         l = []
         l += glob.glob( 'test_files/tab/*.c' )
+        l += glob.glob( 'test_files/tab/*.cpp' )
+        l += glob.glob( 'test_files/tab/*.py' )
         for f in l:
             print 'checking: ', f
             self.check_file( f , 'tab %d' % DEFAULT_TAB_WIDTH )
 
-    def test_file_vim_files_c( self ):
+    def test_file_mixed4( self ):
         l = []
         l += glob.glob( 'test_files/mixed4/*.c' )
         for f in l:
