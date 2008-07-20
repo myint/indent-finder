@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-release_name='indent_finder-1.2'
+release_name='indent_finder-1.3'
 
 rm -rf $release_name
 mkdir $release_name
@@ -9,7 +9,7 @@ mkdir $release_name
 echo '====== Packaging Indent Finder '
 rm -f $release_name.zip
 rm -f $release_name.tgz
-cp -a indent_finder.py indent_checker.py setup.py test_*.py tests $release_name  
+cp -a indent_finder.py setup.py test_*.py test_files $release_name  
 cp -a indent_finder.vim LICENSE.txt README.txt $release_name  
 
 cd $release_name

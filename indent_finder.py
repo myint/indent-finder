@@ -374,14 +374,12 @@ space_indent )
 
 
 def main():
-    SEPARATE = 0
     VIM_OUTPUT = 0
 
     fi = IndentFinder()
     file_list = []
     for opt in sys.argv[1:]:
-        if opt == "--separate": SEPARATE = 1
-        elif opt == "--vim-output": VIM_OUTPUT = 1
+        if opt == "--vim-output": VIM_OUTPUT = 1
         elif opt == "--verbose": IndentFinder.VERBOSITY = VERBOSE_INFO
         elif opt[0] == "-": 
             print help % sys.argv[0]
@@ -389,12 +387,11 @@ def main():
         else:
             file_list.append( opt )
 
-    if SEPARATE:
-        for fname in file_list:
-            fi.clear()
-            fi.parse_file( fname )
-            print "%s : %s" % (fname, str(fi))
-        return
+    for fname in file_list:
+        fi.clear()
+        fi.parse_file( fname )
+        print "%s : %s" % (fname, str(fi))
+    return
 
     fi.parse_file_list( file_list )
     if VIM_OUTPUT:
