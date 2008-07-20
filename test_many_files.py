@@ -49,7 +49,7 @@ class Test_many_files( TestCase ):
 
     def test_file_vim_files_c( self ):
         l = []
-        l += glob.glob( 'test_files/vim_files/*.c' )
+        l += glob.glob( 'test_files/mixed4/*.c' )
         for f in l:
             print 'checking: ', f
             self.check_file( f, 'mixed tab 8 space 4' )
