@@ -10,7 +10,7 @@ import sys
 import re
 
 help = \
-"""Usage : %s [ --separate ] [ --vim-output ] [ --verbose ] file1 file2 ... fileN
+"""Usage : %s [ --vim-output ] [ --verbose ] file1 file2 ... fileN
 
 Display indentation used in the list of files. Possible answers are (with X
 being the number of spaces used for indentation):
@@ -22,17 +22,12 @@ mixed means that indentation style is tab at the beginning of the line (tab bein
 then spaces to do the indentation, unless you reach 8 spaces which are replaced by a tab. This is
 the vim source file indentation for example. In my opinion, this is the worst possible style.
 
---separate: analyse each file separately and report results as:
-file1: space 4
-file2: tab 8
-file3: mixed tab 4 space 2
-
 --vim-output: output suitable to use inside vim:
 set sts=0 | set tabstop=4 | set noexpandtab | set shiftwidth=4
 
 """
 
-### Used when indentation is tab, to set tabstop
+### Used when indentation is tab, to set tabstop in vim
 DEFAULT_TAB_WIDTH = 4
 
 ### default values for files where indentation is not meaningful (empty files)

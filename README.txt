@@ -1,6 +1,6 @@
 # 
 # Indentation finder, by Philippe Fremy <phil at freehackers dot org>
-# Copyright 2002-2007 Philippe Fremy
+# Copyright 2002-2008 Philippe Fremy
 #
 # This program is distributed under the BSD license. You should have received
 # a copy of the file LICENSE.txt along with this software.
@@ -8,6 +8,11 @@
 # History:
 # ========
 # 
+# version 1.3:
+# - remove indent_checker, this was a useless program
+# - improve the indentation algorithm to be able to detecte mixed type indentation
+# - detect mixed type indentation, like the one used in vim source files
+#
 # version 1.2:
 # - add indent_checker, to check the consistency of the indentation of a source tree
 #
