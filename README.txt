@@ -18,6 +18,10 @@ http://www.freehackers.org/Indent_Finder
 History:
 ========
 
+version 1.31:
+hum, previous released was rushed!
+- the --vim-output was not working. Fixed in this version
+
 version 1.3:
 - remove indent_checker, this was a useless program
 - improve the indentation algorithm to be able to detecte mixed type indentation
