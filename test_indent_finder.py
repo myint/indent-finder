@@ -11,10 +11,10 @@
 from indent_finder import *
 
 import os, glob
-from unittest import *
+import unittest
 from pprint import pprint
 
-class Test_find_indent( TestCase ):
+class Test_find_indent( unittest.TestCase ):
 
     def test_re( self ):
         ifi = IndentFinder()
@@ -252,6 +252,8 @@ class Test_find_indent( TestCase ):
 
         self.assertEquals( ifi.nb_indent_hint, 3 )
 
+def main():
+    unittest.main( testRunner = unittest.TextTestRunner( verbosity = 2 ) )
 
 if __name__ == "__main__":
-    main( testRunner = TextTestRunner( verbosity = 2 ) )
+    main()
