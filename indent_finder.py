@@ -351,13 +351,11 @@ class IndentFinder:
             return "set sts=%d | set tabstop=%d | set expandtab | set shiftwidth=%d" % (n,n,n)
 
         elif indent_type == "tab":
-            tab_width=4
             # tab:
             #   => set sts to 0
             #   => set tabstop to preferred value
             #   => set expandtab to false
             #   => set shiftwidth to tabstop
-            #   tabstop should not be touched.
             return "set sts=0 | set tabstop=%d | set noexpandtab | set shiftwidth=%d" % (DEFAULT_TAB_WIDTH, DEFAULT_TAB_WIDTH)
 
         if indent_type == 'mixed':
@@ -367,8 +365,7 @@ class IndentFinder:
             #   => set tabstop to tab_indent
             #   => set expandtab to false
             #   => set shiftwidth to space_indent
-            #   tabstop should not be touched.
-            return "set sts=0 | set tabstop=%d | set noexpandtab | set shiftwidth=%d" % (tab_indent,
+            return "set sts=4 | set tabstop=%d | set noexpandtab | set shiftwidth=%d" % (tab_indent,
 space_indent )
 
 
