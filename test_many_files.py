@@ -11,10 +11,10 @@
 from indent_finder import *
 
 import os, glob
-from unittest import *
+import unittest 
 from pprint import pprint
 
-class Test_many_files( TestCase ):
+class Test_many_files( unittest.TestCase ):
 
     def check_file( self, fname, result ):
         ifi = IndentFinder()
@@ -55,4 +55,4 @@ class Test_many_files( TestCase ):
         
 
 if __name__ == "__main__":
-    main( testRunner = TextTestRunner( verbosity = 2 ) )
+    unittest.main( testRunner = unittest.TextTestRunner( verbosity = 2 ) )
