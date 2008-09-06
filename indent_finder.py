@@ -376,7 +376,6 @@ space_indent )
 def main():
     VIM_OUTPUT = 0
 
-    fi = IndentFinder()
     file_list = []
     for opt in sys.argv[1:]:
         if opt == "--vim-output": VIM_OUTPUT = 1
@@ -387,17 +386,26 @@ def main():
         else:
             file_list.append( opt )
 
-    for fname in file_list:
-        fi.clear()
-        fi.parse_file( fname )
-        print "%s : %s" % (fname, str(fi))
-    return
+    fi = IndentFinder()
 
-    fi.parse_file_list( file_list )
-    if VIM_OUTPUT:
-        print fi.vim_output()
+    if len(file_list) > 1:
+        # multiple files
+        for fname in file_list:
+            fi.clear()
+            fi.parse_file( fname )
+            if VIM_OUTPUT:
+                print "%s : %s" % (fname, fi.vim_output())
+            else:
+                print "%s : %s" % (fname, str(fi))
+        return
+
     else:
-        print str(fi)
+        # only one file, don't print filename
+        fi.parse_file_list( file_list )
+        if VIM_OUTPUT:
+            print fi.vim_output()
+        else:
+            print str(fi)
 
 
 if __name__ == "__main__":
