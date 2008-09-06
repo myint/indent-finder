@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-release_name='indent_finder-1.3'
+release_name='indent_finder-1.31'
 
 rm -rf $release_name
 mkdir $release_name
