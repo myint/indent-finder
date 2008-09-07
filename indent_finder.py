@@ -400,7 +400,7 @@ def main():
         # only one file, don't print filename
         fi.parse_file_list( file_list )
         if VIM_OUTPUT:
-            print fi.vim_output()
+            sys.stdout.write( fi.vim_output() )
         else:
             print str(fi)
 
