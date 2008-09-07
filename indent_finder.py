@@ -18,9 +18,10 @@ space X
 tab 8
 mixed tab X space Y
 
-mixed means that indentation style is tab at the beginning of the line (tab being 8 positions) and
-then spaces to do the indentation, unless you reach 8 spaces which are replaced by a tab. This is
-the vim source file indentation for example. In my opinion, this is the worst possible style.
+mixed means that indentation style is tab at the beginning of the line (tab
+being 8 positions) and then spaces to do the indentation, unless you reach 8
+spaces which are replaced by a tab. This is the vim source file indentation
+for example. In my opinion, this is the worst possible style.
 
 --vim-output: output suitable to use inside vim:
 set sts=0 | set tabstop=4 | set noexpandtab | set shiftwidth=4
@@ -63,17 +64,17 @@ def log( level, s ):
 
 class IndentFinder:
     """
-    IndentFinder reports the indentation used in a source file. Its approach is
-    not tied to any particular language. It was tested successfully 
-    with python, C, C++ and Java code.
+    IndentFinder reports the indentation used in a source file. Its approach
+    is not tied to any particular language. It was tested successfully with
+    python, C, C++ and Java code.
 
     How does it work ?
 
     It scans each line of the entry file for a space character (white space or
     tab) repeated until a non space character is found. Such a line
     is considered to be a properly indented line of code. Blank lines and
-    comments line are ignored. Lines coming after a line ending in '\\' have higher 
-    chance of being not properly indented, and are thus ignored too.
+    comments line are ignored. Lines coming after a line ending in '\\' have
+    higher chance of being not properly indented, and are thus ignored too.
     
     An array stores the number of lines that have a specific indentation: tab,
     number of spaces between 2 and 8. For space indentation, a line is
@@ -128,10 +129,11 @@ class IndentFinder:
         self.previous_line_info = None
 
     def analyse_line_type( self, line ):
-        '''Analyse the type of line and return (LineType, <indentation part of the line>).
+        '''Analyse the type of line and return (LineType, <indentation part of
+        the line>).
 
-        The function will reject improperly formatted lines (mixture of tab and space for example)
-        and comment lines.
+        The function will reject improperly formatted lines (mixture of tab
+        and space for example) and comment lines.
         '''
         mixed_mode = False
         tab_part = ''

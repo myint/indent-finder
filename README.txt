@@ -24,11 +24,13 @@ hum, previous released was rushed!
 
 version 1.3:
 - remove indent_checker, this was a useless program
-- improve the indentation algorithm to be able to detecte mixed type indentation
+- improve the indentation algorithm to be able to detecte mixed type
+  indentation
 - detect mixed type indentation, like the one used in vim source files
 
 version 1.2:
-- add indent_checker, to check the consistency of the indentation of a source tree
+- add indent_checker, to check the consistency of the indentation of a source
+  tree
 
 version 1.1:
 - improve the heuristic by detecting indentation steps
