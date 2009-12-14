@@ -28,6 +28,8 @@ set sts=0 | set tabstop=4 | set noexpandtab | set shiftwidth=4
 
 """
 
+VERSION=1.31
+
 ### Used when indentation is tab, to set tabstop in vim
 DEFAULT_TAB_WIDTH = 4
 
@@ -128,6 +130,29 @@ class IndentFinder:
         self.skip_next_line = False
         self.previous_line_info = None
 
+    def analyse_line( self, line ):
+        if line[-1:] == '\n':
+            line = line[:-1]
+        deepdbg( 'Analysing: "%s"' % line.replace(' ', '.' ).replace('\t','\\t') )
+        self.nb_processed_lines += 1
+
+        skip_current_line = self.skip_next_line
+        self.skip_next_line = False
+        if line[-1:] == '\\': 
+            deepdbg( 'Ignoring next line!' )
+            # skip lines after lines ending in \
+            self.skip_next_line = True
+
+        if skip_current_line: 
+            deepdbg( 'Ignoring current line!' )
+            return
+
+        ret = self.analyse_line_indentation( line )
+        if ret:
+            self.nb_indent_hint += 1
+        deepdbg( 'Result of line analysis: %s' % str(ret) )
+        return ret
+
     def analyse_line_type( self, line ):
         '''Analyse the type of line and return (LineType, <indentation part of
         the line>).
@@ -195,29 +220,6 @@ class IndentFinder:
                 return (LineType.SpaceOnly, indent_part )
 
         assert False, 'We should never get there !'
-
-    def analyse_line( self, line ):
-        if line[-1:] == '\n':
-            line = line[:-1]
-        deepdbg( 'Analysing: "%s"' % line.replace(' ', '.' ).replace('\t','\\t') )
-        self.nb_processed_lines += 1
-
-        skip_current_line = self.skip_next_line
-        self.skip_next_line = False
-        if line[-1:] == '\\': 
-            deepdbg( 'Ignoring next line!' )
-            # skip lines after lines ending in \
-            self.skip_next_line = True
-
-        if skip_current_line: 
-            deepdbg( 'Ignoring current line!' )
-            return
-
-        ret = self.analyse_line_indentation( line )
-        if ret:
-            self.nb_indent_hint += 1
-        deepdbg( 'Result of line analysis: %s' % str(ret) )
-        return ret
 
     def analyse_line_indentation( self, line ):
         previous_line_info = self.previous_line_info
@@ -377,8 +379,13 @@ def main():
 
     file_list = []
     for opt in sys.argv[1:]:
-        if opt == "--vim-output": VIM_OUTPUT = 1
-        elif opt == "--verbose": IndentFinder.VERBOSITY = VERBOSE_INFO
+        if opt == "--vim-output": 
+            VIM_OUTPUT = 1
+        elif opt == "--verbose" or opt == '-v': 
+            IndentFinder.VERBOSITY += 1
+        elif opt == "--version": 
+            print 'IndentFinder v%s' % VERSION
+            return
         elif opt[0] == "-": 
             print help % sys.argv[0]
             return
