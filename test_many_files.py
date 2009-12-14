@@ -28,6 +28,7 @@ class Test_many_files( unittest.TestCase ):
         l = []
         l += glob.glob( 'test_files/space4/*.py' )
         l += glob.glob( 'test_files/space4/*.java' )
+        l += glob.glob( 'test_files/space4/*.vim' )
         for f in l:
             print 'checking: ', f
             self.check_file( f , 'space 4', 
