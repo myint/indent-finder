@@ -160,6 +160,7 @@ class Test_find_indent( unittest.TestCase ):
         result = ifi.analyse_line( "      hop" )
         self.assertEquals( result, 'space4' )
         self.assertEquals( ifi.lines['space2'], 1 )
+        self.assertEquals( ifi.lines['space4'], 1 )
 
     def test_analyse_line_space4( self ):
         ifi = IndentFinder()

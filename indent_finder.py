@@ -133,24 +133,24 @@ class IndentFinder:
     def analyse_line( self, line ):
         if line[-1:] == '\n':
             line = line[:-1]
-        deepdbg( 'Analysing: "%s"' % line.replace(' ', '.' ).replace('\t','\\t') )
+        deepdbg( 'analyse_line: "%s"' % line.replace(' ', '.' ).replace('\t','\\t') )
         self.nb_processed_lines += 1
 
         skip_current_line = self.skip_next_line
         self.skip_next_line = False
         if line[-1:] == '\\': 
-            deepdbg( 'Ignoring next line!' )
+            deepdbg( 'analyse_line: Ignoring next line!' )
             # skip lines after lines ending in \
             self.skip_next_line = True
 
         if skip_current_line: 
-            deepdbg( 'Ignoring current line!' )
+            deepdbg( 'analyse_line: Ignoring current line!' )
             return
 
         ret = self.analyse_line_indentation( line )
         if ret:
             self.nb_indent_hint += 1
-        deepdbg( 'Result of line analysis: %s' % str(ret) )
+        deepdbg( 'analyse_line: Result of line analysis: %s' % str(ret) )
         return ret
 
     def analyse_line_type( self, line ):
@@ -180,7 +180,7 @@ class IndentFinder:
             # skip empty lines
             return None
 
-        deepdbg( 'indent_part="%s" text_part="%s"' % 
+        deepdbg( 'analyse_line_type: indent_part="%s" text_part="%s"' % 
             (indent_part.replace(' ', '.').replace('\t','\\t').replace('\n', '\\n' ),
                 text_part ) )
 
@@ -227,11 +227,11 @@ class IndentFinder:
         self.previous_line_info = current_line_info
 
         if current_line_info == None or previous_line_info == None:
-            deepdbg('Not enough line info to analyse line: %s, %s' % (str(previous_line_info), str(current_line_info)))
+            deepdbg('analyse_line_indentation: Not enough line info to analyse line: %s, %s' % (str(previous_line_info), str(current_line_info)))
             return 
         
         t = (previous_line_info[0], current_line_info[0])
-        deepdbg( 'Indent analysis: %s %s' % t )
+        deepdbg( 'analyse_line_indentation: Indent analysis: %s %s' % t )
         if t == (LineType.TabOnly, LineType.TabOnly):
             if len(current_line_info[1]) - len(previous_line_info[1]) == 1 :
                 self.lines['tab'] += 1
@@ -298,9 +298,15 @@ class IndentFinder:
         max_line_mixed = max( [ self.lines['mixed%d'%i] for i in range(2,9) ] )
         max_line_tab = self.lines['tab']
 
+        dbg( 'max_line_space: %d' % max_line_space )
+        dbg( 'max_line_mixed: %d' % max_line_mixed )
+        dbg( 'max_line_tab: %d' % max_line_tab )
+
         result = None
         if (max_line_space * 1.1 >= max_line_mixed) and (max_line_space > max_line_tab):
-            # this is space based indentation
+            # 10% more lines with space only than with tab+space
+            # and more lines with space than lines with tab
+            # Conclusion: this is space based indentation
             nb = 0
             indent_value = None
             for i in range(8,1,-1):
@@ -314,7 +320,9 @@ class IndentFinder:
                 result = ('space', indent_value )
 
         elif max_line_mixed > max_line_tab:
-            # this is mixed mode indentation
+            # more lines with tab+space
+            # than lines than lines with tab only
+            # Conclusion: this is mixed indentation
             nb = 0
             indent_value = None
             for i in range(8,1,-1):
@@ -327,10 +335,14 @@ class IndentFinder:
             else:
                 result = ('mixed', (8,indent_value) )
 
-
+        elif max_line_tab > max_line_mixed:
+            # more lines with tab only
+            # than lines with tab + space
+            # Conclusion: this is tab indentation
+            result = ('tab', DEFAULT_TAB_WIDTH )
         else:
-            # space based indentation 
-            result = ('tab', DEFAULT_TAB_WIDTH) 
+            # not enough information to make a decision
+            result = DEFAULT_RESULT
 
         info( "Result: %s" % str( result ) )
         return result
