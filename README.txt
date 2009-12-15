@@ -1,13 +1,12 @@
 
 Indentation finder, by Philippe Fremy <phil at freehackers dot org>
-Copyright 2002-2008 Philippe Fremy
+Copyright 2002-2009 Philippe Fremy
 
 This program is distributed under the BSD license. You should have received
 a copy of the file LICENSE.txt along with this software.
 
 To test me, type:
-python test_indent_finder.py 
-python test_many_files.py
+python run_tests.py
 
 To install, type:
 python setup.py install
@@ -17,6 +16,10 @@ http://www.freehackers.org/Indent_Finder
 
 History:
 ========
+
+version 1.4:
+- improve the heuristic, some file where incorrectly reported as tab
+- ('tab', 4) was returned instead of DEFAULT_OUTPUT when no decision could be made
 
 version 1.31:
 hum, previous released was rushed!
