@@ -14,10 +14,12 @@ import os, glob
 import unittest 
 from pprint import pprint
 
+TEST_DEFAULT_RESULT=('',0)
+
 class Test_many_files( unittest.TestCase ):
 
     def check_file( self, fname, result, expected_vim_result ):
-        ifi = indent_finder.IndentFinder()
+        ifi = indent_finder.IndentFinder( TEST_DEFAULT_RESULT )
         indent_finder.DEFAULT_TAB_WIDTH = 13
         ifi.parse_file( fname )
         res = str(ifi)
