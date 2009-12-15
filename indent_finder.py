@@ -243,20 +243,23 @@ class IndentFinder:
         
         t = (previous_line_info[0], current_line_info[0])
         deepdbg( 'analyse_line_indentation: Indent analysis: %s %s' % t )
-        if t == (LineType.TabOnly, LineType.TabOnly):
+        if (t == (LineType.TabOnly, LineType.TabOnly)
+            or t == (LineType.NoIndent, LineType.TabOnly) ):
             if len(current_line_info[1]) - len(previous_line_info[1]) == 1 :
                 self.lines['tab'] += 1
                 return 'tab'
 
-        elif t == (LineType.SpaceOnly, LineType.SpaceOnly) \
-            or t == (LineType.BeginSpace, LineType.SpaceOnly):
+        elif (t == (LineType.SpaceOnly, LineType.SpaceOnly)
+              or t == (LineType.BeginSpace, LineType.SpaceOnly)
+              or t == (LineType.NoIndent, LineType.SpaceOnly) ):
             nb_space = len(current_line_info[1]) - len(previous_line_info[1])
             if 1 < nb_space <= 8:
                 key = 'space%d' % nb_space 
                 self.lines[key] += 1
                 return key
 
-        elif t == (LineType.BeginSpace, LineType.BeginSpace):
+        elif (t == (LineType.BeginSpace, LineType.BeginSpace)
+              or t == (LineType.NoIndent, LineType.BeginSpace) ):
             nb_space = len(current_line_info[1]) - len(previous_line_info[1])
             if 1 < nb_space <= 8:
                 key1 = 'space%d' % nb_space 
