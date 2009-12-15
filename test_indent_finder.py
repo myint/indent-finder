@@ -14,10 +14,12 @@ import os, glob
 import unittest
 from pprint import pprint
 
+TEST_DEFAULT_RESULT=('',0)
+
 class Test_find_indent( unittest.TestCase ):
 
     def test_re( self ):
-        ifi = IndentFinder()
+        ifi = IndentFinder( TEST_DEFAULT_RESULT )
    
         mo = ifi.indent_re.match( '\t' )
         self.assertEquals( mo, None )
@@ -35,7 +37,7 @@ class Test_find_indent( unittest.TestCase ):
         self.assertEquals( mo.groups(), ('\t', 'x' ) )
 
     def test_analyse_line_type( self ):
-        ifi = IndentFinder()
+        ifi = IndentFinder( TEST_DEFAULT_RESULT )
         n = 1
         self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ), 
                             (LineType.BeginSpace, ' ' * n ) )
@@ -79,7 +81,7 @@ class Test_find_indent( unittest.TestCase ):
         self.assertEquals( ifi.analyse_line_type( '  \t\t' + 'coucou' ), None )
 
     def test_ignored_lines( self ):
-        ifi = IndentFinder()
+        ifi = IndentFinder( TEST_DEFAULT_RESULT )
 
         self.assertEquals( ifi.analyse_line_type( '' ), None )
         self.assertEquals( ifi.analyse_line_type( '' ), None )
@@ -111,7 +113,7 @@ class Test_find_indent( unittest.TestCase ):
         self.assertEquals( ifi.analyse_line( '\t  \n' ), None )
 
     def test_analyse_line_tab( self ):
-        ifi = IndentFinder()
+        ifi = IndentFinder( TEST_DEFAULT_RESULT )
         result = ifi.analyse_line( "" )
         result = ifi.analyse_line( "hop" )
         result = ifi.analyse_line( "\thop" )
@@ -136,7 +138,7 @@ class Test_find_indent( unittest.TestCase ):
         self.assertEquals( ifi.nb_indent_hint, 1 )
 
     def test_analyse_line_space2( self ):
-        ifi = IndentFinder()
+        ifi = IndentFinder( TEST_DEFAULT_RESULT )
         result = ifi.analyse_line( '' )
         result = ifi.analyse_line( 'hop' )
         result = ifi.analyse_line( '  hop' )
@@ -163,7 +165,7 @@ class Test_find_indent( unittest.TestCase ):
         self.assertEquals( ifi.lines['space4'], 1 )
 
     def test_analyse_line_space4( self ):
-        ifi = IndentFinder()
+        ifi = IndentFinder( TEST_DEFAULT_RESULT )
         result = ifi.analyse_line( '' )
         result = ifi.analyse_line( 'hop' )
         result = ifi.analyse_line( '    hop' )
@@ -189,7 +191,7 @@ class Test_find_indent( unittest.TestCase ):
         self.assertEquals( ifi.lines['space4'], 1 )
 
     def test_analyse_line_space8( self ):
-        ifi = IndentFinder()
+        ifi = IndentFinder( TEST_DEFAULT_RESULT )
         idt = '        '  
         result = ifi.analyse_line( '' )
         result = ifi.analyse_line( 'hop' )
@@ -217,7 +219,7 @@ class Test_find_indent( unittest.TestCase ):
 
 
     def test_analyse_line_mixed( self ):
-        ifi = IndentFinder()
+        ifi = IndentFinder( TEST_DEFAULT_RESULT )
         result = ifi.analyse_line( '' )
         result = ifi.analyse_line( 'hop' )
         result = ifi.analyse_line( '    hop' )
