@@ -18,9 +18,11 @@ TEST_DEFAULT_RESULT=('',0)
 
 class Test_find_indent( unittest.TestCase ):
 
-    def test_re( self ):
+    def test_indent_re( self ):
         ifi = IndentFinder( TEST_DEFAULT_RESULT )
    
+        mo = ifi.indent_re.match( '' )
+        self.assertEquals( mo, None )
         mo = ifi.indent_re.match( '\t' )
         self.assertEquals( mo, None )
         mo = ifi.indent_re.match( '  ' )
@@ -36,35 +38,32 @@ class Test_find_indent( unittest.TestCase ):
         self.assertNotEquals( mo, None )
         self.assertEquals( mo.groups(), ('\t', 'x' ) )
 
+    def test_mixed_re( self ):
+        ifi = IndentFinder( TEST_DEFAULT_RESULT )
+   
+        mo = ifi.mixed_re.match( '' )
+        self.assertEquals( mo, None )
+        mo = ifi.mixed_re.match( '\t' )
+        self.assertEquals( mo, None )
+        mo = ifi.mixed_re.match( ' ' )
+        self.assertEquals( mo, None )
+        mo = ifi.mixed_re.match( ' \t' )
+        self.assertEquals( mo, None )
+
+        mo = ifi.mixed_re.match( '\t\t  ' )
+        self.assertEquals( mo.group(1), '\t\t' )
+        self.assertEquals( mo.group(2), '  ' )
+
+
     def test_analyse_line_type( self ):
         ifi = IndentFinder( TEST_DEFAULT_RESULT )
-        n = 1
-        self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ), 
-                            (LineType.BeginSpace, ' ' * n ) )
-        n = 2
-        self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ), 
-                            (LineType.BeginSpace, ' ' * n ) )
-        n = 3
-        self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ), 
-                            (LineType.BeginSpace, ' ' * n ) )
-        n = 4
-        self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ), 
-                            (LineType.BeginSpace, ' ' * n ) )
-        n = 5
-        self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ), 
-                            (LineType.BeginSpace, ' ' * n ) )
-        n = 6
-        self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ), 
-                            (LineType.BeginSpace, ' ' * n ) )
-        n = 7
-        self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ), 
-                            (LineType.BeginSpace, ' ' * n ) )
-        n = 8
-        self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ), 
-                            (LineType.SpaceOnly, ' ' * n ) )
-        n = 9
-        self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ), 
-                            (LineType.SpaceOnly, ' ' * n ) )
+
+        for n in range(1,8):
+            self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ), 
+                                (LineType.BeginSpace, ' ' * n ) )
+        for n in range(8,10):
+            self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ), 
+                                (LineType.SpaceOnly, ' ' * n ) )
 
         self.assertEquals( ifi.analyse_line_type( '\t' + 'coucou' ), 
                             (LineType.TabOnly, '\t' ) )
@@ -76,6 +75,10 @@ class Test_find_indent( unittest.TestCase ):
             self.assertEquals( ifi.analyse_line_type( '\t\t' + ' '*i + 'coucou' ), 
                                 (LineType.Mixed, '\t\t', ' '*i ) )
 
+        self.assertEquals( ifi.analyse_line_type( 'coucou' ), (LineType.NoIndent, '') )
+
+        self.assertEquals( ifi.analyse_line_type( '' ), None )
+        self.assertEquals( ifi.analyse_line_type( '\t\t' + ' ' * 8 + 'coucou' ), None )
         self.assertEquals( ifi.analyse_line_type( '\t\t' + ' ' * 9 + 'coucou' ), None )
         self.assertEquals( ifi.analyse_line_type( '\t\t \t' + 'coucou' ), None )
         self.assertEquals( ifi.analyse_line_type( '  \t\t' + 'coucou' ), None )
@@ -84,11 +87,9 @@ class Test_find_indent( unittest.TestCase ):
         ifi = IndentFinder( TEST_DEFAULT_RESULT )
 
         self.assertEquals( ifi.analyse_line_type( '' ), None )
-        self.assertEquals( ifi.analyse_line_type( '' ), None )
         self.assertEquals( ifi.analyse_line_type( '  ' ), None )
         self.assertEquals( ifi.analyse_line_type( '\t' ), None )
         self.assertEquals( ifi.analyse_line_type( '\t  ' ), None )
-        self.assertEquals( ifi.analyse_line_type( 'coucou' ), None )
         self.assertEquals( ifi.analyse_line_type( '  # coucou' ), None )
         self.assertEquals( ifi.analyse_line_type( '  /* coucou' ), None )
         self.assertEquals( ifi.analyse_line_type( '   * coucou' ), None )

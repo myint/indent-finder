@@ -51,6 +51,7 @@ DEFAULT_VERBOSITY = VERBOSE_QUIET
 
 ###
 class LineType:
+    NoIndent        = 'NoIndent'
     SpaceOnly       = 'SpaceOnly'
     TabOnly         = 'TabOnly'
     Mixed           = 'Mixed'
@@ -94,13 +95,14 @@ class IndentFinder:
     - non-significant
 
     Then two consecutive significant lines are then considered. The only valid combinations are:
-    - (BeginSpace, BeginSpace)
-    - (BeginSpace, SpaceOnly)
-    - (BeginSpace, TabOnly)
-    - (SpaceOnly, SpaceOnly)
-    - (TabOnly, TabOnly)
-    - (TabOnly, Mixed)
-    - (Mixed, TabOnly)
+    - (NoIndent, BeginSpace)    => space or mixed
+    - (NoIndent, Tab)           => tab
+    - (BeginSpace, BeginSpace)  => space or mixed
+    - (BeginSpace, SpaceOnly)   => space
+    - (SpaceOnly, SpaceOnly)    => space
+    - (TabOnly, TabOnly)        => tab
+    - (TabOnly, Mixed)          => mixed
+    - (Mixed, TabOnly)          => mixed
 
     The increment in number of spaces is then recorded.
 
@@ -178,6 +180,9 @@ class IndentFinder:
         tab_part = ''
         space_part = ''
 
+        if len(line) > 0 and line[0] != ' ' and line[0] != '\t':
+            return (LineType.NoIndent, '') 
+
         mo = self.indent_re.match( line )
         if not mo: 
             deepdbg( 'analyse_line_type: line is not indented' )
@@ -185,15 +190,7 @@ class IndentFinder:
 
         indent_part = mo.group(1)
         text_part = mo.group(2)
-        if len(indent_part) and not indent_part[0] in '\t ':
-            # no indentation at all, group 1 actually refers to the text
-            text_part = indent_part
-            indent_part = ''
-
-        if not len(text_part):
-            # skip empty lines
-            return None
-
+            
         deepdbg( 'analyse_line_type: indent_part="%s" text_part="%s"' % 
             (indent_part.replace(' ', '.').replace('\t','\\t').replace('\n', '\\n' ),
                 text_part ) )
