@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 
 import unittest
 from test_indent_finder import *
