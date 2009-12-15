@@ -28,7 +28,7 @@ set sts=0 | set tabstop=4 | set noexpandtab | set shiftwidth=4
 
 """
 
-VERSION=1.31
+VERSION='1.4'
 
 ### Used when indentation is tab, to set tabstop in vim
 DEFAULT_TAB_WIDTH = 4
@@ -75,26 +75,39 @@ class IndentFinder:
     It scans each line of the entry file for a space character (white space or
     tab) repeated until a non space character is found. Such a line
     is considered to be a properly indented line of code. Blank lines and
-    comments line are ignored. Lines coming after a line ending in '\\' have
-    higher chance of being not properly indented, and are thus ignored too.
-    
-    An array stores the number of lines that have a specific indentation: tab,
-    number of spaces between 2 and 8. For space indentation, a line is
-    considered indented with a base of x if the number of spaces modulo x
-    yields zero. Thus, an indentation of 4 spaces increases the 2-spaces and
-    the 4-spaces indentation line count.
+    comments line (starting with # or /* or * ) are ignored. Lines coming 
+    after a line ending in '\\' have higher chance of being not properly 
+    indented, and are thus ignored too.
 
-    To improve the heuristics, the steps of increments in the indentation
-    give an extra bonus of 10 points. For example:
-    <4 space>some line
-    <8 space     >some line
-    is a strong hint of an indentation of 4 and gets 4 an 10 points bonus
+    Only the increment in indentation are fed in. Dedentation or maintaining
+    the same indentation is not taken into account when analysing a file. Increment
+    in indentation from zero indentation to some indentation is also ignored because
+    it's wrong in many cases (header file with many structures for example, do not always
+    obey the indentation of the rest of the code).
 
-    At the end of the scan phase, the indentation that was used with the
-    highest number of lines is taken. For spaces, to avoid the problemes of
-    multiples like 2 and 4, the highest indentation number is preferred. A
-    lower number is chosen if it reports at least 10% more lines with this
-    indentation.
+    Each line is analysed as:
+    - SpaceOnly: indentation of more than 8 space
+    - TabOnly: indentation of tab only
+    - Mixed: indentation of tab, then less than 8 spaces
+    - BeginSpace: indentation of less than 8 space, that could be either a mixed indentation
+        or a pure space indentation.
+    - non-significant
+
+    Then two consecutive significant lines are then considered. The only valid combinations are:
+    - (BeginSpace, BeginSpace)
+    - (BeginSpace, SpaceOnly)
+    - (BeginSpace, TabOnly)
+    - (SpaceOnly, SpaceOnly)
+    - (TabOnly, TabOnly)
+    - (TabOnly, Mixed)
+    - (Mixed, TabOnly)
+
+    The increment in number of spaces is then recorded.
+
+    At the end, the number of lines with space indentation, mixed space and tab indentation
+    are compared and a decision is made.
+
+    If no decision can be made, DEFAULT_RESULT is returned.
 
     If IndentFinder ever reports wrong indentation, send me immediately a
     mail, if possible with the offending file.
