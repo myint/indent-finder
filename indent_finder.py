@@ -113,8 +113,9 @@ class IndentFinder:
     mail, if possible with the offending file.
     """
 
-    def __init__(self):
+    def __init__(self, default_result=DEFAULT_RESULT):
         self.clear()
+        self.default_result = default_result
 
     VERBOSITY = DEFAULT_VERBOSITY
 
@@ -328,7 +329,7 @@ class IndentFinder:
                     nb = self.lines[ 'space%d' % indent_value ]
 
             if indent_value == None: # no lines
-                result = DEFAULT_RESULT
+                result = self.default_result
             else:
                 result = ('space', indent_value )
 
@@ -344,7 +345,7 @@ class IndentFinder:
                     nb = self.lines[ 'mixed%d' % indent_value ]
 
             if indent_value == None: # no lines
-                result = DEFAULT_RESULT
+                result = self.default_result
             else:
                 result = ('mixed', (8,indent_value) )
 
@@ -355,7 +356,7 @@ class IndentFinder:
             result = ('tab', DEFAULT_TAB_WIDTH )
         else:
             # not enough information to make a decision
-            result = DEFAULT_RESULT
+            result = self.default_result
 
         info( "Result: %s" % str( result ) )
         return result
