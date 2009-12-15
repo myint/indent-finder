@@ -2,8 +2,12 @@
 
 from distutils.core import setup
 
+import indent_finder
+
+
+
 setup( 	name = "Indentation Finder",
-		version = "1.3",
+		version = indent_finder.VERSION,
 		description = "Finds of check the indentation used in programming source files",
 		author = "Philippe Fremy",
 		author_email = "phil at freehackers dot org",

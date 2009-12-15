@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-release_name='indent_finder-1.31'
+release_name=indent_finder-`grep -e "VERSION=" indent_finder.py | cut -d"'" -f2 `
 
 rm -rf $release_name
 mkdir $release_name
