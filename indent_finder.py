@@ -405,14 +405,15 @@ class IndentFinder:
         
 
     def vim_output( self ):
-        indent_type, n = self.results()
+        result = self.results()
+        indent_type, n = result
         if indent_type == "space":
             # spaces: 
             #   => set sts to the number of spaces
             #   => set tabstop to the number of spaces
             #   => expand tabs to spaces
             #   => set shiftwidth to the number of spaces
-            return "set sts=%d | set tabstop=%d | set expandtab | set shiftwidth=%d" % (n,n,n)
+            return "set sts=%d | set tabstop=%d | set expandtab | set shiftwidth=%d \" (%s %d) " % (n,n,n,indent_type,n)
 
         elif indent_type == "tab":
             # tab:
@@ -420,7 +421,7 @@ class IndentFinder:
             #   => set tabstop to preferred value
             #   => set expandtab to false
             #   => set shiftwidth to tabstop
-            return "set sts=0 | set tabstop=%d | set noexpandtab | set shiftwidth=%d" % (DEFAULT_TAB_WIDTH, DEFAULT_TAB_WIDTH)
+            return "set sts=0 | set tabstop=%d | set noexpandtab | set shiftwidth=%d \" (%s)" % (DEFAULT_TAB_WIDTH, DEFAULT_TAB_WIDTH, indent_type )
 
         if indent_type == 'mixed':
             tab_indent, space_indent = n
@@ -429,8 +430,7 @@ class IndentFinder:
             #   => set tabstop to tab_indent
             #   => set expandtab to false
             #   => set shiftwidth to space_indent
-            return "set sts=4 | set tabstop=%d | set noexpandtab | set shiftwidth=%d" % (tab_indent,
-space_indent )
+            return "set sts=4 | set tabstop=%d | set noexpandtab | set shiftwidth=%d \" (%s %d)" % (tab_indent, space_indent, indent_type, space_indent )
 
 
 
