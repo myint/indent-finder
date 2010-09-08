@@ -413,7 +413,7 @@ class IndentFinder:
             #   => set tabstop to the number of spaces
             #   => expand tabs to spaces
             #   => set shiftwidth to the number of spaces
-            return "set sts=%d | set tabstop=%d | set expandtab | set shiftwidth=%d \" (%s %d) " % (n,n,n,indent_type,n)
+            return "set sts=%d | set tabstop=%d | set expandtab | set shiftwidth=%d \" (%s %d)" % (n,n,n,indent_type,n)
 
         elif indent_type == "tab":
             # tab:
