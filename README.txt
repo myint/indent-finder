@@ -1,6 +1,6 @@
 
 Indentation finder, by Philippe Fremy <phil at freehackers dot org>
-Copyright 2002-2009 Philippe Fremy
+Copyright 2002-2010 Philippe Fremy
 
 This program is distributed under the BSD license. You should have received
 a copy of the file LICENSE.txt along with this software.
@@ -18,8 +18,10 @@ History:
 ========
 
 version 1.4:
-- improve the heuristic, some file where incorrectly reported as tab
-- ('tab', 4) was returned instead of DEFAULT_OUTPUT when no decision could be made
+- improve the heuristic, some file where incorrectly reported as tab when being mixed
+- ('tab', 4) was returned instead of DEFAULT_OUTPUT when no decision could be made. This is now
+  configurable.
+- vim_output() now includes a comment about the detected indentation
 
 version 1.31:
 hum, previous released was rushed!
