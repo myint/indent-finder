@@ -121,11 +121,8 @@ class IndentFinder:
 
     VERBOSITY = DEFAULT_VERBOSITY
 
-    def parse_file_list( self, file_list ):
-        for fname in file_list:
-            self.parse_file( fname )
-
     def parse_file( self, fname ):
+        self.clear()
         f = open( fname )
         l = f.readline()
         while( l ):
@@ -454,20 +451,18 @@ def main():
 
     fi = IndentFinder()
 
-    if len(file_list) > 1:
-        # multiple files
-        for fname in file_list:
-            fi.clear()
-            fi.parse_file( fname )
+    one_file = (len(file_list) == 1)
+
+    for fname in file_list:
+        fi.parse_file( fname )
+
+        if not one_file:
             if VIM_OUTPUT:
                 print "%s : %s" % (fname, fi.vim_output())
             else:
                 print "%s : %s" % (fname, str(fi))
-        return
 
-    else:
-        # only one file, don't print filename
-        fi.parse_file_list( file_list )
+    if one_file:
         if VIM_OUTPUT:
             sys.stdout.write( fi.vim_output() )
         else:
