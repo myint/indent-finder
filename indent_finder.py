@@ -6,7 +6,7 @@
 # a copy of the file LICENSE.txt along with this software.
 #
 
-"""Usage : indent_finder.py [ --vim-output ] [ --verbose ] file1 file2 ... fileN
+"""Usage : indent_finder.py [ --vim-output ] [ --verbose ] [file [file ...]]
 
 Display indentation used in the list of files. Possible answers are (with X
 being the number of spaces used for indentation):
@@ -88,27 +88,28 @@ class IndentFinder:
     How does it work ?
 
     It scans each line of the entry file for a space character (white space or
-    tab) repeated until a non space character is found. Such a line
-    is considered to be a properly indented line of code. Blank lines and
-    comments line (starting with # or /* or * ) are ignored. Lines coming
-    after a line ending in '\' have higher chance of being not properly
-    indented, and are thus ignored too.
+    tab) repeated until a non space character is found. Such a line is
+    considered to be a properly indented line of code. Blank lines and comments
+    line (starting with # or /* or * ) are ignored. Lines coming after a line
+    ending in '\' have higher chance of being not properly indented, and are
+    thus ignored too.
 
     Only the increment in indentation are fed in. Dedentation or maintaining
-    the same indentation is not taken into account when analysing a file. Increment
-    in indentation from zero indentation to some indentation is also ignored because
-    it's wrong in many cases (header file with many structures for example, do not always
-    obey the indentation of the rest of the code).
+    the same indentation is not taken into account when analysing a file.
+    Increment in indentation from zero indentation to some indentation is also
+    ignored because it's wrong in many cases (header file with many structures
+    for example, do not always obey the indentation of the rest of the code).
 
     Each line is analysed as:
     - SpaceOnly: indentation of more than 8 space
     - TabOnly: indentation of tab only
     - Mixed: indentation of tab, then less than 8 spaces
-    - BeginSpace: indentation of less than 8 space, that could be either a mixed indentation
-        or a pure space indentation.
+    - BeginSpace: indentation of less than 8 space, that could be either a
+      mixed indentation or a pure space indentation.
     - non-significant
 
-    Then two consecutive significant lines are then considered. The only valid combinations are:
+    Then two consecutive significant lines are then considered. The only valid
+    combinations are:
     - (NoIndent, BeginSpace)    => space or mixed
     - (NoIndent, Tab)           => tab
     - (BeginSpace, BeginSpace)  => space or mixed
@@ -120,8 +121,8 @@ class IndentFinder:
 
     The increment in number of spaces is then recorded.
 
-    At the end, the number of lines with space indentation, mixed space and tab indentation
-    are compared and a decision is made.
+    At the end, the number of lines with space indentation, mixed space and tab
+    indentation are compared and a decision is made.
 
     If no decision can be made, DEFAULT_RESULT is returned.
 
@@ -204,9 +205,11 @@ class IndentFinder:
         indent_part = mo.group(1)
         text_part = mo.group(2)
 
-        deepdbg('analyse_line_type: indent_part="%s" text_part="%s"' %
-               (indent_part.replace(' ', '.').replace('\t', '\\t').replace('\n', '\\n'),
-                text_part))
+        deepdbg(
+            'analyse_line_type: indent_part="%s" text_part="%s"' %
+            (indent_part.replace(' ', '.').replace('\t', '\\t').replace(
+                '\n', '\\n'),
+            text_part))
 
         if text_part[0] == '*':
             # continuation of a C/C++ comment, unlikely to be indented
@@ -252,8 +255,10 @@ class IndentFinder:
         self.previous_line_info = current_line_info
 
         if current_line_info is None or previous_line_info is None:
-            deepdbg('analyse_line_indentation: Not enough line info to analyse line: %s, %s' % (str(
-                previous_line_info), str(current_line_info)))
+            deepdbg(
+                'analyse_line_indentation: Not enough line info to analyse '
+                'line: %s, %s' % (str(
+                    previous_line_info), str(current_line_info)))
             return
 
         t = (previous_line_info[0], current_line_info[0])
@@ -320,7 +325,8 @@ class IndentFinder:
         """Analyse and return results.
 
         1. Space indented file
-           - lines indented with less than 8 space will fill mixed and space array
+           - lines indented with less than 8 space will fill mixed and space
+             array
            - lines indented with 8 space or more will fill only the space array
            - almost no lines indented with tab
 
@@ -378,7 +384,8 @@ class IndentFinder:
             nb = 0
             indent_value = None
             for i in range(8, 1, -1):
-                if self.lines['space%d' % i] > int(nb * 1.1):  # give a 10% threshold
+                # Give a 10% threshold.
+                if self.lines['space%d' % i] > int(nb * 1.1):
                     indent_value = i
                     nb = self.lines['space%d' % indent_value]
 
@@ -392,11 +399,13 @@ class IndentFinder:
             result = ('tab', DEFAULT_TAB_WIDTH)
 
         # Detect mixed files
-        elif max_line_mixed >= max_line_tab and max_line_mixed > max_line_space:
+        elif (max_line_mixed >= max_line_tab and
+              max_line_mixed > max_line_space):
             nb = 0
             indent_value = None
             for i in range(8, 1, -1):
-                if self.lines['mixed%d' % i] > int(nb * 1.1):  # give a 10% threshold
+                # Give a 10% threshold.
+                if self.lines['mixed%d' % i] > int(nb * 1.1):
                     indent_value = i
                     nb = self.lines['mixed%d' % indent_value]
 
@@ -429,7 +438,8 @@ class IndentFinder:
             #   => set tabstop to the number of spaces
             #   => expand tabs to spaces
             #   => set shiftwidth to the number of spaces
-            return "set sts=%d | set tabstop=%d | set expandtab | set shiftwidth=%d \" (%s %d)" % (n, n, n, indent_type, n)
+            return ('set sts=%d | set tabstop=%d | set expandtab | '
+                    'set shiftwidth=%d " (%s %d)' % (n, n, n, indent_type, n))
 
         elif indent_type == "tab":
             # tab:
@@ -437,7 +447,9 @@ class IndentFinder:
             #   => set tabstop to preferred value
             #   => set expandtab to false
             #   => set shiftwidth to tabstop
-            return "set sts=0 | set tabstop=%d | set noexpandtab | set shiftwidth=%d \" (%s)" % (DEFAULT_TAB_WIDTH, DEFAULT_TAB_WIDTH, indent_type)
+            return ('set sts=0 | set tabstop=%d | set noexpandtab | '
+                    'set shiftwidth=%d " (%s)' %
+                    (DEFAULT_TAB_WIDTH, DEFAULT_TAB_WIDTH, indent_type))
 
         if indent_type == 'mixed':
             tab_indent, space_indent = n
@@ -446,7 +458,9 @@ class IndentFinder:
             #   => set tabstop to tab_indent
             #   => set expandtab to false
             #   => set shiftwidth to space_indent
-            return "set sts=4 | set tabstop=%d | set noexpandtab | set shiftwidth=%d \" (%s %d)" % (tab_indent, space_indent, indent_type, space_indent)
+            return ('set sts=4 | set tabstop=%d | set noexpandtab | '
+                    'set shiftwidth=%d " (%s %d)'
+                    % (tab_indent, space_indent, indent_type, space_indent))
 
 
 def forcefully_read_lines(filename):
