@@ -32,7 +32,6 @@ version 1.4:
 
 version 1.31:
 
-- hum, previous released was rushed!
 - the --vim-output was not working. Fixed in this version
 
 version 1.3:

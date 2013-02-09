@@ -251,7 +251,7 @@ class IndentFinder:
         current_line_info = self.analyse_line_type(line)
         self.previous_line_info = current_line_info
 
-        if current_line_info == None or previous_line_info == None:
+        if current_line_info is None or previous_line_info is None:
             deepdbg('analyse_line_indentation: Not enough line info to analyse line: %s, %s' % (str(
                 previous_line_info), str(current_line_info)))
             return
@@ -382,7 +382,7 @@ class IndentFinder:
                     indent_value = i
                     nb = self.lines['space%d' % indent_value]
 
-            if indent_value == None:  # no lines
+            if indent_value is None:  # no lines
                 result = self.default_result
             else:
                 result = ('space', indent_value)
@@ -400,7 +400,7 @@ class IndentFinder:
                     indent_value = i
                     nb = self.lines['mixed%d' % indent_value]
 
-            if indent_value == None:  # no lines
+            if indent_value is None:  # no lines
                 result = self.default_result
             else:
                 result = ('mixed', (8, indent_value))
