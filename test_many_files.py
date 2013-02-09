@@ -1,4 +1,3 @@
-from __future__ import print_function
 #!/usr/bin/env python
 #
 # Indentation finder, by Philippe Fremy <phil at freehackers dot org>
@@ -8,11 +7,12 @@ from __future__ import print_function
 # a copy of the file LICENSE.txt along with this software.
 #
 
-
-import indent_finder
+from __future__ import print_function
 
 import glob
 import unittest
+
+import indent_finder
 
 TEST_DEFAULT_RESULT = ('', 0)
 

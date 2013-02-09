@@ -7,10 +7,9 @@
 # a copy of the file LICENSE.txt along with this software.
 #
 
+import unittest
 
 from indent_finder import *
-
-import unittest
 
 TEST_DEFAULT_RESULT = ('', 0)
 

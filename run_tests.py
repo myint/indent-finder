@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import unittest
+
 from test_indent_finder import *
 from test_many_files import *
 
