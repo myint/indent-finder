@@ -323,33 +323,33 @@ class IndentFinder:
            - lines indented with less than 8 space will fill mixed and space array
            - lines indented with 8 space or more will fill only the space array
            - almost no lines indented with tab
-        
+
         => more lines with space than lines with mixed
         => more a lot more lines with space than tab
-        
+
         2. Tab indented file
            - most lines will be tab only
            - very few lines as mixed
            - very few lines as space only
-        
+
         => a lot more lines with tab than lines with mixed
         => a lot more lines with tab than lines with space
-        
+
         3. Mixed tab/space indented file
            - some lines are tab-only (lines with exactly 8 step indentation)
            - some lines are space only (less than 8 space)
            - all other lines are mixed
-        
+
         If mixed is tab + 2 space indentation:
             - a lot more lines with mixed than with tab
         If mixed is tab + 4 space indentation
             - as many lines with mixed than with tab
-        
+
         If no lines exceed 8 space, there will be only lines with space
         and tab but no lines with mixed. Impossible to detect mixed indentation
         in this case, the file looks like it's actually indented as space only
         and will be detected so.
-        
+
         => same or more lines with mixed than lines with tab only
         => same or more lines with mixed than lines with space only
 
