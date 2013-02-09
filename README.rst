@@ -9,17 +9,18 @@ a copy of the file LICENSE.txt along with this software.
 
 To test me, type::
 
-    python run_tests.py
+    $ python run_tests.py
 
 To install, type::
 
-    python setup.py install
+    $ python setup.py install
 
 And append the contents of `indent_finder.vim` to your `.vimrc`.
 
 To use from command line::
 
     $ python -m indent_finder example.py
+    space 4
 
 See web page for more information:
 http://www.freehackers.org/Indent_Finder
