@@ -137,10 +137,13 @@ class IndentFinder:
     def parse_file(self, fname):
         self.clear()
         f = open(fname)
-        l = f.readline()
-        while(l):
-            self.analyse_line(l)
-            l = f.readline()
+        try:
+            line = f.readline()
+            while line:
+                self.analyse_line(line)
+                line = f.readline()
+        except UnicodeDecodeError:
+            pass
         f.close()
 
     def clear(self):

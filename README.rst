@@ -1,6 +1,10 @@
 Indentation Finder
 ==================
 
+.. image:: https://travis-ci.org/myint/IndentFinder.png?branch=master
+   :target: https://travis-ci.org/myint/IndentFinder
+   :alt: Build status
+
 by Philippe Fremy <phil at freehackers dot org>
 Copyright 2002-2010 Philippe Fremy
 
