@@ -14,5 +14,9 @@ setup(name="Indentation Finder",
       maintainer_email="phil at freehackers dot org",
       license="BSD license",
       url="http://www.freehackers.org/Indent_Finder",
-      py_modules=["indent_finder"]
-      )
+      classifiers=['Intended Audience :: Developers',
+                   'Environment :: Console',
+                   'Programming Language :: Python :: 2.6',
+                   'Programming Language :: Python :: 2.7',
+                   'Programming Language :: Python :: 3'],
+      py_modules=["indent_finder"])
