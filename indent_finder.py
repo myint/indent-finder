@@ -19,15 +19,13 @@ being 8 positions) and then spaces to do the indentation, unless you reach 8
 spaces which are replaced by a tab. This is the vim source file indentation
 for example. In my opinion, this is the worst possible style.
 
---vim-output: output suitable to use inside vim:
-set sts=0 | set tabstop=4 | set noexpandtab | set shiftwidth=4
-
 """
 
 from __future__ import print_function
 
-import sys
+import optparse
 import re
+import sys
 
 __version__ = '1.4'
 
@@ -482,38 +480,35 @@ def forcefully_read_lines(filename):
 
 
 def main():
-    VIM_OUTPUT = 0
+    parser = optparse.OptionParser(
+        usage=__doc__.strip(),
+        version='indent_finder: {}'.format(__version__))
 
-    file_list = []
-    for opt in sys.argv[1:]:
-        if opt == '--vim-output':
-            VIM_OUTPUT = 1
-        elif opt == '--verbose' or opt == '-v':
-            IndentFinder.VERBOSITY += 1
-        elif opt == '--version':
-            print('IndentFinder v%s' % VERSION)
-            return
-        elif opt[0] == '-':
-            print(__doc__.strip())
-            return
-        else:
-            file_list.append(opt)
+    parser.add_option('--vim-output', help='output suitable to use inside vim')
 
+    parser.add_option('-v', '--verbose', action='count', dest='verbose',
+                      default=0,
+                      help='print verbose messages; '
+                           'multiple -v result in more verbose messages')
+
+    options, args = parser.parse_args()
+
+    IndentFinder.VERBOSITY = options.verbose
     fi = IndentFinder()
 
-    one_file = (len(file_list) == 1)
+    one_file = (len(args) == 1)
 
-    for filename in file_list:
+    for filename in args:
         fi.parse_file(filename)
 
         if not one_file:
-            if VIM_OUTPUT:
+            if options.vim_output:
                 print('%s : %s' % (filename, fi.vim_output()))
             else:
                 print('%s : %s' % (filename, str(fi)))
 
     if one_file:
-        if VIM_OUTPUT:
+        if options.vim_output:
             sys.stdout.write(fi.vim_output())
         else:
             print(str(fi))
