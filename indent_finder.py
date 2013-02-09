@@ -1,5 +1,5 @@
 from __future__ import print_function
-# 
+#
 # Indentation finder, by Philippe Fremy <phil at freehackers dot org>
 # Copyright 2002-2008 Philippe Fremy
 #
@@ -11,11 +11,11 @@ import sys
 import re
 
 help = \
-"""Usage : %s [ --vim-output ] [ --verbose ] file1 file2 ... fileN
+    """Usage : %s [ --vim-output ] [ --verbose ] file1 file2 ... fileN
 
 Display indentation used in the list of files. Possible answers are (with X
 being the number of spaces used for indentation):
-space X   
+space X
 tab 8
 mixed tab X space Y
 
@@ -29,7 +29,7 @@ set sts=0 | set tabstop=4 | set noexpandtab | set shiftwidth=4
 
 """
 
-VERSION='1.4'
+VERSION = '1.4'
 
 ### Used when indentation is tab, to set tabstop in vim
 DEFAULT_TAB_WIDTH = 4
@@ -41,30 +41,42 @@ DEFAULT_TAB_WIDTH = 4
 # DEFAULT_RESULT = ('space', 8 )
 # DEFAULT_RESULT = ('tab', DEFAULT_TAB_WIDTH )
 
-DEFAULT_RESULT = ('space', 4 )
+DEFAULT_RESULT = ('space', 4)
 
-VERBOSE_QUIET   = 0
-VERBOSE_INFO    = 1
-VERBOSE_DEBUG   = 2
-VERBOSE_DEEP_DEBUG   = 3
+VERBOSE_QUIET = 0
+VERBOSE_INFO = 1
+VERBOSE_DEBUG = 2
+VERBOSE_DEEP_DEBUG = 3
 
 DEFAULT_VERBOSITY = VERBOSE_QUIET
 
 ###
+
+
 class LineType:
-    NoIndent        = 'NoIndent'
-    SpaceOnly       = 'SpaceOnly'
-    TabOnly         = 'TabOnly'
-    Mixed           = 'Mixed'
-    BeginSpace      = 'BeginSpace'
+    NoIndent = 'NoIndent'
+    SpaceOnly = 'SpaceOnly'
+    TabOnly = 'TabOnly'
+    Mixed = 'Mixed'
+    BeginSpace = 'BeginSpace'
 
-def info( s ): log( VERBOSE_INFO, s )
-def dbg( s ): log( VERBOSE_DEBUG, s )
-def deepdbg( s ): log( VERBOSE_DEEP_DEBUG, s )
 
-def log( level, s ):
+def info(s):
+    log(VERBOSE_INFO, s)
+
+
+def dbg(s):
+    log(VERBOSE_DEBUG, s)
+
+
+def deepdbg(s):
+    log(VERBOSE_DEEP_DEBUG, s)
+
+
+def log(level, s):
     if level <= IndentFinder.VERBOSITY:
         print(s)
+
 
 class IndentFinder:
     """
@@ -77,8 +89,8 @@ class IndentFinder:
     It scans each line of the entry file for a space character (white space or
     tab) repeated until a non space character is found. Such a line
     is considered to be a properly indented line of code. Blank lines and
-    comments line (starting with # or /* or * ) are ignored. Lines coming 
-    after a line ending in '\\' have higher chance of being not properly 
+    comments line (starting with # or /* or * ) are ignored. Lines coming
+    after a line ending in '\\' have higher chance of being not properly
     indented, and are thus ignored too.
 
     Only the increment in indentation are fed in. Dedentation or maintaining
@@ -122,52 +134,55 @@ class IndentFinder:
 
     VERBOSITY = DEFAULT_VERBOSITY
 
-    def parse_file( self, fname ):
+    def parse_file(self, fname):
         self.clear()
-        f = open( fname )
+        f = open(fname)
         l = f.readline()
-        while( l ):
-            self.analyse_line( l )
+        while(l):
+            self.analyse_line(l)
             l = f.readline()
         f.close()
 
-    def clear( self ):
+    def clear(self):
         self.lines = {}
-        for i in range(2,9): self.lines['space%d' % i] = 0
-        for i in range(2,9): self.lines['mixed%d' % i] = 0
+        for i in range(2, 9):
+            self.lines['space%d' % i] = 0
+        for i in range(2, 9):
+            self.lines['mixed%d' % i] = 0
         self.lines['tab'] = 0
 
         self.nb_processed_lines = 0
         self.nb_indent_hint = 0
-        self.indent_re  = re.compile( "^([ \t]+)([^ \t]+)" )
-        self.mixed_re  = re.compile(  "^(\t+)( +)$" )
+        self.indent_re = re.compile("^([ \t]+)([^ \t]+)")
+        self.mixed_re = re.compile("^(\t+)( +)$")
         self.skip_next_line = False
         self.previous_line_info = None
 
-    def analyse_line( self, line ):
+    def analyse_line(self, line):
         if line[-1:] == '\n':
             line = line[:-1]
-        deepdbg( 'analyse_line: "%s"' % line.replace(' ', '.' ).replace('\t','\\t') )
+        deepdbg('analyse_line: "%s"' % line.replace(' ', '.')
+                .replace('\t', '\\t'))
         self.nb_processed_lines += 1
 
         skip_current_line = self.skip_next_line
         self.skip_next_line = False
-        if line[-1:] == '\\': 
-            deepdbg( 'analyse_line: Ignoring next line!' )
+        if line[-1:] == '\\':
+            deepdbg('analyse_line: Ignoring next line!')
             # skip lines after lines ending in \
             self.skip_next_line = True
 
-        if skip_current_line: 
-            deepdbg( 'analyse_line: Ignoring current line!' )
+        if skip_current_line:
+            deepdbg('analyse_line: Ignoring current line!')
             return
 
-        ret = self.analyse_line_indentation( line )
+        ret = self.analyse_line_indentation(line)
         if ret:
             self.nb_indent_hint += 1
-        deepdbg( 'analyse_line: Result of line analysis: %s' % str(ret) )
+        deepdbg('analyse_line: Result of line analysis: %s' % str(ret))
         return ret
 
-    def analyse_line_type( self, line ):
+    def analyse_line_type(self, line):
         '''Analyse the type of line and return (LineType, <indentation part of
         the line>).
 
@@ -179,43 +194,44 @@ class IndentFinder:
         space_part = ''
 
         if len(line) > 0 and line[0] != ' ' and line[0] != '\t':
-            return (LineType.NoIndent, '') 
+            return (LineType.NoIndent, '')
 
-        mo = self.indent_re.match( line )
-        if not mo: 
-            deepdbg( 'analyse_line_type: line is not indented' )
+        mo = self.indent_re.match(line)
+        if not mo:
+            deepdbg('analyse_line_type: line is not indented')
             return None
 
         indent_part = mo.group(1)
         text_part = mo.group(2)
-            
-        deepdbg( 'analyse_line_type: indent_part="%s" text_part="%s"' % 
-            (indent_part.replace(' ', '.').replace('\t','\\t').replace('\n', '\\n' ),
-                text_part ) )
 
-        if text_part[0] == '*': 
-            # continuation of a C/C++ comment, unlikely to be indented correctly
+        deepdbg('analyse_line_type: indent_part="%s" text_part="%s"' %
+               (indent_part.replace(' ', '.').replace('\t', '\\t').replace('\n', '\\n'),
+                text_part))
+
+        if text_part[0] == '*':
+            # continuation of a C/C++ comment, unlikely to be indented
+            # correctly
             return None
 
-        if text_part[0:2] == '/*' or text_part[0] == '#': 
+        if text_part[0:2] == '/*' or text_part[0] == '#':
             # python, C/C++ comment, might not be indented correctly
             return None
 
         if '\t' in indent_part and ' ' in indent_part:
             # mixed mode
-            mo = self.mixed_re.match( indent_part )
+            mo = self.mixed_re.match(indent_part)
             if not mo:
                 # line is not composed of '\t\t\t    ', ignore it
                 return None
             mixed_mode = True
             tab_part = mo.group(1)
             space_part = mo.group(2)
-            
+
         if mixed_mode:
             if len(space_part) >= 8:
                 # this is not mixed mode, this is garbage !
                 return None
-            return (LineType.Mixed, tab_part, space_part )
+            return (LineType.Mixed, tab_part, space_part)
 
         if '\t' in indent_part:
             return (LineType.TabOnly, indent_part)
@@ -226,54 +242,56 @@ class IndentFinder:
                 return (LineType.BeginSpace, indent_part)
             else:
                 # this is really a line indented with spaces
-                return (LineType.SpaceOnly, indent_part )
+                return (LineType.SpaceOnly, indent_part)
 
         assert False, 'We should never get there !'
 
-    def analyse_line_indentation( self, line ):
+    def analyse_line_indentation(self, line):
         previous_line_info = self.previous_line_info
-        current_line_info = self.analyse_line_type( line )
+        current_line_info = self.analyse_line_type(line)
         self.previous_line_info = current_line_info
 
         if current_line_info == None or previous_line_info == None:
-            deepdbg('analyse_line_indentation: Not enough line info to analyse line: %s, %s' % (str(previous_line_info), str(current_line_info)))
-            return 
-        
+            deepdbg('analyse_line_indentation: Not enough line info to analyse line: %s, %s' % (str(
+                previous_line_info), str(current_line_info)))
+            return
+
         t = (previous_line_info[0], current_line_info[0])
-        deepdbg( 'analyse_line_indentation: Indent analysis: %s %s' % t )
+        deepdbg('analyse_line_indentation: Indent analysis: %s %s' % t)
         if (t == (LineType.TabOnly, LineType.TabOnly)
-            or t == (LineType.NoIndent, LineType.TabOnly) ):
-            if len(current_line_info[1]) - len(previous_line_info[1]) == 1 :
+                or t == (LineType.NoIndent, LineType.TabOnly)):
+            if len(current_line_info[1]) - len(previous_line_info[1]) == 1:
                 self.lines['tab'] += 1
                 return 'tab'
 
         elif (t == (LineType.SpaceOnly, LineType.SpaceOnly)
               or t == (LineType.BeginSpace, LineType.SpaceOnly)
-              or t == (LineType.NoIndent, LineType.SpaceOnly) ):
+              or t == (LineType.NoIndent, LineType.SpaceOnly)):
             nb_space = len(current_line_info[1]) - len(previous_line_info[1])
             if 1 < nb_space <= 8:
-                key = 'space%d' % nb_space 
+                key = 'space%d' % nb_space
                 self.lines[key] += 1
                 return key
 
         elif (t == (LineType.BeginSpace, LineType.BeginSpace)
-              or t == (LineType.NoIndent, LineType.BeginSpace) ):
+              or t == (LineType.NoIndent, LineType.BeginSpace)):
             nb_space = len(current_line_info[1]) - len(previous_line_info[1])
             if 1 < nb_space <= 8:
-                key1 = 'space%d' % nb_space 
-                key2 = 'mixed%d' % nb_space 
-                self.lines[ key1 ] += 1
-                self.lines[ key2 ] += 1
+                key1 = 'space%d' % nb_space
+                key2 = 'mixed%d' % nb_space
+                self.lines[key1] += 1
+                self.lines[key2] += 1
                 return key1
 
         elif t == (LineType.BeginSpace, LineType.TabOnly):
             # we assume that mixed indentation used 8 characters tabs
             if len(current_line_info[1]) == 1:
                 # more than one tab on the line --> not mixed mode !
-                nb_space = len(current_line_info[1])*8 - len(previous_line_info[1])
+                nb_space = len(
+                    current_line_info[1]) * 8 - len(previous_line_info[1])
                 if 1 < nb_space <= 8:
                     key = 'mixed%d' % nb_space
-                    self.lines[ key ] += 1
+                    self.lines[key] += 1
                     return key
 
         elif t == (LineType.TabOnly, LineType.Mixed):
@@ -282,37 +300,39 @@ class IndentFinder:
                 nb_space = len(space_part)
                 if 1 < nb_space <= 8:
                     key = 'mixed%d' % nb_space
-                    self.lines[ key ] += 1
+                    self.lines[key] += 1
                     return key
 
         elif t == (LineType.Mixed, LineType.TabOnly):
             tab_part, space_part = previous_line_info[1:3]
-            if len(tab_part)+1 == len(current_line_info[1]):
-                nb_space = 8-len(space_part)
+            if len(tab_part) + 1 == len(current_line_info[1]):
+                nb_space = 8 - len(space_part)
                 if 1 < nb_space <= 8:
                     key = 'mixed%d' % nb_space
-                    self.lines[ key ] += 1
+                    self.lines[key] += 1
                     return key
         else:
             pass
 
         return None
-        
-    def results( self ):
-        dbg( "Nb of scanned lines : %d" % self.nb_processed_lines )
-        dbg( "Nb of indent hint : %d" % self.nb_indent_hint )
-        dbg( "Collected data:" )
+
+    def results(self):
+        dbg("Nb of scanned lines : %d" % self.nb_processed_lines)
+        dbg("Nb of indent hint : %d" % self.nb_indent_hint)
+        dbg("Collected data:")
         for key in self.lines:
             if self.lines[key] > 0:
-                dbg( '%s: %d' % (key, self.lines[key] ) )
+                dbg('%s: %d' % (key, self.lines[key]))
 
-        max_line_space = max( [ self.lines['space%d'%i] for i in range(2,9) ] )
-        max_line_mixed = max( [ self.lines['mixed%d'%i] for i in range(2,9) ] )
+        max_line_space = max(
+            [self.lines['space%d' % i] for i in range(2, 9)])
+        max_line_mixed = max(
+            [self.lines['mixed%d' % i] for i in range(2, 9)])
         max_line_tab = self.lines['tab']
 
-        dbg( 'max_line_space: %d' % max_line_space )
-        dbg( 'max_line_mixed: %d' % max_line_mixed )
-        dbg( 'max_line_tab: %d' % max_line_tab )
+        dbg('max_line_space: %d' % max_line_space)
+        dbg('max_line_mixed: %d' % max_line_mixed)
+        dbg('max_line_tab: %d' % max_line_tab)
 
         ### Result analysis
         #
@@ -351,67 +371,65 @@ class IndentFinder:
         # => same or more lines with mixed than lines with space only
         #
 
-
         result = None
 
         # Detect space indented file
         if max_line_space >= max_line_mixed and max_line_space > max_line_tab:
             nb = 0
             indent_value = None
-            for i in range(8,1,-1):
-                if self.lines['space%d'%i] > int( nb * 1.1 ) : # give a 10% threshold
+            for i in range(8, 1, -1):
+                if self.lines['space%d' % i] > int(nb * 1.1):  # give a 10% threshold
                     indent_value = i
-                    nb = self.lines[ 'space%d' % indent_value ]
+                    nb = self.lines['space%d' % indent_value]
 
-            if indent_value == None: # no lines
+            if indent_value == None:  # no lines
                 result = self.default_result
             else:
-                result = ('space', indent_value )
+                result = ('space', indent_value)
 
         # Detect tab files
         elif max_line_tab > max_line_mixed and max_line_tab > max_line_space:
-            result = ('tab', DEFAULT_TAB_WIDTH )
+            result = ('tab', DEFAULT_TAB_WIDTH)
 
         # Detect mixed files
         elif max_line_mixed >= max_line_tab and max_line_mixed > max_line_space:
             nb = 0
             indent_value = None
-            for i in range(8,1,-1):
-                if self.lines['mixed%d'%i] > int( nb * 1.1 ) : # give a 10% threshold
+            for i in range(8, 1, -1):
+                if self.lines['mixed%d' % i] > int(nb * 1.1):  # give a 10% threshold
                     indent_value = i
-                    nb = self.lines[ 'mixed%d' % indent_value ]
+                    nb = self.lines['mixed%d' % indent_value]
 
-            if indent_value == None: # no lines
+            if indent_value == None:  # no lines
                 result = self.default_result
             else:
-                result = ('mixed', (8,indent_value) )
+                result = ('mixed', (8, indent_value))
 
         else:
             # not enough information to make a decision
             result = self.default_result
 
-        info( "Result: %s" % str( result ) )
+        info("Result: %s" % str(result))
         return result
 
-    def __str__ (self):
+    def __str__(self):
         itype, ival = self.results()
         if itype != 'mixed':
             return '%s %d' % (itype, ival)
         else:
             itab, ispace = ival
             return '%s tab %d space %d' % (itype, itab, ispace)
-        
 
-    def vim_output( self ):
+    def vim_output(self):
         result = self.results()
         indent_type, n = result
         if indent_type == "space":
-            # spaces: 
+            # spaces:
             #   => set sts to the number of spaces
             #   => set tabstop to the number of spaces
             #   => expand tabs to spaces
             #   => set shiftwidth to the number of spaces
-            return "set sts=%d | set tabstop=%d | set expandtab | set shiftwidth=%d \" (%s %d)" % (n,n,n,indent_type,n)
+            return "set sts=%d | set tabstop=%d | set expandtab | set shiftwidth=%d \" (%s %d)" % (n, n, n, indent_type, n)
 
         elif indent_type == "tab":
             # tab:
@@ -419,7 +437,7 @@ class IndentFinder:
             #   => set tabstop to preferred value
             #   => set expandtab to false
             #   => set shiftwidth to tabstop
-            return "set sts=0 | set tabstop=%d | set noexpandtab | set shiftwidth=%d \" (%s)" % (DEFAULT_TAB_WIDTH, DEFAULT_TAB_WIDTH, indent_type )
+            return "set sts=0 | set tabstop=%d | set noexpandtab | set shiftwidth=%d \" (%s)" % (DEFAULT_TAB_WIDTH, DEFAULT_TAB_WIDTH, indent_type)
 
         if indent_type == 'mixed':
             tab_indent, space_indent = n
@@ -428,8 +446,7 @@ class IndentFinder:
             #   => set tabstop to tab_indent
             #   => set expandtab to false
             #   => set shiftwidth to space_indent
-            return "set sts=4 | set tabstop=%d | set noexpandtab | set shiftwidth=%d \" (%s %d)" % (tab_indent, space_indent, indent_type, space_indent )
-
+            return "set sts=4 | set tabstop=%d | set noexpandtab | set shiftwidth=%d \" (%s %d)" % (tab_indent, space_indent, indent_type, space_indent)
 
 
 def main():
@@ -437,25 +454,25 @@ def main():
 
     file_list = []
     for opt in sys.argv[1:]:
-        if opt == "--vim-output": 
+        if opt == "--vim-output":
             VIM_OUTPUT = 1
-        elif opt == "--verbose" or opt == '-v': 
+        elif opt == "--verbose" or opt == '-v':
             IndentFinder.VERBOSITY += 1
-        elif opt == "--version": 
+        elif opt == "--version":
             print('IndentFinder v%s' % VERSION)
             return
-        elif opt[0] == "-": 
+        elif opt[0] == "-":
             print(help % sys.argv[0])
             return
         else:
-            file_list.append( opt )
+            file_list.append(opt)
 
     fi = IndentFinder()
 
     one_file = (len(file_list) == 1)
 
     for fname in file_list:
-        fi.parse_file( fname )
+        fi.parse_file(fname)
 
         if not one_file:
             if VIM_OUTPUT:
@@ -465,7 +482,7 @@ def main():
 
     if one_file:
         if VIM_OUTPUT:
-            sys.stdout.write( fi.vim_output() )
+            sys.stdout.write(fi.vim_output())
         else:
             print(str(fi))
 
