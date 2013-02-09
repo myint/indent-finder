@@ -7,17 +7,22 @@
 # a copy of the file LICENSE.txt along with this software.
 #
 
+import os
+import subprocess
 import unittest
 
-from indent_finder import *
+import indent_finder
+
 
 TEST_DEFAULT_RESULT = ('', 0)
 
+ROOT_PATH = os.path.dirname(__file__)
 
-class Test_find_indent(unittest.TestCase):
+
+class Tests(unittest.TestCase):
 
     def test_indent_re(self):
-        ifi = IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
 
         mo = ifi.indent_re.match('')
         self.assertEquals(mo, None)
@@ -37,7 +42,7 @@ class Test_find_indent(unittest.TestCase):
         self.assertEquals(mo.groups(), ('\t', 'x'))
 
     def test_mixed_re(self):
-        ifi = IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
 
         mo = ifi.mixed_re.match('')
         self.assertEquals(mo, None)
@@ -53,28 +58,29 @@ class Test_find_indent(unittest.TestCase):
         self.assertEquals(mo.group(2), '  ')
 
     def test_analyse_line_type(self):
-        ifi = IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
 
         for n in range(1, 8):
             self.assertEquals(ifi.analyse_line_type(' ' * n + 'coucou'),
-                             (LineType.BeginSpace, ' ' * n))
+                             (indent_finder.LineType.BeginSpace, ' ' * n))
         for n in range(8, 10):
             self.assertEquals(ifi.analyse_line_type(' ' * n + 'coucou'),
-                             (LineType.SpaceOnly, ' ' * n))
+                             (indent_finder.LineType.SpaceOnly, ' ' * n))
 
         self.assertEquals(ifi.analyse_line_type('\t' + 'coucou'),
-                         (LineType.TabOnly, '\t'))
+                         (indent_finder.LineType.TabOnly, '\t'))
 
         self.assertEquals(ifi.analyse_line_type('\t\t' + 'coucou'),
-                         (LineType.TabOnly, '\t\t'))
+                         (indent_finder.LineType.TabOnly, '\t\t'))
 
         for i in range(1, 8):
             self.assertEquals(
                 ifi.analyse_line_type('\t\t' + ' ' * i + 'coucou'),
-                (LineType.Mixed, '\t\t', ' ' * i))
+                (indent_finder.LineType.Mixed, '\t\t', ' ' * i))
 
         self.assertEquals(
-            ifi.analyse_line_type('coucou'), (LineType.NoIndent, ''))
+            ifi.analyse_line_type('coucou'),
+            (indent_finder.LineType.NoIndent, ''))
 
         self.assertEquals(ifi.analyse_line_type(''), None)
         self.assertEquals(
@@ -85,7 +91,7 @@ class Test_find_indent(unittest.TestCase):
         self.assertEquals(ifi.analyse_line_type('  \t\t' + 'coucou'), None)
 
     def test_ignored_lines_patterns(self):
-        ifi = IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
 
         self.assertEquals(ifi.analyse_line_type(''), None)
         self.assertEquals(ifi.analyse_line_type('  '), None)
@@ -96,7 +102,7 @@ class Test_find_indent(unittest.TestCase):
         self.assertEquals(ifi.analyse_line_type('   * coucou'), None)
 
     def test_skip_next_line(self):
-        ifi = IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
 
         self.assertEquals(ifi.nb_processed_lines, 0)
         self.assertEquals(ifi.nb_indent_hint, 0)
@@ -110,7 +116,7 @@ class Test_find_indent(unittest.TestCase):
         self.assertEquals(ifi.nb_indent_hint, 1)
 
     def test_analyse_line_tab(self):
-        ifi = IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
         result = ifi.analyse_line("")
         result = ifi.analyse_line("hop")
         result = ifi.analyse_line("\thop")
@@ -136,7 +142,7 @@ class Test_find_indent(unittest.TestCase):
         self.assertEquals(ifi.nb_indent_hint, 2)
 
     def test_analyse_line_space2(self):
-        ifi = IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
         result = ifi.analyse_line('')
         result = ifi.analyse_line('hop')
         result = ifi.analyse_line('  hop')
@@ -166,7 +172,7 @@ class Test_find_indent(unittest.TestCase):
         self.assertEquals(ifi.lines['space4'], 1)
 
     def test_analyse_line_space4(self):
-        ifi = IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
         result = ifi.analyse_line('')
         result = ifi.analyse_line('hop')
         result = ifi.analyse_line('    hop')
@@ -197,7 +203,7 @@ class Test_find_indent(unittest.TestCase):
         self.assertEquals(ifi.nb_indent_hint, 3)
 
     def test_analyse_line_space8(self):
-        ifi = IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
         idt = '        '
         result = ifi.analyse_line('')
         result = ifi.analyse_line('hop')
@@ -228,7 +234,7 @@ class Test_find_indent(unittest.TestCase):
         self.assertEquals(ifi.nb_indent_hint, 2)
 
     def test_analyse_line_mixed(self):
-        ifi = IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
         result = ifi.analyse_line('')
         result = ifi.analyse_line('hop')
         result = ifi.analyse_line('    hop')
@@ -273,9 +279,31 @@ class Test_find_indent(unittest.TestCase):
 
         self.assertEquals(ifi.nb_indent_hint, 4)
 
+    def test_system(self):
+        process = subprocess.Popen(
+            ['python', '-m', 'indent_finder',
+             os.path.join(ROOT_PATH, 'test_files', 'tab', 'pretty-make.py')],
+            stdout=subprocess.PIPE)
+
+        self.assertEqual('tab 4\n', process.communicate()[0].decode('utf-8'))
+        self.assertEqual(0, process.returncode)
+
+    def test_system_with_vim_output(self):
+        process = subprocess.Popen(
+            ['python', '-m', 'indent_finder', '--vim-output',
+             os.path.join(ROOT_PATH, 'test_files', 'tab', 'pretty-make.py')],
+            stdout=subprocess.PIPE)
+
+        self.assertEqual(
+            'set sts=0 | set tabstop=4 | set noexpandtab | '
+            'set shiftwidth=4 " (tab)',
+            process.communicate()[0].decode('utf-8'))
+
+        self.assertEqual(0, process.returncode)
+
 
 def main():
-    unittest.main(testRunner=unittest.TextTestRunner(verbosity=2))
+    unittest.main(testRunner=unittest.TextTestRunner())
 
 if __name__ == "__main__":
     main()

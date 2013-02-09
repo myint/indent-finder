@@ -483,7 +483,8 @@ def main():
         usage=__doc__.strip(),
         version='indent_finder: {}'.format(__version__))
 
-    parser.add_option('--vim-output', help='output suitable to use inside vim')
+    parser.add_option('--vim-output', action='store_true',
+                      help='output suitable to use inside vim')
 
     parser.add_option('-v', '--verbose', action='count', dest='verbose',
                       default=0,
