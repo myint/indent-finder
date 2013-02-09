@@ -1,4 +1,3 @@
-from __future__ import print_function
 #
 # Indentation finder, by Philippe Fremy <phil at freehackers dot org>
 # Copyright 2002-2008 Philippe Fremy
@@ -7,11 +6,7 @@ from __future__ import print_function
 # a copy of the file LICENSE.txt along with this software.
 #
 
-import sys
-import re
-
-help = \
-    """Usage : %s [ --vim-output ] [ --verbose ] file1 file2 ... fileN
+"""Usage : indent_finder.py [ --vim-output ] [ --verbose ] file1 file2 ... fileN
 
 Display indentation used in the list of files. Possible answers are (with X
 being the number of spaces used for indentation):
@@ -28,6 +23,11 @@ for example. In my opinion, this is the worst possible style.
 set sts=0 | set tabstop=4 | set noexpandtab | set shiftwidth=4
 
 """
+
+from __future__ import print_function
+
+import sys
+import re
 
 VERSION = '1.4'
 
@@ -462,7 +462,7 @@ def main():
             print('IndentFinder v%s' % VERSION)
             return
         elif opt[0] == "-":
-            print(help % sys.argv[0])
+            print(__doc__.strip())
             return
         else:
             file_list.append(opt)
