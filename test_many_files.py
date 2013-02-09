@@ -11,10 +11,8 @@ from __future__ import print_function
 
 import indent_finder
 
-import os
 import glob
 import unittest
-from pprint import pprint
 
 TEST_DEFAULT_RESULT = ('', 0)
 

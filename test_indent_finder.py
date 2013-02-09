@@ -10,10 +10,7 @@
 
 from indent_finder import *
 
-import os
-import glob
 import unittest
-from pprint import pprint
 
 TEST_DEFAULT_RESULT = ('', 0)
 
