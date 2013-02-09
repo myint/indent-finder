@@ -152,8 +152,8 @@ class IndentFinder:
 
         self.nb_processed_lines = 0
         self.nb_indent_hint = 0
-        self.indent_re = re.compile("^([ \t]+)([^ \t]+)")
-        self.mixed_re = re.compile("^(\t+)( +)$")
+        self.indent_re = re.compile('^([ \t]+)([^ \t]+)')
+        self.mixed_re = re.compile('^(\t+)( +)$')
         self.skip_next_line = False
         self.previous_line_info = None
 
@@ -360,9 +360,9 @@ class IndentFinder:
         => same or more lines with mixed than lines with space only
 
         """
-        dbg("Nb of scanned lines : %d" % self.nb_processed_lines)
-        dbg("Nb of indent hint : %d" % self.nb_indent_hint)
-        dbg("Collected data:")
+        dbg('Nb of scanned lines : %d' % self.nb_processed_lines)
+        dbg('Nb of indent hint : %d' % self.nb_indent_hint)
+        dbg('Collected data:')
         for key in self.lines:
             if self.lines[key] > 0:
                 dbg('%s: %d' % (key, self.lines[key]))
@@ -418,7 +418,7 @@ class IndentFinder:
             # not enough information to make a decision
             result = self.default_result
 
-        info("Result: %s" % str(result))
+        info('Result: %s' % str(result))
         return result
 
     def __str__(self):
@@ -432,7 +432,7 @@ class IndentFinder:
     def vim_output(self):
         result = self.results()
         indent_type, n = result
-        if indent_type == "space":
+        if indent_type == 'space':
             # spaces:
             #   => set sts to the number of spaces
             #   => set tabstop to the number of spaces
@@ -441,7 +441,7 @@ class IndentFinder:
             return ('set sts=%d | set tabstop=%d | set expandtab | '
                     'set shiftwidth=%d " (%s %d)' % (n, n, n, indent_type, n))
 
-        elif indent_type == "tab":
+        elif indent_type == 'tab':
             # tab:
             #   => set sts to 0
             #   => set tabstop to preferred value
@@ -486,14 +486,14 @@ def main():
 
     file_list = []
     for opt in sys.argv[1:]:
-        if opt == "--vim-output":
+        if opt == '--vim-output':
             VIM_OUTPUT = 1
-        elif opt == "--verbose" or opt == '-v':
+        elif opt == '--verbose' or opt == '-v':
             IndentFinder.VERBOSITY += 1
-        elif opt == "--version":
+        elif opt == '--version':
             print('IndentFinder v%s' % VERSION)
             return
-        elif opt[0] == "-":
+        elif opt[0] == '-':
             print(__doc__.strip())
             return
         else:
@@ -508,9 +508,9 @@ def main():
 
         if not one_file:
             if VIM_OUTPUT:
-                print("%s : %s" % (filename, fi.vim_output()))
+                print('%s : %s' % (filename, fi.vim_output()))
             else:
-                print("%s : %s" % (filename, str(fi)))
+                print('%s : %s' % (filename, str(fi)))
 
     if one_file:
         if VIM_OUTPUT:
@@ -519,5 +519,5 @@ def main():
             print(str(fi))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
