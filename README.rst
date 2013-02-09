@@ -17,7 +17,7 @@ To test me, type::
 
 To install, type::
 
-    $ pip install git+https://github.com/myint/IndentFinder
+    $ pip install git+https://github.com/myint/indent-finder.git
 
 And append the contents of `indent_finder.vim`_ to your ``.vimrc``.
 
