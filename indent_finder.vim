@@ -1,7 +1,7 @@
 
 augroup IndentFinder
     au! IndentFinder
-    au BufRead *.* let b:indent_finder_result = system('python -c "import indent_finder; indent_finder.main()" --vim-output "' . expand('%') . '"' )
+    au BufRead *.* let b:indent_finder_result = system('python -m indent_finder --vim-output "' . expand('%') . '"' )
     au BufRead *.* execute b:indent_finder_result
 
     " Uncomment the next line to see which indentation is applied on all your loaded files
