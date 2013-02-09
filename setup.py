@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Installer for Indent Finder."""
+"""Installer for indent-finder."""
 
 from distutils import core
 

@@ -1,5 +1,5 @@
-Indentation Finder
-==================
+indent-finder
+=============
 
 .. image:: https://travis-ci.org/myint/indent-finder.png?branch=master
    :target: https://travis-ci.org/myint/indent-finder
