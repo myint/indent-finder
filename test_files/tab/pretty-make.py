@@ -1,3 +1,4 @@
+from __future__ import print_function
 #!/usr/bin/env python
 #
 # Make beautifier
@@ -116,16 +117,16 @@ def processLine( words ):
 	if HIDE_LOPT == 0: formatOutput( libopt, "lopt" )
 	if HIDE_FOPT == 0: formatOutput( codegenopt, "fopt"  )
 	if HIDE_MOPT == 0: formatOutput( archopt, "mopt"  )
-	print
+	print()
 
 def outputline( line, colorcode ):
 	global USE_COLOR, colordict
 
 	if len( line ) == 0 : return
 	if USE_COLOR: sys.stdout.write(colordict[ colorcode ])
-	print line,
+	print(line, end=' ')
 	if USE_COLOR: sys.stdout.write( colordict[ "normal" ] )
-	print 
+	print() 
 
 def formatOutput( words, colorcode, noindent = 0 ):
 	global USE_COLOR, colordict
@@ -141,21 +142,21 @@ def formatOutput( words, colorcode, noindent = 0 ):
 
 	for w in words:
 		if len(current) + len(w) + 1 >= SCREENWIDTH:
-			print current,
+			print(current, end=' ')
 			if USE_COLOR: sys.stdout.write(colordict[ colorcode ])
-			print
+			print()
 			current = intro
 		if len(current) > 1: current = current + " "
 		current = current + w
 	else:
-		if len(current) > len( intro ): print current, 
+		if len(current) > len( intro ): print(current, end=' ') 
 
 	if USE_COLOR: sys.stdout.write( colordict[ "normal" ] )
-	print
+	print()
 
 
 def usage():
-	print "Make output beautifier. By default, run make and beautify its output.\nOptions are:"
+	print("Make output beautifier. By default, run make and beautify its output.\nOptions are:")
 	for o in opt_list:
 		so, lo, have_arg, desc = o
 		s = ''
@@ -163,9 +164,9 @@ def usage():
 		if len(so) and len(lo): s = s + ","
 		if len(lo): s = s + lo
 		if have_arg: s = s + "=<arg>"
-		print "  ", s, "\t", desc
+		print("  ", s, "\t", desc)
 
-	print "All unrecognised options are passed to make."
+	print("All unrecognised options are passed to make.")
 
 
 opt_list = [	
@@ -268,10 +269,10 @@ def main():
 			try:
 				SCREENWIDTH = int(a)
 			except ValueError:
-				print "Bad screen width argument : '%s'" % a
+				print("Bad screen width argument : '%s'" % a)
 				sys.exit(1)
 			if SCREENWIDTH <= 5:
-				print "Too small screen width : ", a
+				print("Too small screen width : ", a)
 				sys.exit(1)
 		elif o == "--makeprog":
 			MAKEPROG = [ a ]
@@ -324,7 +325,7 @@ def main():
 
 		if words[0] == "/bin/sh":
 			if HIDE_LIBTOOL == 1:
-				print "<libtool line>"
+				print("<libtool line>")
 			else:
 				processLine( words )
 		elif   words[0] in COMPILER_NAME: 
@@ -338,7 +339,7 @@ def main():
 		elif words[0].find("/dcopidl2cpp") != -1:
 			outputline( l, "dcopidl2cpp" )
 		else:
-			print l
+			print(l)
 
 		sys.stdout.flush()
 		l = f.readline()

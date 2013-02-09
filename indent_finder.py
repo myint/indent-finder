@@ -1,3 +1,4 @@
+from __future__ import print_function
 # 
 # Indentation finder, by Philippe Fremy <phil at freehackers dot org>
 # Copyright 2002-2008 Philippe Fremy
@@ -63,7 +64,7 @@ def deepdbg( s ): log( VERBOSE_DEEP_DEBUG, s )
 
 def log( level, s ):
     if level <= IndentFinder.VERBOSITY:
-        print s
+        print(s)
 
 class IndentFinder:
     """
@@ -441,10 +442,10 @@ def main():
         elif opt == "--verbose" or opt == '-v': 
             IndentFinder.VERBOSITY += 1
         elif opt == "--version": 
-            print 'IndentFinder v%s' % VERSION
+            print('IndentFinder v%s' % VERSION)
             return
         elif opt[0] == "-": 
-            print help % sys.argv[0]
+            print(help % sys.argv[0])
             return
         else:
             file_list.append( opt )
@@ -458,15 +459,15 @@ def main():
 
         if not one_file:
             if VIM_OUTPUT:
-                print "%s : %s" % (fname, fi.vim_output())
+                print("%s : %s" % (fname, fi.vim_output()))
             else:
-                print "%s : %s" % (fname, str(fi))
+                print("%s : %s" % (fname, str(fi)))
 
     if one_file:
         if VIM_OUTPUT:
             sys.stdout.write( fi.vim_output() )
         else:
-            print str(fi)
+            print(str(fi))
 
 
 if __name__ == "__main__":
