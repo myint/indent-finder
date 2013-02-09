@@ -7,4 +7,3 @@ augroup IndentFinder
     " Uncomment the next line to see which indentation is applied on all your loaded files
     " au BufRead *.* echo "Indent Finder: " . b:indent_finder_result
 augroup End
-

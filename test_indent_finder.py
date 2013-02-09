@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# 
+#
 # Indentation finder, by Philippe Fremy <phil at freehackers dot org>
 # Copyright 2002,2005 Philippe Fremy
 #
@@ -20,7 +20,7 @@ class Test_find_indent( unittest.TestCase ):
 
     def test_indent_re( self ):
         ifi = IndentFinder( TEST_DEFAULT_RESULT )
-   
+
         mo = ifi.indent_re.match( '' )
         self.assertEquals( mo, None )
         mo = ifi.indent_re.match( '\t' )
@@ -40,7 +40,7 @@ class Test_find_indent( unittest.TestCase ):
 
     def test_mixed_re( self ):
         ifi = IndentFinder( TEST_DEFAULT_RESULT )
-   
+
         mo = ifi.mixed_re.match( '' )
         self.assertEquals( mo, None )
         mo = ifi.mixed_re.match( '\t' )
@@ -59,20 +59,20 @@ class Test_find_indent( unittest.TestCase ):
         ifi = IndentFinder( TEST_DEFAULT_RESULT )
 
         for n in range(1,8):
-            self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ), 
+            self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ),
                                 (LineType.BeginSpace, ' ' * n ) )
         for n in range(8,10):
-            self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ), 
+            self.assertEquals( ifi.analyse_line_type( ' ' * n + 'coucou' ),
                                 (LineType.SpaceOnly, ' ' * n ) )
 
-        self.assertEquals( ifi.analyse_line_type( '\t' + 'coucou' ), 
+        self.assertEquals( ifi.analyse_line_type( '\t' + 'coucou' ),
                             (LineType.TabOnly, '\t' ) )
 
-        self.assertEquals( ifi.analyse_line_type( '\t\t' + 'coucou' ), 
+        self.assertEquals( ifi.analyse_line_type( '\t\t' + 'coucou' ),
                             (LineType.TabOnly, '\t\t' ) )
 
         for i in range(1,8):
-            self.assertEquals( ifi.analyse_line_type( '\t\t' + ' '*i + 'coucou' ), 
+            self.assertEquals( ifi.analyse_line_type( '\t\t' + ' '*i + 'coucou' ),
                                 (LineType.Mixed, '\t\t', ' '*i ) )
 
         self.assertEquals( ifi.analyse_line_type( 'coucou' ), (LineType.NoIndent, '') )
@@ -197,7 +197,7 @@ class Test_find_indent( unittest.TestCase ):
 
     def test_analyse_line_space8( self ):
         ifi = IndentFinder( TEST_DEFAULT_RESULT )
-        idt = '        '  
+        idt = '        '
         result = ifi.analyse_line( '' )
         result = ifi.analyse_line( 'hop' )
         result = ifi.analyse_line( idt+'hop' )
