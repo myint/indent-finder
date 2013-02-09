@@ -79,10 +79,10 @@ def log(level, s):
 
 
 class IndentFinder:
-    """
-    IndentFinder reports the indentation used in a source file. Its approach
-    is not tied to any particular language. It was tested successfully with
-    python, C, C++ and Java code.
+    """IndentFinder reports the indentation used in a source file.
+
+    Its approach is not tied to any particular language. It was tested
+    successfully with python, C, C++ and Java code.
 
     How does it work ?
 
@@ -126,6 +126,7 @@ class IndentFinder:
 
     If IndentFinder ever reports wrong indentation, send me immediately a
     mail, if possible with the offending file.
+
     """
 
     def __init__(self, default_result=DEFAULT_RESULT):
@@ -186,12 +187,14 @@ class IndentFinder:
         return ret
 
     def analyse_line_type(self, line):
-        '''Analyse the type of line and return (LineType, <indentation part of
-        the line>).
+        """Analyse the type of line.
+
+        Return (LineType, <indentation part of the line>).
 
         The function will reject improperly formatted lines (mixture of tab
         and space for example) and comment lines.
-        '''
+
+        """
         mixed_mode = False
         tab_part = ''
         space_part = ''
