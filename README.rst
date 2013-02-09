@@ -13,7 +13,7 @@ a copy of the file LICENSE.txt along with this software.
 
 Install::
 
-    $ pip install git+https://github.com/myint/indent-finder.git
+    $ pip install git+https://github.com/myint/plugin/indent-finder.git
 
 And copy `indent_finder.vim`_ to your ``.vim/plugin`` directory.
 
