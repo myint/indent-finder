@@ -1,2 +1,2 @@
 include README.rst
-include plugin
+include plugin/indent_finder.vim
