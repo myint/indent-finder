@@ -1,8 +1,8 @@
 Indentation Finder
 ==================
 
-.. image:: https://travis-ci.org/myint/IndentFinder.png?branch=master
-   :target: https://travis-ci.org/myint/IndentFinder
+.. image:: https://travis-ci.org/myint/indent-finder.png?branch=master
+   :target: https://travis-ci.org/myint/indent-finder
    :alt: Build status
 
 by Philippe Fremy <phil at freehackers dot org>
@@ -21,7 +21,7 @@ To install, type::
 
 And append the contents of `indent_finder.vim`_ to your ``.vimrc``.
 
-.. _`indent_finder.vim`: https://raw.github.com/myint/IndentFinder/master/indent_finder.vim
+.. _`indent_finder.vim`: https://raw.github.com/myint/indent-finder/master/indent_finder.vim
 
 To use from command line::
 
