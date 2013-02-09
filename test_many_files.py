@@ -5,7 +5,6 @@
 #
 # This program is distributed under the BSD license. You should have received
 # a copy of the file LICENSE.txt along with this software.
-#
 
 from __future__ import print_function
 
