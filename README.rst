@@ -15,15 +15,18 @@ To install, type::
 
     $ pip install git+https://github.com/myint/IndentFinder
 
-And append the contents of `indent_finder.vim` to your `.vimrc`.
+And append the contents of `indent_finder.vim`_ to your ``.vimrc``.
+
+.. _`indent_finder.vim`: https://raw.github.com/myint/IndentFinder/master/indent_finder.vim
 
 To use from command line::
 
     $ python -m indent_finder example.py
     space 4
 
-See web page for more information:
-http://www.freehackers.org/Indent_Finder
+See `web page`_ for more information.
+
+.. _`web page`: http://www.freehackers.org/Indent_Finder
 
 History:
 --------
