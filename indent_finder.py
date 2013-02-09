@@ -481,7 +481,7 @@ def forcefully_read_lines(filename):
 def main():
     parser = optparse.OptionParser(
         usage=__doc__.strip(),
-        version='indent_finder: {}'.format(__version__))
+        version='indent_finder: %s' % (__version__,))
 
     parser.add_option('--vim-output', action='store_true',
                       help='output suitable to use inside vim')

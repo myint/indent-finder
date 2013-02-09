@@ -19,188 +19,188 @@ TEST_DEFAULT_RESULT = ('', 0)
 ROOT_PATH = os.path.dirname(__file__)
 
 
-class Tests(unittest.TestCase):
+class TestIndentFinder(unittest.TestCase):
 
     def test_indent_re(self):
         ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
 
         mo = ifi.indent_re.match('')
-        self.assertEquals(mo, None)
+        self.assertEqual(mo, None)
         mo = ifi.indent_re.match('\t')
-        self.assertEquals(mo, None)
+        self.assertEqual(mo, None)
         mo = ifi.indent_re.match('  ')
-        self.assertEquals(mo, None)
+        self.assertEqual(mo, None)
         mo = ifi.indent_re.match('\t  ')
-        self.assertEquals(mo, None)
+        self.assertEqual(mo, None)
 
         mo = ifi.indent_re.match(' x')
-        self.assertNotEquals(mo, None)
-        self.assertEquals(mo.groups(), (' ', 'x'))
+        self.assertNotEqual(mo, None)
+        self.assertEqual(mo.groups(), (' ', 'x'))
 
         mo = ifi.indent_re.match('\tx')
-        self.assertNotEquals(mo, None)
-        self.assertEquals(mo.groups(), ('\t', 'x'))
+        self.assertNotEqual(mo, None)
+        self.assertEqual(mo.groups(), ('\t', 'x'))
 
     def test_mixed_re(self):
         ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
 
         mo = ifi.mixed_re.match('')
-        self.assertEquals(mo, None)
+        self.assertEqual(mo, None)
         mo = ifi.mixed_re.match('\t')
-        self.assertEquals(mo, None)
+        self.assertEqual(mo, None)
         mo = ifi.mixed_re.match(' ')
-        self.assertEquals(mo, None)
+        self.assertEqual(mo, None)
         mo = ifi.mixed_re.match(' \t')
-        self.assertEquals(mo, None)
+        self.assertEqual(mo, None)
 
         mo = ifi.mixed_re.match('\t\t  ')
-        self.assertEquals(mo.group(1), '\t\t')
-        self.assertEquals(mo.group(2), '  ')
+        self.assertEqual(mo.group(1), '\t\t')
+        self.assertEqual(mo.group(2), '  ')
 
     def test_analyse_line_type(self):
         ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
 
         for n in range(1, 8):
-            self.assertEquals(ifi.analyse_line_type(' ' * n + 'coucou'),
+            self.assertEqual(ifi.analyse_line_type(' ' * n + 'coucou'),
                              (indent_finder.LineType.BeginSpace, ' ' * n))
         for n in range(8, 10):
-            self.assertEquals(ifi.analyse_line_type(' ' * n + 'coucou'),
+            self.assertEqual(ifi.analyse_line_type(' ' * n + 'coucou'),
                              (indent_finder.LineType.SpaceOnly, ' ' * n))
 
-        self.assertEquals(ifi.analyse_line_type('\t' + 'coucou'),
+        self.assertEqual(ifi.analyse_line_type('\t' + 'coucou'),
                          (indent_finder.LineType.TabOnly, '\t'))
 
-        self.assertEquals(ifi.analyse_line_type('\t\t' + 'coucou'),
+        self.assertEqual(ifi.analyse_line_type('\t\t' + 'coucou'),
                          (indent_finder.LineType.TabOnly, '\t\t'))
 
         for i in range(1, 8):
-            self.assertEquals(
+            self.assertEqual(
                 ifi.analyse_line_type('\t\t' + ' ' * i + 'coucou'),
                 (indent_finder.LineType.Mixed, '\t\t', ' ' * i))
 
-        self.assertEquals(
+        self.assertEqual(
             ifi.analyse_line_type('coucou'),
             (indent_finder.LineType.NoIndent, ''))
 
-        self.assertEquals(ifi.analyse_line_type(''), None)
-        self.assertEquals(
+        self.assertEqual(ifi.analyse_line_type(''), None)
+        self.assertEqual(
             ifi.analyse_line_type('\t\t' + ' ' * 8 + 'coucou'), None)
-        self.assertEquals(
+        self.assertEqual(
             ifi.analyse_line_type('\t\t' + ' ' * 9 + 'coucou'), None)
-        self.assertEquals(ifi.analyse_line_type('\t\t \t' + 'coucou'), None)
-        self.assertEquals(ifi.analyse_line_type('  \t\t' + 'coucou'), None)
+        self.assertEqual(ifi.analyse_line_type('\t\t \t' + 'coucou'), None)
+        self.assertEqual(ifi.analyse_line_type('  \t\t' + 'coucou'), None)
 
     def test_ignored_lines_patterns(self):
         ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
 
-        self.assertEquals(ifi.analyse_line_type(''), None)
-        self.assertEquals(ifi.analyse_line_type('  '), None)
-        self.assertEquals(ifi.analyse_line_type('\t'), None)
-        self.assertEquals(ifi.analyse_line_type('\t  '), None)
-        self.assertEquals(ifi.analyse_line_type('  # coucou'), None)
-        self.assertEquals(ifi.analyse_line_type('  /* coucou'), None)
-        self.assertEquals(ifi.analyse_line_type('   * coucou'), None)
+        self.assertEqual(ifi.analyse_line_type(''), None)
+        self.assertEqual(ifi.analyse_line_type('  '), None)
+        self.assertEqual(ifi.analyse_line_type('\t'), None)
+        self.assertEqual(ifi.analyse_line_type('\t  '), None)
+        self.assertEqual(ifi.analyse_line_type('  # coucou'), None)
+        self.assertEqual(ifi.analyse_line_type('  /* coucou'), None)
+        self.assertEqual(ifi.analyse_line_type('   * coucou'), None)
 
     def test_skip_next_line(self):
         ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
 
-        self.assertEquals(ifi.nb_processed_lines, 0)
-        self.assertEquals(ifi.nb_indent_hint, 0)
-        self.assertEquals(ifi.analyse_line('  coucou \n'), None)
-        self.assertEquals(ifi.skip_next_line, False)
-        self.assertEquals(ifi.analyse_line('    coucou \\\n'), 'space2')
-        self.assertEquals(ifi.skip_next_line, True)
-        self.assertEquals(ifi.analyse_line('      coucou\n'), None)
-        self.assertEquals(ifi.skip_next_line, False)
-        self.assertEquals(ifi.nb_processed_lines, 3)
-        self.assertEquals(ifi.nb_indent_hint, 1)
+        self.assertEqual(ifi.nb_processed_lines, 0)
+        self.assertEqual(ifi.nb_indent_hint, 0)
+        self.assertEqual(ifi.analyse_line('  coucou \n'), None)
+        self.assertEqual(ifi.skip_next_line, False)
+        self.assertEqual(ifi.analyse_line('    coucou \\\n'), 'space2')
+        self.assertEqual(ifi.skip_next_line, True)
+        self.assertEqual(ifi.analyse_line('      coucou\n'), None)
+        self.assertEqual(ifi.skip_next_line, False)
+        self.assertEqual(ifi.nb_processed_lines, 3)
+        self.assertEqual(ifi.nb_indent_hint, 1)
 
     def test_analyse_line_tab(self):
         ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
         result = ifi.analyse_line("")
         result = ifi.analyse_line("hop")
         result = ifi.analyse_line("\thop")
-        self.assertEquals(ifi.lines['tab'], 1)
-        self.assertEquals(ifi.nb_indent_hint, 1)
+        self.assertEqual(ifi.lines['tab'], 1)
+        self.assertEqual(ifi.nb_indent_hint, 1)
 
         result = ifi.analyse_line("\t\thop")
-        self.assertEquals(result, 'tab')
-        self.assertEquals(ifi.lines['tab'], 2)
-        self.assertEquals(ifi.nb_indent_hint, 2)
+        self.assertEqual(result, 'tab')
+        self.assertEqual(ifi.lines['tab'], 2)
+        self.assertEqual(ifi.nb_indent_hint, 2)
 
         result = ifi.analyse_line("\t\thop")
-        self.assertEquals(result, None)
-        self.assertEquals(ifi.lines['tab'], 2)
+        self.assertEqual(result, None)
+        self.assertEqual(ifi.lines['tab'], 2)
 
         result = ifi.analyse_line("\thop")
-        self.assertEquals(result, None)
-        self.assertEquals(ifi.lines['tab'], 2)
+        self.assertEqual(result, None)
+        self.assertEqual(ifi.lines['tab'], 2)
 
         result = ifi.analyse_line("\t\t\thop")
-        self.assertEquals(result, None)
-        self.assertEquals(ifi.lines['tab'], 2)
-        self.assertEquals(ifi.nb_indent_hint, 2)
+        self.assertEqual(result, None)
+        self.assertEqual(ifi.lines['tab'], 2)
+        self.assertEqual(ifi.nb_indent_hint, 2)
 
     def test_analyse_line_space2(self):
         ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
         result = ifi.analyse_line('')
         result = ifi.analyse_line('hop')
         result = ifi.analyse_line('  hop')
-        self.assertEquals(ifi.nb_indent_hint, 1)
-        self.assertEquals(ifi.lines['space2'], 1)
+        self.assertEqual(ifi.nb_indent_hint, 1)
+        self.assertEqual(ifi.lines['space2'], 1)
 
         # indent
         result = ifi.analyse_line('    hop')
-        self.assertEquals(result, 'space2')
-        self.assertEquals(ifi.lines['space2'], 2)
-        self.assertEquals(ifi.nb_indent_hint, 2)
+        self.assertEqual(result, 'space2')
+        self.assertEqual(ifi.lines['space2'], 2)
+        self.assertEqual(ifi.nb_indent_hint, 2)
 
         # same
         result = ifi.analyse_line('    hop')
-        self.assertEquals(result, None)
-        self.assertEquals(ifi.nb_indent_hint, 2)
+        self.assertEqual(result, None)
+        self.assertEqual(ifi.nb_indent_hint, 2)
 
         # dedent
         result = ifi.analyse_line("  hop")
-        self.assertEquals(result, None)
-        self.assertEquals(ifi.nb_indent_hint, 2)
+        self.assertEqual(result, None)
+        self.assertEqual(ifi.nb_indent_hint, 2)
 
         # big indentation
         result = ifi.analyse_line("      hop")
-        self.assertEquals(result, 'space4')
-        self.assertEquals(ifi.lines['space2'], 2)
-        self.assertEquals(ifi.lines['space4'], 1)
+        self.assertEqual(result, 'space4')
+        self.assertEqual(ifi.lines['space2'], 2)
+        self.assertEqual(ifi.lines['space4'], 1)
 
     def test_analyse_line_space4(self):
         ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
         result = ifi.analyse_line('')
         result = ifi.analyse_line('hop')
         result = ifi.analyse_line('    hop')
-        self.assertEquals(ifi.nb_indent_hint, 1)
-        self.assertEquals(ifi.lines['space4'], 1)
+        self.assertEqual(ifi.nb_indent_hint, 1)
+        self.assertEqual(ifi.lines['space4'], 1)
 
         # indent
         result = ifi.analyse_line('        hop')
-        self.assertEquals(result, 'space4')
-        self.assertEquals(ifi.lines['space4'], 2)
-        self.assertEquals(ifi.nb_indent_hint, 2)
+        self.assertEqual(result, 'space4')
+        self.assertEqual(ifi.lines['space4'], 2)
+        self.assertEqual(ifi.nb_indent_hint, 2)
 
         # same
         result = ifi.analyse_line('        hop')
-        self.assertEquals(result, None)
-        self.assertEquals(ifi.nb_indent_hint, 2)
+        self.assertEqual(result, None)
+        self.assertEqual(ifi.nb_indent_hint, 2)
 
         # dedent
         result = ifi.analyse_line('    hop')
-        self.assertEquals(result, None)
-        self.assertEquals(ifi.nb_indent_hint, 2)
+        self.assertEqual(result, None)
+        self.assertEqual(ifi.nb_indent_hint, 2)
 
         # big indentation
         result = ifi.analyse_line('            hop')
-        self.assertEquals(result, 'space8')
-        self.assertEquals(ifi.lines['space4'], 2)
-        self.assertEquals(ifi.lines['space8'], 1)
-        self.assertEquals(ifi.nb_indent_hint, 3)
+        self.assertEqual(result, 'space8')
+        self.assertEqual(ifi.lines['space4'], 2)
+        self.assertEqual(ifi.lines['space8'], 1)
+        self.assertEqual(ifi.nb_indent_hint, 3)
 
     def test_analyse_line_space8(self):
         ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
@@ -208,76 +208,76 @@ class Tests(unittest.TestCase):
         result = ifi.analyse_line('')
         result = ifi.analyse_line('hop')
         result = ifi.analyse_line(idt + 'hop')
-        self.assertEquals(ifi.lines['space8'], 1)
-        self.assertEquals(ifi.nb_indent_hint, 1)
+        self.assertEqual(ifi.lines['space8'], 1)
+        self.assertEqual(ifi.nb_indent_hint, 1)
 
         # indent
         result = ifi.analyse_line(idt * 2 + 'hop')
-        self.assertEquals(result, 'space8')
-        self.assertEquals(ifi.lines['space8'], 2)
-        self.assertEquals(ifi.nb_indent_hint, 2)
+        self.assertEqual(result, 'space8')
+        self.assertEqual(ifi.lines['space8'], 2)
+        self.assertEqual(ifi.nb_indent_hint, 2)
 
         # same
         result = ifi.analyse_line(idt * 2 + 'hop')
-        self.assertEquals(result, None)
-        self.assertEquals(ifi.nb_indent_hint, 2)
+        self.assertEqual(result, None)
+        self.assertEqual(ifi.nb_indent_hint, 2)
 
         # dedent
         result = ifi.analyse_line(idt + 'hop')
-        self.assertEquals(result, None)
-        self.assertEquals(ifi.nb_indent_hint, 2)
+        self.assertEqual(result, None)
+        self.assertEqual(ifi.nb_indent_hint, 2)
 
         # big indentation is ignored
         result = ifi.analyse_line(idt * 3 + 'hop')
-        self.assertEquals(result, None)
-        self.assertEquals(ifi.lines['space8'], 2)
-        self.assertEquals(ifi.nb_indent_hint, 2)
+        self.assertEqual(result, None)
+        self.assertEqual(ifi.lines['space8'], 2)
+        self.assertEqual(ifi.nb_indent_hint, 2)
 
     def test_analyse_line_mixed(self):
         ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
         result = ifi.analyse_line('')
         result = ifi.analyse_line('hop')
         result = ifi.analyse_line('    hop')
-        self.assertEquals(ifi.nb_indent_hint, 1)
-        self.assertEquals(result, 'space4')
-        self.assertEquals(ifi.lines['mixed4'], 1)
-        self.assertEquals(ifi.lines['space4'], 1)
+        self.assertEqual(ifi.nb_indent_hint, 1)
+        self.assertEqual(result, 'space4')
+        self.assertEqual(ifi.lines['mixed4'], 1)
+        self.assertEqual(ifi.lines['space4'], 1)
 
         # indent
         result = ifi.analyse_line('\thop')
-        self.assertEquals(result, 'mixed4')
-        self.assertEquals(ifi.lines['mixed4'], 2)
-        self.assertEquals(ifi.nb_indent_hint, 2)
+        self.assertEqual(result, 'mixed4')
+        self.assertEqual(ifi.lines['mixed4'], 2)
+        self.assertEqual(ifi.nb_indent_hint, 2)
 
         result = ifi.analyse_line('\t    hop')
-        self.assertEquals(result, 'mixed4')
-        self.assertEquals(ifi.lines['mixed4'], 3)
-        self.assertEquals(ifi.nb_indent_hint, 3)
+        self.assertEqual(result, 'mixed4')
+        self.assertEqual(ifi.lines['mixed4'], 3)
+        self.assertEqual(ifi.nb_indent_hint, 3)
 
         result = ifi.analyse_line('\t\thop')
-        self.assertEquals(result, 'mixed4')
-        self.assertEquals(ifi.lines['mixed4'], 4)
-        self.assertEquals(ifi.nb_indent_hint, 4)
+        self.assertEqual(result, 'mixed4')
+        self.assertEqual(ifi.lines['mixed4'], 4)
+        self.assertEqual(ifi.nb_indent_hint, 4)
 
         # same
         result = ifi.analyse_line('\t\thop')
-        self.assertEquals(result, None)
-        self.assertEquals(ifi.nb_indent_hint, 4)
+        self.assertEqual(result, None)
+        self.assertEqual(ifi.nb_indent_hint, 4)
 
         # dedent
         result = ifi.analyse_line('\t    hop')
-        self.assertEquals(result, None)
+        self.assertEqual(result, None)
         result = ifi.analyse_line('\thop')
-        self.assertEquals(result, None)
-        self.assertEquals(ifi.nb_indent_hint, 4)
+        self.assertEqual(result, None)
+        self.assertEqual(ifi.nb_indent_hint, 4)
 
         # big indentation
         result = ifi.analyse_line('\t\t    hop')
-        self.assertEquals(result, None)
+        self.assertEqual(result, None)
         result = ifi.analyse_line('\t\t\t    hop')
-        self.assertEquals(result, None)
+        self.assertEqual(result, None)
 
-        self.assertEquals(ifi.nb_indent_hint, 4)
+        self.assertEqual(ifi.nb_indent_hint, 4)
 
     def test_system(self):
         process = subprocess.Popen(
@@ -302,8 +302,5 @@ class Tests(unittest.TestCase):
         self.assertEqual(0, process.returncode)
 
 
-def main():
-    unittest.main(testRunner=unittest.TextTestRunner())
-
 if __name__ == "__main__":
-    main()
+    unittest.main(testRunner=unittest.TextTestRunner())
