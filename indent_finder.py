@@ -79,7 +79,8 @@ def log(level, s):
 
 
 class IndentFinder:
-    """IndentFinder reports the indentation used in a source file.
+
+    r"""IndentFinder reports the indentation used in a source file.
 
     Its approach is not tied to any particular language. It was tested
     successfully with python, C, C++ and Java code.
@@ -90,7 +91,7 @@ class IndentFinder:
     tab) repeated until a non space character is found. Such a line
     is considered to be a properly indented line of code. Blank lines and
     comments line (starting with # or /* or * ) are ignored. Lines coming
-    after a line ending in '\\' have higher chance of being not properly
+    after a line ending in '\' have higher chance of being not properly
     indented, and are thus ignored too.
 
     Only the increment in indentation are fed in. Dedentation or maintaining
@@ -135,17 +136,10 @@ class IndentFinder:
 
     VERBOSITY = DEFAULT_VERBOSITY
 
-    def parse_file(self, fname):
+    def parse_file(self, filename):
         self.clear()
-        f = open(fname)
-        try:
-            line = f.readline()
-            while line:
-                self.analyse_line(line)
-                line = f.readline()
-        except UnicodeDecodeError:
-            pass
-        f.close()
+        for line in forcefully_read_lines(filename):
+            self.analyse_line(line)
 
     def clear(self):
         self.lines = {}
@@ -323,6 +317,43 @@ class IndentFinder:
         return None
 
     def results(self):
+        """Analyse and return results.
+
+        1. Space indented file
+           - lines indented with less than 8 space will fill mixed and space array
+           - lines indented with 8 space or more will fill only the space array
+           - almost no lines indented with tab
+        
+        => more lines with space than lines with mixed
+        => more a lot more lines with space than tab
+        
+        2. Tab indented file
+           - most lines will be tab only
+           - very few lines as mixed
+           - very few lines as space only
+        
+        => a lot more lines with tab than lines with mixed
+        => a lot more lines with tab than lines with space
+        
+        3. Mixed tab/space indented file
+           - some lines are tab-only (lines with exactly 8 step indentation)
+           - some lines are space only (less than 8 space)
+           - all other lines are mixed
+        
+        If mixed is tab + 2 space indentation:
+            - a lot more lines with mixed than with tab
+        If mixed is tab + 4 space indentation
+            - as many lines with mixed than with tab
+        
+        If no lines exceed 8 space, there will be only lines with space
+        and tab but no lines with mixed. Impossible to detect mixed indentation
+        in this case, the file looks like it's actually indented as space only
+        and will be detected so.
+        
+        => same or more lines with mixed than lines with tab only
+        => same or more lines with mixed than lines with space only
+
+        """
         dbg("Nb of scanned lines : %d" % self.nb_processed_lines)
         dbg("Nb of indent hint : %d" % self.nb_indent_hint)
         dbg("Collected data:")
@@ -339,43 +370,6 @@ class IndentFinder:
         dbg('max_line_space: %d' % max_line_space)
         dbg('max_line_mixed: %d' % max_line_mixed)
         dbg('max_line_tab: %d' % max_line_tab)
-
-        ### Result analysis
-        #
-        # 1. Space indented file
-        #    - lines indented with less than 8 space will fill mixed and space array
-        #    - lines indented with 8 space or more will fill only the space array
-        #    - almost no lines indented with tab
-        #
-        # => more lines with space than lines with mixed
-        # => more a lot more lines with space than tab
-        #
-        # 2. Tab indented file
-        #    - most lines will be tab only
-        #    - very few lines as mixed
-        #    - very few lines as space only
-        #
-        # => a lot more lines with tab than lines with mixed
-        # => a lot more lines with tab than lines with space
-        #
-        # 3. Mixed tab/space indented file
-        #    - some lines are tab-only (lines with exactly 8 step indentation)
-        #    - some lines are space only (less than 8 space)
-        #    - all other lines are mixed
-        #
-        # If mixed is tab + 2 space indentation:
-        #     - a lot more lines with mixed than with tab
-        # If mixed is tab + 4 space indentation
-        #     - as many lines with mixed than with tab
-        #
-        # If no lines exceed 8 space, there will be only lines with space
-        # and tab but no lines with mixed. Impossible to detect mixed indentation
-        # in this case, the file looks like it's actually indented as space only
-        # and will be detected so.
-        #
-        # => same or more lines with mixed than lines with tab only
-        # => same or more lines with mixed than lines with space only
-        #
 
         result = None
 
@@ -455,6 +449,24 @@ class IndentFinder:
             return "set sts=4 | set tabstop=%d | set noexpandtab | set shiftwidth=%d \" (%s %d)" % (tab_indent, space_indent, indent_type, space_indent)
 
 
+def forcefully_read_lines(filename):
+    """Return lines from file.
+
+    Ignore UnicodeDecodeErrors.
+
+    """
+    with open(filename) as f:
+        line = None
+        while line is None or line:
+            # Line will only be '' on reaching the end.
+            try:
+                line = f.readline()
+            except UnicodeDecodeError:
+                continue
+
+            yield line
+
+
 def main():
     VIM_OUTPUT = 0
 
@@ -477,14 +489,14 @@ def main():
 
     one_file = (len(file_list) == 1)
 
-    for fname in file_list:
-        fi.parse_file(fname)
+    for filename in file_list:
+        fi.parse_file(filename)
 
         if not one_file:
             if VIM_OUTPUT:
-                print("%s : %s" % (fname, fi.vim_output()))
+                print("%s : %s" % (filename, fi.vim_output()))
             else:
-                print("%s : %s" % (fname, str(fi)))
+                print("%s : %s" % (filename, str(fi)))
 
     if one_file:
         if VIM_OUTPUT:
