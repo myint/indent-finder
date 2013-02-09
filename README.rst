@@ -17,6 +17,10 @@ To install, type::
 
 And append the contents of `indent_finder.vim` to your `.vimrc`.
 
+To use from command line::
+
+    $ python -m indent_finder example.py
+
 See web page for more information:
 http://www.freehackers.org/Indent_Finder
 
