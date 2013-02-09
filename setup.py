@@ -8,7 +8,7 @@ import indent_finder
 
 with open('README.rst') as readme:
     core.setup(
-        name='indentation-finder',
+        name='indent-finder',
         version=indent_finder.__version__,
         description='Finds of check the indentation used in programming '
                     'source files',
