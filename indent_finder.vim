@@ -1,4 +1,3 @@
-
 augroup IndentFinder
     au! IndentFinder
     au BufRead *.* let b:indent_finder_result = system('python -m indent_finder --vim-output "' . expand('%') . '"' )
