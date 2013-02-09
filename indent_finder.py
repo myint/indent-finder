@@ -27,18 +27,20 @@ import optparse
 import re
 import sys
 
+
 __version__ = '1.4'
 
-### Used when indentation is tab, to set tabstop in vim
+# Used when indentation is tab, to set tabstop in vim.
 DEFAULT_TAB_WIDTH = 4
 
-### default values for files where indentation is not meaningful (empty files)
-# possible values:
-# DEFAULT_RESULT = ('space', 4 )
-# DEFAULT_RESULT = ('space', 2 )
-# DEFAULT_RESULT = ('space', 8 )
-# DEFAULT_RESULT = ('tab', DEFAULT_TAB_WIDTH )
-
+# Default values for files where indentation is not meaningful (empty files).
+#
+# Possible values:
+#
+#     ('space', 4 )
+#     ('space', 2 )
+#     ('space', 8 )
+#     ('tab', DEFAULT_TAB_WIDTH )
 DEFAULT_RESULT = ('space', 4)
 
 VERBOSE_QUIET = 0
@@ -47,8 +49,6 @@ VERBOSE_DEBUG = 2
 VERBOSE_DEEP_DEBUG = 3
 
 DEFAULT_VERBOSITY = VERBOSE_QUIET
-
-###
 
 
 class LineType:
@@ -237,15 +237,14 @@ class IndentFinder:
         if '\t' in indent_part:
             return (LineType.TabOnly, indent_part)
 
-        if ' ' in indent_part:
-            if len(indent_part) < 8:
-                # this could be mixed mode too
-                return (LineType.BeginSpace, indent_part)
-            else:
-                # this is really a line indented with spaces
-                return (LineType.SpaceOnly, indent_part)
+        assert ' ' in indent_part
 
-        assert False, 'We should never get there !'
+        if len(indent_part) < 8:
+            # this could be mixed mode too
+            return (LineType.BeginSpace, indent_part)
+        else:
+            # this is really a line indented with spaces
+            return (LineType.SpaceOnly, indent_part)
 
     def analyse_line_indentation(self, line):
         previous_line_info = self.previous_line_info
@@ -515,4 +514,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
