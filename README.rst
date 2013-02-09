@@ -13,7 +13,7 @@ To test me, type::
 
 To install, type::
 
-    $ python setup.py install
+    $ pip install git+https://github.com/myint/IndentFinder
 
 And append the contents of `indent_finder.vim` to your `.vimrc`.
 
