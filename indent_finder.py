@@ -38,7 +38,7 @@ INDENT_RE = re.compile('^([ \t]+)([^ \t]+)')
 MIXED_RE = re.compile('^(\t+)( +)$')
 
 
-def parse_file(finder, filename):
+def parse_file(finder, filename, default_result=DEFAULT_RESULT):
     is_python = filename.endswith('.py')
 
     finder.clear()
@@ -50,9 +50,9 @@ def parse_file(finder, filename):
             found_python_indent = True
 
     if is_python and not found_python_indent:
-        return finder.default_result
+        return default_result
 
-    return results(finder)
+    return results(finder, default_result)
 
 
 class LineType:
@@ -116,11 +116,10 @@ class IndentFinder:
 
     """
 
-    def __init__(self, default_result=DEFAULT_RESULT):
+    def __init__(self):
         self.skip_next_line = False
         self.previous_line_info = None
         self.lines = {}
-        self.default_result = default_result
 
         self.clear()
 
@@ -219,7 +218,7 @@ class IndentFinder:
         return None
 
 
-def results(finder):
+def results(finder, default_result=DEFAULT_RESULT):
     """Return analysis results.
 
     1. Space indented file
@@ -277,7 +276,7 @@ def results(finder):
                 nb = finder.lines['space%d' % indent_value]
 
         if indent_value is None:  # no lines
-            result = finder.default_result
+            result = default_result
         else:
             result = ('space', indent_value)
 
@@ -297,13 +296,13 @@ def results(finder):
                 nb = finder.lines['mixed%d' % indent_value]
 
         if indent_value is None:  # no lines
-            result = finder.default_result
+            result = default_result
         else:
             result = ('mixed', (8, indent_value))
 
     else:
         # not enough information to make a decision
-        result = finder.default_result
+        result = default_result
 
     return result
 

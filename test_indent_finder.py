@@ -93,7 +93,7 @@ class TestIndentFinder(unittest.TestCase):
         self.assertEqual(indent_finder.analyse_line_type('   * coucou'), None)
 
     def test_skip_next_line(self):
-        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder()
 
         self.assertEqual(ifi.analyse_line('  coucou \n'), None)
         self.assertEqual(ifi.skip_next_line, False)
@@ -103,7 +103,7 @@ class TestIndentFinder(unittest.TestCase):
         self.assertEqual(ifi.skip_next_line, False)
 
     def test_analyse_line_tab(self):
-        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder()
         result = ifi.analyse_line("")
         result = ifi.analyse_line("hop")
         result = ifi.analyse_line("\thop")
@@ -126,7 +126,7 @@ class TestIndentFinder(unittest.TestCase):
         self.assertEqual(ifi.lines['tab'], 2)
 
     def test_analyse_line_space2(self):
-        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder()
         result = ifi.analyse_line('')
         result = ifi.analyse_line('hop')
         result = ifi.analyse_line('  hop')
@@ -152,7 +152,7 @@ class TestIndentFinder(unittest.TestCase):
         self.assertEqual(ifi.lines['space4'], 1)
 
     def test_analyse_line_space4(self):
-        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder()
         result = ifi.analyse_line('')
         result = ifi.analyse_line('hop')
         result = ifi.analyse_line('    hop')
@@ -178,7 +178,7 @@ class TestIndentFinder(unittest.TestCase):
         self.assertEqual(ifi.lines['space8'], 1)
 
     def test_analyse_line_space8(self):
-        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder()
         idt = '        '
         result = ifi.analyse_line('')
         result = ifi.analyse_line('hop')
@@ -204,7 +204,7 @@ class TestIndentFinder(unittest.TestCase):
         self.assertEqual(ifi.lines['space8'], 2)
 
     def test_analyse_line_mixed(self):
-        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
+        ifi = indent_finder.IndentFinder()
         result = ifi.analyse_line('')
         result = ifi.analyse_line('hop')
         result = ifi.analyse_line('    hop')
