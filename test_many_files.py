@@ -14,7 +14,7 @@ import unittest
 import indent_finder
 
 
-TEST_DEFAULT_RESULT = ('', 0)
+TEST_DEFAULT_RESULT = ('space', 0)
 
 
 class TestManyFiles(unittest.TestCase):
@@ -65,6 +65,15 @@ class TestManyFiles(unittest.TestCase):
             self.check_file(f, 'mixed tab 8 space 4',
                             'set sts=4 | set tabstop=8 | set noexpandtab | '
                             'set shiftwidth=4 " (mixed 4)')
+
+    def test_file_default(self):
+        for f in glob.glob('test_files/default/*'):
+            self.check_file(
+                f,
+                'space {default}'.format(default=TEST_DEFAULT_RESULT[1]),
+                'set sts={default} | set tabstop={default} | '
+                'set expandtab | set shiftwidth={default} '
+                '" (space {default})'.format(default=TEST_DEFAULT_RESULT[1]))
 
 
 if __name__ == "__main__":

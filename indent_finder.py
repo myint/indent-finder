@@ -39,9 +39,19 @@ MIXED_RE = re.compile('^(\t+)( +)$')
 
 
 def parse_file(finder, filename):
+    is_python = filename.endswith('.py')
+
     finder.clear()
+    found_python_indent = False
     for line in forcefully_read_lines(filename):
         finder.analyse_line(line)
+
+        if is_python and line.rstrip().endswith(':'):
+            found_python_indent = True
+
+    if is_python and not found_python_indent:
+        return finder.default_result
+
     return results(finder)
 
 
