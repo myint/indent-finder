@@ -351,38 +351,38 @@ class IndentFinder:
             itab, ispace = ival
             return '%s tab %d space %d' % (itype, itab, ispace)
 
-    def vim_output(self):
-        result = self.results()
-        indent_type, n = result
-        if indent_type == 'space':
-            # spaces:
-            #   => set sts to the number of spaces
-            #   => set tabstop to the number of spaces
-            #   => expand tabs to spaces
-            #   => set shiftwidth to the number of spaces
-            return ('set sts=%d | set tabstop=%d | set expandtab | '
-                    'set shiftwidth=%d " (%s %d)' % (n, n, n, indent_type, n))
 
-        elif indent_type == 'tab':
-            # tab:
-            #   => set sts to 0
-            #   => set tabstop to preferred value
-            #   => set expandtab to false
-            #   => set shiftwidth to tabstop
-            return ('set sts=0 | set tabstop=%d | set noexpandtab | '
-                    'set shiftwidth=%d " (%s)' %
-                    (DEFAULT_TAB_WIDTH, DEFAULT_TAB_WIDTH, indent_type))
+def vim_output(results):
+    (indent_type, n) = results
+    if indent_type == 'space':
+        # spaces:
+        #   => set sts to the number of spaces
+        #   => set tabstop to the number of spaces
+        #   => expand tabs to spaces
+        #   => set shiftwidth to the number of spaces
+        return ('set sts=%d | set tabstop=%d | set expandtab | '
+                'set shiftwidth=%d " (%s %d)' % (n, n, n, indent_type, n))
 
-        if indent_type == 'mixed':
-            tab_indent, space_indent = n
-            # tab:
-            #   => set sts to 0
-            #   => set tabstop to tab_indent
-            #   => set expandtab to false
-            #   => set shiftwidth to space_indent
-            return ('set sts=4 | set tabstop=%d | set noexpandtab | '
-                    'set shiftwidth=%d " (%s %d)'
-                    % (tab_indent, space_indent, indent_type, space_indent))
+    elif indent_type == 'tab':
+        # tab:
+        #   => set sts to 0
+        #   => set tabstop to preferred value
+        #   => set expandtab to false
+        #   => set shiftwidth to tabstop
+        return ('set sts=0 | set tabstop=%d | set noexpandtab | '
+                'set shiftwidth=%d " (%s)' %
+                (DEFAULT_TAB_WIDTH, DEFAULT_TAB_WIDTH, indent_type))
+
+    if indent_type == 'mixed':
+        tab_indent, space_indent = n
+        # tab:
+        #   => set sts to 0
+        #   => set tabstop to tab_indent
+        #   => set expandtab to false
+        #   => set shiftwidth to space_indent
+        return ('set sts=4 | set tabstop=%d | set noexpandtab | '
+                'set shiftwidth=%d " (%s %d)'
+                % (tab_indent, space_indent, indent_type, space_indent))
 
 
 def forcefully_read_lines(filename):
@@ -496,13 +496,13 @@ def main():
 
         if not one_file:
             if options.vim_output:
-                print('%s : %s' % (filename, fi.vim_output()))
+                print('%s : %s' % (filename, vim_output(fi.results())))
             else:
                 print('%s : %s' % (filename, str(fi)))
 
     if one_file:
         if options.vim_output:
-            sys.stdout.write(fi.vim_output())
+            sys.stdout.write(vim_output(fi.results()))
         else:
             print(str(fi))
 

@@ -25,7 +25,8 @@ class TestManyFiles(unittest.TestCase):
         ifi.parse_file(fname)
         res = str(ifi)
         self.assertEqual(res, result)
-        self.assertEqual(expected_vim_result, ifi.vim_output())
+        self.assertEqual(expected_vim_result,
+                         indent_finder.vim_output(ifi.results()))
 
     def test_file_space4(self):
         l = []
