@@ -42,7 +42,7 @@ def parse_file(finder, filename):
     finder.clear()
     for line in forcefully_read_lines(filename):
         finder.analyse_line(line)
-    return finder.results()
+    return results(finder)
 
 
 class LineType:
@@ -208,97 +208,98 @@ class IndentFinder:
 
         return None
 
-    def results(self):
-        """Analyse and return results.
 
-        1. Space indented file
-           - lines indented with less than 8 space will fill mixed and space
-             array
-           - lines indented with 8 space or more will fill only the space array
-           - almost no lines indented with tab
+def results(finder):
+    """Return analysis results.
 
-        => more lines with space than lines with mixed
-        => more a lot more lines with space than tab
+    1. Space indented file
+       - lines indented with less than 8 space will fill mixed and space
+         array
+       - lines indented with 8 space or more will fill only the space array
+       - almost no lines indented with tab
 
-        2. Tab indented file
-           - most lines will be tab only
-           - very few lines as mixed
-           - very few lines as space only
+    => more lines with space than lines with mixed
+    => more a lot more lines with space than tab
 
-        => a lot more lines with tab than lines with mixed
-        => a lot more lines with tab than lines with space
+    2. Tab indented file
+       - most lines will be tab only
+       - very few lines as mixed
+       - very few lines as space only
 
-        3. Mixed tab/space indented file
-           - some lines are tab-only (lines with exactly 8 step indentation)
-           - some lines are space only (less than 8 space)
-           - all other lines are mixed
+    => a lot more lines with tab than lines with mixed
+    => a lot more lines with tab than lines with space
 
-        If mixed is tab + 2 space indentation:
-            - a lot more lines with mixed than with tab
-        If mixed is tab + 4 space indentation
-            - as many lines with mixed than with tab
+    3. Mixed tab/space indented file
+       - some lines are tab-only (lines with exactly 8 step indentation)
+       - some lines are space only (less than 8 space)
+       - all other lines are mixed
 
-        If no lines exceed 8 space, there will be only lines with space
-        and tab but no lines with mixed. Impossible to detect mixed indentation
-        in this case, the file looks like it's actually indented as space only
-        and will be detected so.
+    If mixed is tab + 2 space indentation:
+        - a lot more lines with mixed than with tab
+    If mixed is tab + 4 space indentation
+        - as many lines with mixed than with tab
 
-        => same or more lines with mixed than lines with tab only
-        => same or more lines with mixed than lines with space only
+    If no lines exceed 8 space, there will be only lines with space
+    and tab but no lines with mixed. Impossible to detect mixed indentation
+    in this case, the file looks like it's actually indented as space only
+    and will be detected so.
 
-        """
-        max_line_space = max(
-            [self.lines['space%d' % i] for i in range(2, 9)])
-        max_line_mixed = max(
-            [self.lines['mixed%d' % i] for i in range(2, 9)])
-        max_line_tab = self.lines['tab']
+    => same or more lines with mixed than lines with tab only
+    => same or more lines with mixed than lines with space only
 
-        result = None
+    """
+    max_line_space = max(
+        [finder.lines['space%d' % i] for i in range(2, 9)])
+    max_line_mixed = max(
+        [finder.lines['mixed%d' % i] for i in range(2, 9)])
+    max_line_tab = finder.lines['tab']
 
-        # Detect space indented file
-        if max_line_space >= max_line_mixed and max_line_space > max_line_tab:
-            nb = 0
-            indent_value = None
-            for i in range(8, 1, -1):
-                # Give a 10% threshold.
-                if self.lines['space%d' % i] > int(nb * 1.1):
-                    indent_value = i
-                    nb = self.lines['space%d' % indent_value]
+    result = None
 
-            if indent_value is None:  # no lines
-                result = self.default_result
-            else:
-                result = ('space', indent_value)
+    # Detect space indented file
+    if max_line_space >= max_line_mixed and max_line_space > max_line_tab:
+        nb = 0
+        indent_value = None
+        for i in range(8, 1, -1):
+            # Give a 10% threshold.
+            if finder.lines['space%d' % i] > int(nb * 1.1):
+                indent_value = i
+                nb = finder.lines['space%d' % indent_value]
 
-        # Detect tab files
-        elif max_line_tab > max_line_mixed and max_line_tab > max_line_space:
-            result = ('tab', DEFAULT_TAB_WIDTH)
-
-        # Detect mixed files
-        elif (max_line_mixed >= max_line_tab and
-              max_line_mixed > max_line_space):
-            nb = 0
-            indent_value = None
-            for i in range(8, 1, -1):
-                # Give a 10% threshold.
-                if self.lines['mixed%d' % i] > int(nb * 1.1):
-                    indent_value = i
-                    nb = self.lines['mixed%d' % indent_value]
-
-            if indent_value is None:  # no lines
-                result = self.default_result
-            else:
-                result = ('mixed', (8, indent_value))
-
+        if indent_value is None:  # no lines
+            result = finder.default_result
         else:
-            # not enough information to make a decision
-            result = self.default_result
+            result = ('space', indent_value)
 
-        return result
+    # Detect tab files
+    elif max_line_tab > max_line_mixed and max_line_tab > max_line_space:
+        result = ('tab', DEFAULT_TAB_WIDTH)
+
+    # Detect mixed files
+    elif (max_line_mixed >= max_line_tab and
+          max_line_mixed > max_line_space):
+        nb = 0
+        indent_value = None
+        for i in range(8, 1, -1):
+            # Give a 10% threshold.
+            if finder.lines['mixed%d' % i] > int(nb * 1.1):
+                indent_value = i
+                nb = finder.lines['mixed%d' % indent_value]
+
+        if indent_value is None:  # no lines
+            result = finder.default_result
+        else:
+            result = ('mixed', (8, indent_value))
+
+    else:
+        # not enough information to make a decision
+        result = finder.default_result
+
+    return result
 
 
-def results_to_string(results):
-    (itype, ival) = results
+def results_to_string(result_data):
+    (itype, ival) = result_data
     if itype != 'mixed':
         return '%s %d' % (itype, ival)
     else:
@@ -306,8 +307,8 @@ def results_to_string(results):
         return '%s tab %d space %d' % (itype, itab, ispace)
 
 
-def vim_output(results):
-    (indent_type, n) = results
+def vim_output(result_data):
+    (indent_type, n) = result_data
     if indent_type == 'space':
         # spaces:
         #   => set sts to the number of spaces
@@ -433,19 +434,19 @@ def main():
     one_file = (len(args) == 1)
 
     for filename in args:
-        results = parse_file(fi, filename)
+        result_data = parse_file(fi, filename)
 
         if not one_file:
             if options.vim_output:
-                print('%s : %s' % (filename, vim_output(results)))
+                print('%s : %s' % (filename, vim_output(result_data)))
             else:
-                print('%s : %s' % (filename, results_to_string(results)))
+                print('%s : %s' % (filename, results_to_string(result_data)))
 
     if one_file:
         if options.vim_output:
-            sys.stdout.write(vim_output(results))
+            sys.stdout.write(vim_output(result_data))
         else:
-            print(results_to_string(results))
+            print(results_to_string(result_data))
 
 
 if __name__ == '__main__':
