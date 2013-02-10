@@ -34,13 +34,6 @@ DEFAULT_TAB_WIDTH = 4
 # Default values for files where indentation is not meaningful (empty files).
 DEFAULT_RESULT = ('space', 4)
 
-VERBOSE_QUIET = 0
-VERBOSE_INFO = 1
-VERBOSE_DEBUG = 2
-VERBOSE_DEEP_DEBUG = 3
-
-DEFAULT_VERBOSITY = VERBOSE_QUIET
-
 INDENT_RE = re.compile('^([ \t]+)([^ \t]+)')
 MIXED_RE = re.compile('^(\t+)( +)$')
 
@@ -51,23 +44,6 @@ class LineType:
     TabOnly = 'TabOnly'
     Mixed = 'Mixed'
     BeginSpace = 'BeginSpace'
-
-
-def info(s):
-    log(VERBOSE_INFO, s)
-
-
-def dbg(s):
-    log(VERBOSE_DEBUG, s)
-
-
-def deepdbg(s):
-    log(VERBOSE_DEEP_DEBUG, s)
-
-
-def log(level, s):
-    if level <= IndentFinder.VERBOSITY:
-        print(s)
 
 
 class IndentFinder:
@@ -127,8 +103,6 @@ class IndentFinder:
         self.clear()
         self.default_result = default_result
 
-    VERBOSITY = DEFAULT_VERBOSITY
-
     def parse_file(self, filename):
         self.clear()
         for line in forcefully_read_lines(filename):
@@ -142,33 +116,23 @@ class IndentFinder:
             self.lines['mixed%d' % i] = 0
         self.lines['tab'] = 0
 
-        self.nb_processed_lines = 0
-        self.nb_indent_hint = 0
         self.skip_next_line = False
         self.previous_line_info = None
 
     def analyse_line(self, line):
         if line[-1:] == '\n':
             line = line[:-1]
-        deepdbg('analyse_line: "%s"' %
-                line.replace(' ', '.').replace('\t', '\\t'))
-        self.nb_processed_lines += 1
 
         skip_current_line = self.skip_next_line
         self.skip_next_line = False
         if line[-1:] == '\\':
-            deepdbg('analyse_line: Ignoring next line!')
             # skip lines after lines ending in \
             self.skip_next_line = True
 
         if skip_current_line:
-            deepdbg('analyse_line: Ignoring current line!')
             return
 
         ret = self.analyse_line_indentation(line)
-        if ret:
-            self.nb_indent_hint += 1
-        deepdbg('analyse_line: Result of line analysis: %s' % str(ret))
         return ret
 
     def analyse_line_indentation(self, line):
@@ -177,14 +141,9 @@ class IndentFinder:
         self.previous_line_info = current_line_info
 
         if current_line_info is None or previous_line_info is None:
-            deepdbg(
-                'analyse_line_indentation: Not enough line info to analyse '
-                'line: %s, %s' % (str(
-                    previous_line_info), str(current_line_info)))
             return
 
         t = (previous_line_info[0], current_line_info[0])
-        deepdbg('analyse_line_indentation: Indent analysis: %s %s' % t)
         if (t == (LineType.TabOnly, LineType.TabOnly)
                 or t == (LineType.NoIndent, LineType.TabOnly)):
             if len(current_line_info[1]) - len(previous_line_info[1]) == 1:
@@ -282,22 +241,11 @@ class IndentFinder:
         => same or more lines with mixed than lines with space only
 
         """
-        dbg('Nb of scanned lines : %d' % self.nb_processed_lines)
-        dbg('Nb of indent hint : %d' % self.nb_indent_hint)
-        dbg('Collected data:')
-        for key in self.lines:
-            if self.lines[key] > 0:
-                dbg('%s: %d' % (key, self.lines[key]))
-
         max_line_space = max(
             [self.lines['space%d' % i] for i in range(2, 9)])
         max_line_mixed = max(
             [self.lines['mixed%d' % i] for i in range(2, 9)])
         max_line_tab = self.lines['tab']
-
-        dbg('max_line_space: %d' % max_line_space)
-        dbg('max_line_mixed: %d' % max_line_mixed)
-        dbg('max_line_tab: %d' % max_line_tab)
 
         result = None
 
@@ -340,7 +288,6 @@ class IndentFinder:
             # not enough information to make a decision
             result = self.default_result
 
-        info('Result: %s' % str(result))
         return result
 
 
@@ -422,17 +369,10 @@ def analyse_line_type(line):
 
     mo = INDENT_RE.match(line)
     if not mo:
-        deepdbg('analyse_line_type: line is not indented')
         return None
 
     indent_part = mo.group(1)
     text_part = mo.group(2)
-
-    deepdbg(
-        'analyse_line_type: indent_part="%s" text_part="%s"' %
-        (indent_part.replace(' ', '.').replace('\t', '\\t').replace(
-            '\n', '\\n'),
-        text_part))
 
     if text_part[0] == '*':
         # continuation of a C/C++ comment, unlikely to be indented
@@ -487,7 +427,6 @@ def main():
 
     options, args = parser.parse_args()
 
-    IndentFinder.VERBOSITY = options.verbose
     fi = IndentFinder()
 
     one_file = (len(args) == 1)
