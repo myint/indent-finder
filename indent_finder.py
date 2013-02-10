@@ -38,6 +38,13 @@ INDENT_RE = re.compile('^([ \t]+)([^ \t]+)')
 MIXED_RE = re.compile('^(\t+)( +)$')
 
 
+def parse_file(finder, filename):
+    finder.clear()
+    for line in forcefully_read_lines(filename):
+        finder.analyse_line(line)
+    return finder.results()
+
+
 class LineType:
     NoIndent = 'NoIndent'
     SpaceOnly = 'SpaceOnly'
@@ -106,12 +113,6 @@ class IndentFinder:
         self.default_result = default_result
 
         self.clear()
-
-    def parse_file(self, filename):
-        self.clear()
-        for line in forcefully_read_lines(filename):
-            self.analyse_line(line)
-        return self.results()
 
     def clear(self):
         self.lines = {}
@@ -432,7 +433,7 @@ def main():
     one_file = (len(args) == 1)
 
     for filename in args:
-        results = fi.parse_file(filename)
+        results = parse_file(fi, filename)
 
         if not one_file:
             if options.vim_output:
