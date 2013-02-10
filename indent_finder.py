@@ -41,6 +41,9 @@ VERBOSE_DEEP_DEBUG = 3
 
 DEFAULT_VERBOSITY = VERBOSE_QUIET
 
+INDENT_RE = re.compile('^([ \t]+)([^ \t]+)')
+MIXED_RE = re.compile('^(\t+)( +)$')
+
 
 class LineType:
     NoIndent = 'NoIndent'
@@ -141,8 +144,6 @@ class IndentFinder:
 
         self.nb_processed_lines = 0
         self.nb_indent_hint = 0
-        self.indent_re = re.compile('^([ \t]+)([^ \t]+)')
-        self.mixed_re = re.compile('^(\t+)( +)$')
         self.skip_next_line = False
         self.previous_line_info = None
 
@@ -170,76 +171,9 @@ class IndentFinder:
         deepdbg('analyse_line: Result of line analysis: %s' % str(ret))
         return ret
 
-    def analyse_line_type(self, line):
-        """Analyse the type of line.
-
-        Return (LineType, <indentation part of the line>).
-
-        The function will reject improperly formatted lines (mixture of tab
-        and space for example) and comment lines.
-
-        """
-        mixed_mode = False
-        tab_part = ''
-        space_part = ''
-
-        if len(line) > 0 and line[0] != ' ' and line[0] != '\t':
-            return (LineType.NoIndent, '')
-
-        mo = self.indent_re.match(line)
-        if not mo:
-            deepdbg('analyse_line_type: line is not indented')
-            return None
-
-        indent_part = mo.group(1)
-        text_part = mo.group(2)
-
-        deepdbg(
-            'analyse_line_type: indent_part="%s" text_part="%s"' %
-            (indent_part.replace(' ', '.').replace('\t', '\\t').replace(
-                '\n', '\\n'),
-            text_part))
-
-        if text_part[0] == '*':
-            # continuation of a C/C++ comment, unlikely to be indented
-            # correctly
-            return None
-
-        if text_part[0:2] == '/*' or text_part[0] == '#':
-            # python, C/C++ comment, might not be indented correctly
-            return None
-
-        if '\t' in indent_part and ' ' in indent_part:
-            # mixed mode
-            mo = self.mixed_re.match(indent_part)
-            if not mo:
-                # line is not composed of '\t\t\t    ', ignore it
-                return None
-            mixed_mode = True
-            tab_part = mo.group(1)
-            space_part = mo.group(2)
-
-        if mixed_mode:
-            if len(space_part) >= 8:
-                # this is not mixed mode, this is garbage !
-                return None
-            return (LineType.Mixed, tab_part, space_part)
-
-        if '\t' in indent_part:
-            return (LineType.TabOnly, indent_part)
-
-        assert ' ' in indent_part
-
-        if len(indent_part) < 8:
-            # this could be mixed mode too
-            return (LineType.BeginSpace, indent_part)
-        else:
-            # this is really a line indented with spaces
-            return (LineType.SpaceOnly, indent_part)
-
     def analyse_line_indentation(self, line):
         previous_line_info = self.previous_line_info
-        current_line_info = self.analyse_line_type(line)
+        current_line_info = analyse_line_type(line)
         self.previous_line_info = current_line_info
 
         if current_line_info is None or previous_line_info is None:
@@ -467,6 +401,74 @@ def forcefully_read_lines(filename):
                 continue
 
             yield line
+
+
+def analyse_line_type(line):
+    """Analyse the type of line.
+
+    Return (LineType, <indentation part of the line>).
+
+    The function will reject improperly formatted lines (mixture of tab
+    and space for example) and comment lines.
+
+    """
+    mixed_mode = False
+    tab_part = ''
+    space_part = ''
+
+    if len(line) > 0 and line[0] != ' ' and line[0] != '\t':
+        return (LineType.NoIndent, '')
+
+    mo = INDENT_RE.match(line)
+    if not mo:
+        deepdbg('analyse_line_type: line is not indented')
+        return None
+
+    indent_part = mo.group(1)
+    text_part = mo.group(2)
+
+    deepdbg(
+        'analyse_line_type: indent_part="%s" text_part="%s"' %
+        (indent_part.replace(' ', '.').replace('\t', '\\t').replace(
+            '\n', '\\n'),
+        text_part))
+
+    if text_part[0] == '*':
+        # continuation of a C/C++ comment, unlikely to be indented
+        # correctly
+        return None
+
+    if text_part[0:2] == '/*' or text_part[0] == '#':
+        # python, C/C++ comment, might not be indented correctly
+        return None
+
+    if '\t' in indent_part and ' ' in indent_part:
+        # mixed mode
+        mo = MIXED_RE.match(indent_part)
+        if not mo:
+            # line is not composed of '\t\t\t    ', ignore it
+            return None
+        mixed_mode = True
+        tab_part = mo.group(1)
+        space_part = mo.group(2)
+
+    if mixed_mode:
+        if len(space_part) >= 8:
+            # this is not mixed mode, this is garbage !
+            return None
+        return (LineType.Mixed, tab_part, space_part)
+
+    if '\t' in indent_part:
+        return (LineType.TabOnly, indent_part)
+
+    assert ' ' in indent_part
+
+    if len(indent_part) < 8:
+        # this could be mixed mode too
+        return (LineType.BeginSpace, indent_part)
+    else:
+        # this is really a line indented with spaces
+        return (LineType.SpaceOnly, indent_part)
 
 
 def main():

@@ -21,84 +21,76 @@ ROOT_PATH = os.path.dirname(__file__)
 class TestIndentFinder(unittest.TestCase):
 
     def test_indent_re(self):
-        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
-
-        mo = ifi.indent_re.match('')
+        mo = indent_finder.INDENT_RE.match('')
         self.assertEqual(mo, None)
-        mo = ifi.indent_re.match('\t')
+        mo = indent_finder.INDENT_RE.match('\t')
         self.assertEqual(mo, None)
-        mo = ifi.indent_re.match('  ')
+        mo = indent_finder.INDENT_RE.match('  ')
         self.assertEqual(mo, None)
-        mo = ifi.indent_re.match('\t  ')
+        mo = indent_finder.INDENT_RE.match('\t  ')
         self.assertEqual(mo, None)
 
-        mo = ifi.indent_re.match(' x')
+        mo = indent_finder.INDENT_RE.match(' x')
         self.assertNotEqual(mo, None)
         self.assertEqual(mo.groups(), (' ', 'x'))
 
-        mo = ifi.indent_re.match('\tx')
+        mo = indent_finder.INDENT_RE.match('\tx')
         self.assertNotEqual(mo, None)
         self.assertEqual(mo.groups(), ('\t', 'x'))
 
     def test_mixed_re(self):
-        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
-
-        mo = ifi.mixed_re.match('')
+        mo = indent_finder.MIXED_RE.match('')
         self.assertEqual(mo, None)
-        mo = ifi.mixed_re.match('\t')
+        mo = indent_finder.MIXED_RE.match('\t')
         self.assertEqual(mo, None)
-        mo = ifi.mixed_re.match(' ')
+        mo = indent_finder.MIXED_RE.match(' ')
         self.assertEqual(mo, None)
-        mo = ifi.mixed_re.match(' \t')
+        mo = indent_finder.MIXED_RE.match(' \t')
         self.assertEqual(mo, None)
 
-        mo = ifi.mixed_re.match('\t\t  ')
+        mo = indent_finder.MIXED_RE.match('\t\t  ')
         self.assertEqual(mo.group(1), '\t\t')
         self.assertEqual(mo.group(2), '  ')
 
     def test_analyse_line_type(self):
-        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
-
         for n in range(1, 8):
-            self.assertEqual(ifi.analyse_line_type(' ' * n + 'coucou'),
+            self.assertEqual(indent_finder.analyse_line_type(' ' * n + 'coucou'),
                              (indent_finder.LineType.BeginSpace, ' ' * n))
         for n in range(8, 10):
-            self.assertEqual(ifi.analyse_line_type(' ' * n + 'coucou'),
+            self.assertEqual(indent_finder.analyse_line_type(' ' * n + 'coucou'),
                              (indent_finder.LineType.SpaceOnly, ' ' * n))
 
-        self.assertEqual(ifi.analyse_line_type('\t' + 'coucou'),
+        self.assertEqual(indent_finder.analyse_line_type('\t' + 'coucou'),
                          (indent_finder.LineType.TabOnly, '\t'))
 
-        self.assertEqual(ifi.analyse_line_type('\t\t' + 'coucou'),
+        self.assertEqual(indent_finder.analyse_line_type('\t\t' + 'coucou'),
                          (indent_finder.LineType.TabOnly, '\t\t'))
 
         for i in range(1, 8):
             self.assertEqual(
-                ifi.analyse_line_type('\t\t' + ' ' * i + 'coucou'),
+                indent_finder.analyse_line_type('\t\t' + ' ' * i + 'coucou'),
                 (indent_finder.LineType.Mixed, '\t\t', ' ' * i))
 
         self.assertEqual(
-            ifi.analyse_line_type('coucou'),
+            indent_finder.analyse_line_type('coucou'),
             (indent_finder.LineType.NoIndent, ''))
 
-        self.assertEqual(ifi.analyse_line_type(''), None)
+        self.assertEqual(indent_finder.analyse_line_type(''), None)
         self.assertEqual(
-            ifi.analyse_line_type('\t\t' + ' ' * 8 + 'coucou'), None)
+            indent_finder.analyse_line_type('\t\t' + ' ' * 8 + 'coucou'), None)
         self.assertEqual(
-            ifi.analyse_line_type('\t\t' + ' ' * 9 + 'coucou'), None)
-        self.assertEqual(ifi.analyse_line_type('\t\t \t' + 'coucou'), None)
-        self.assertEqual(ifi.analyse_line_type('  \t\t' + 'coucou'), None)
+            indent_finder.analyse_line_type('\t\t' + ' ' * 9 + 'coucou'), None)
+        self.assertEqual(indent_finder.analyse_line_type('\t\t \t' + 'coucou'), None)
+        self.assertEqual(indent_finder.analyse_line_type('  \t\t' + 'coucou'), None)
 
     def test_ignored_lines_patterns(self):
-        ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
-
-        self.assertEqual(ifi.analyse_line_type(''), None)
-        self.assertEqual(ifi.analyse_line_type('  '), None)
-        self.assertEqual(ifi.analyse_line_type('\t'), None)
-        self.assertEqual(ifi.analyse_line_type('\t  '), None)
-        self.assertEqual(ifi.analyse_line_type('  # coucou'), None)
-        self.assertEqual(ifi.analyse_line_type('  /* coucou'), None)
-        self.assertEqual(ifi.analyse_line_type('   * coucou'), None)
+        self.assertEqual(indent_finder.analyse_line_type(''), None)
+        self.assertEqual(indent_finder.analyse_line_type('  '), None)
+        self.assertEqual(indent_finder.analyse_line_type('\t'), None)
+        self.assertEqual(indent_finder.analyse_line_type('\t  '), None)
+        self.assertEqual(indent_finder.analyse_line_type('  # coucou'), None)
+        self.assertEqual(indent_finder.analyse_line_type('  /* coucou'), None)
+        self.assertEqual(indent_finder.analyse_line_type('   * coucou'), None)
 
     def test_skip_next_line(self):
         ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
