@@ -29,7 +29,7 @@ import sys
 __version__ = '1.4'
 
 # Used when indentation is tab, to set tabstop in vim.
-DEFAULT_TAB_WIDTH = 4
+DEFAULT_TAB_WIDTH = 8
 
 # Default values for files where indentation is not meaningful (empty files).
 DEFAULT_RESULT = ('space', 4)
