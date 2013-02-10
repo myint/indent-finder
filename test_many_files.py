@@ -23,7 +23,7 @@ class TestManyFiles(unittest.TestCase):
         ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
         indent_finder.DEFAULT_TAB_WIDTH = 13
         ifi.parse_file(fname)
-        res = str(ifi)
+        res = indent_finder.results_to_string(ifi.results())
         self.assertEqual(res, result)
         self.assertEqual(expected_vim_result,
                          indent_finder.vim_output(ifi.results()))

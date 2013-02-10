@@ -343,13 +343,14 @@ class IndentFinder:
         info('Result: %s' % str(result))
         return result
 
-    def __str__(self):
-        itype, ival = self.results()
-        if itype != 'mixed':
-            return '%s %d' % (itype, ival)
-        else:
-            itab, ispace = ival
-            return '%s tab %d space %d' % (itype, itab, ispace)
+
+def results_to_string(results):
+    (itype, ival) = results
+    if itype != 'mixed':
+        return '%s %d' % (itype, ival)
+    else:
+        itab, ispace = ival
+        return '%s tab %d space %d' % (itype, itab, ispace)
 
 
 def vim_output(results):
@@ -498,13 +499,13 @@ def main():
             if options.vim_output:
                 print('%s : %s' % (filename, vim_output(fi.results())))
             else:
-                print('%s : %s' % (filename, str(fi)))
+                print('%s : %s' % (filename, results_to_string(fi.results())))
 
     if one_file:
         if options.vim_output:
             sys.stdout.write(vim_output(fi.results()))
         else:
-            print(str(fi))
+            print(results_to_string(fi.results()))
 
 
 if __name__ == '__main__':
