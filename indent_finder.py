@@ -37,19 +37,30 @@ DEFAULT_RESULT = ('space', 4)
 INDENT_RE = re.compile('^([ \t]+)([^ \t]+)')
 MIXED_RE = re.compile('^(\t+)( +)$')
 
+LANGUAGE_PRE_INDENTATION = {
+    '.py': ':',
+    '.h': '{',
+    '.c': '{',
+    '.cc': '{',
+    '.cpp': '{',
+}
+
 
 def parse_file(finder, filename, default_result=DEFAULT_RESULT):
-    is_python = filename.endswith('.py')
+    required_ending = None
+    for extension, ending in LANGUAGE_PRE_INDENTATION.items():
+        if filename.endswith(extension):
+            required_ending = ending
 
     finder.clear()
-    found_python_indent = False
+    found_required_ending = False
     for line in forcefully_read_lines(filename):
         finder.analyse_line(line)
 
-        if is_python and line.rstrip().endswith(':'):
-            found_python_indent = True
+        if required_ending and line.rstrip().endswith(required_ending):
+            found_required_ending = True
 
-    if is_python and not found_python_indent:
+    if required_ending and not found_required_ending:
         return default_result
 
     return results(finder.lines, default_result)
