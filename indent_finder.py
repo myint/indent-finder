@@ -4,7 +4,7 @@
 # This program is distributed under the BSD license. You should have received
 # a copy of the file LICENSE.txt along with this software.
 
-"""Usage : indent_finder.py [ --vim-output ] [ --verbose ] [file [file ...]]
+"""Usage : indent_finder.py [ --vim-output ] [file [file ...]]
 
 Display indentation used in the list of files. Possible answers are (with X
 being the number of spaces used for indentation):
@@ -419,11 +419,6 @@ def main():
 
     parser.add_option('--vim-output', action='store_true',
                       help='output suitable to use inside vim')
-
-    parser.add_option('-v', '--verbose', action='count', dest='verbose',
-                      default=0,
-                      help='print verbose messages; '
-                           'multiple -v result in more verbose messages')
 
     options, args = parser.parse_args()
 
