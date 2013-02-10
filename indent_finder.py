@@ -52,7 +52,7 @@ def parse_file(finder, filename, default_result=DEFAULT_RESULT):
     if is_python and not found_python_indent:
         return default_result
 
-    return results(finder, default_result)
+    return results(finder.lines, default_result)
 
 
 class LineType:
@@ -218,7 +218,7 @@ class IndentFinder:
         return None
 
 
-def results(finder, default_result=DEFAULT_RESULT):
+def results(lines, default_result=DEFAULT_RESULT):
     """Return analysis results.
 
     1. Space indented file
@@ -258,10 +258,10 @@ def results(finder, default_result=DEFAULT_RESULT):
 
     """
     max_line_space = max(
-        [finder.lines['space%d' % i] for i in range(2, 9)])
+        [lines['space%d' % i] for i in range(2, 9)])
     max_line_mixed = max(
-        [finder.lines['mixed%d' % i] for i in range(2, 9)])
-    max_line_tab = finder.lines['tab']
+        [lines['mixed%d' % i] for i in range(2, 9)])
+    max_line_tab = lines['tab']
 
     result = None
 
@@ -271,9 +271,9 @@ def results(finder, default_result=DEFAULT_RESULT):
         indent_value = None
         for i in range(8, 1, -1):
             # Give a 10% threshold.
-            if finder.lines['space%d' % i] > int(nb * 1.1):
+            if lines['space%d' % i] > int(nb * 1.1):
                 indent_value = i
-                nb = finder.lines['space%d' % indent_value]
+                nb = lines['space%d' % indent_value]
 
         if indent_value is None:  # no lines
             result = default_result
@@ -291,9 +291,9 @@ def results(finder, default_result=DEFAULT_RESULT):
         indent_value = None
         for i in range(8, 1, -1):
             # Give a 10% threshold.
-            if finder.lines['mixed%d' % i] > int(nb * 1.1):
+            if lines['mixed%d' % i] > int(nb * 1.1):
                 indent_value = i
-                nb = finder.lines['mixed%d' % indent_value]
+                nb = lines['mixed%d' % indent_value]
 
         if indent_value is None:  # no lines
             result = default_result
