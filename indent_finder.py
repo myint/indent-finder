@@ -111,6 +111,7 @@ class IndentFinder:
         self.clear()
         for line in forcefully_read_lines(filename):
             self.analyse_line(line)
+        return self.results()
 
     def clear(self):
         self.lines = {}
@@ -431,19 +432,19 @@ def main():
     one_file = (len(args) == 1)
 
     for filename in args:
-        fi.parse_file(filename)
+        results = fi.parse_file(filename)
 
         if not one_file:
             if options.vim_output:
-                print('%s : %s' % (filename, vim_output(fi.results())))
+                print('%s : %s' % (filename, vim_output(results)))
             else:
-                print('%s : %s' % (filename, results_to_string(fi.results())))
+                print('%s : %s' % (filename, results_to_string(results)))
 
     if one_file:
         if options.vim_output:
-            sys.stdout.write(vim_output(fi.results()))
+            sys.stdout.write(vim_output(results))
         else:
-            print(results_to_string(fi.results()))
+            print(results_to_string(results))
 
 
 if __name__ == '__main__':

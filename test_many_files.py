@@ -22,11 +22,11 @@ class TestManyFiles(unittest.TestCase):
     def check_file(self, fname, result, expected_vim_result):
         ifi = indent_finder.IndentFinder(TEST_DEFAULT_RESULT)
         indent_finder.DEFAULT_TAB_WIDTH = 13
-        ifi.parse_file(fname)
-        res = indent_finder.results_to_string(ifi.results())
+        results = ifi.parse_file(fname)
+        res = indent_finder.results_to_string(results)
         self.assertEqual(res, result)
         self.assertEqual(expected_vim_result,
-                         indent_finder.vim_output(ifi.results()))
+                         indent_finder.vim_output(results))
 
     def test_file_space4(self):
         l = []
