@@ -32,13 +32,6 @@ __version__ = '1.4'
 DEFAULT_TAB_WIDTH = 4
 
 # Default values for files where indentation is not meaningful (empty files).
-#
-# Possible values:
-#
-#     ('space', 4 )
-#     ('space', 2 )
-#     ('space', 8 )
-#     ('tab', DEFAULT_TAB_WIDTH )
 DEFAULT_RESULT = ('space', 4)
 
 VERBOSE_QUIET = 0
@@ -81,12 +74,12 @@ class IndentFinder:
     Its approach is not tied to any particular language. It was tested
     successfully with python, C, C++ and Java code.
 
-    How does it work ?
+    How does it work?
 
     It scans each line of the entry file for a space character (white space or
     tab) repeated until a non space character is found. Such a line is
     considered to be a properly indented line of code. Blank lines and comments
-    line (starting with # or /* or * ) are ignored. Lines coming after a line
+    line (starting with # or /* or *) are ignored. Lines coming after a line
     ending in '\' have higher chance of being not properly indented, and are
     thus ignored too.
 
@@ -156,8 +149,8 @@ class IndentFinder:
     def analyse_line(self, line):
         if line[-1:] == '\n':
             line = line[:-1]
-        deepdbg('analyse_line: "%s"' % line.replace(' ', '.')
-                .replace('\t', '\\t'))
+        deepdbg('analyse_line: "%s"' %
+                line.replace(' ', '.').replace('\t', '\\t'))
         self.nb_processed_lines += 1
 
         skip_current_line = self.skip_next_line
