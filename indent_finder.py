@@ -100,8 +100,12 @@ class IndentFinder:
     """
 
     def __init__(self, default_result=DEFAULT_RESULT):
-        self.clear()
+        self.skip_next_line = False
+        self.previous_line_info = None
+        self.lines = {}
         self.default_result = default_result
+
+        self.clear()
 
     def parse_file(self, filename):
         self.clear()
