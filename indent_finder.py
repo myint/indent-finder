@@ -46,7 +46,16 @@ LANGUAGE_PRE_INDENTATION = {
 }
 
 
-def parse_file(finder, filename, default_result=DEFAULT_RESULT):
+def parse_file(filename, default_result=DEFAULT_RESULT):
+    """Return result of indentation analysis.
+
+    Interpret with results_to_string() or vim_output().
+
+    """
+    return _parse_file(IndentFinder(), filename, default_result)
+
+
+def _parse_file(finder, filename, default_result=DEFAULT_RESULT):
     required_ending = None
     for extension, ending in LANGUAGE_PRE_INDENTATION.items():
         if filename.endswith(extension):
@@ -449,12 +458,10 @@ def main():
 
     options, args = parser.parse_args()
 
-    fi = IndentFinder()
-
     one_file = (len(args) == 1)
 
     for filename in args:
-        result_data = parse_file(fi, filename)
+        result_data = parse_file(filename)
 
         if not one_file:
             if options.vim_output:
