@@ -16,4 +16,4 @@ coverage:
 	@python -m webbrowser -n "file://${PWD}/htmlcov/index.html"
 
 readme:
-	@restview --long-description
+	@restview --strict README.rst
