@@ -11,17 +11,13 @@ Copyright 2002-2010 Philippe Fremy
 This program is distributed under the BSD license. You should have received
 a copy of the file LICENSE.txt along with this software.
 
-Install::
+And copy the contents of `plugin`_ to your ``~/.vim/plugin`` directory.
 
-    $ pip install git+https://github.com/myint/indent-finder.git
-
-And copy `indent_finder.vim`_ to your ``.vim/plugin`` directory.
-
-.. _`indent_finder.vim`: https://raw.github.com/myint/indent-finder/master/plugin/indent_finder.vim
+.. _`plugin`: https://raw.github.com/myint/indent-finder/master/plugin/
 
 To use from command line::
 
-    $ python -m indent_finder example.py
+    $ ./indent_finder example.py
     space 4
 
 See `web page`_ for more information.
