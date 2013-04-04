@@ -23,7 +23,7 @@ Installation
 To install this plugin, copy the contents of the `plugin`_ directory to your
 ``~/.vim/plugin`` directory.
 
-.. _`plugin`: https://raw.github.com/myint/indent-finder/master/plugin/
+.. _`plugin`: https://github.com/myint/indent-finder/tree/master/plugin
 
 Command-line usage
 ------------------
