@@ -25,6 +25,9 @@ To install this plugin, copy the contents of the `plugin`_ directory to your
 
 .. _`plugin`: https://raw.github.com/myint/indent-finder/master/plugin/
 
+Command-line usage
+------------------
+
 To use from command line::
 
     $ ./indent_finder example.py
