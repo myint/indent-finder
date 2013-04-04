@@ -11,7 +11,17 @@ Copyright 2002-2010 Philippe Fremy
 This program is distributed under the BSD license. You should have received
 a copy of the file LICENSE.txt along with this software.
 
-And copy the contents of `plugin`_ to your ``~/.vim/plugin`` directory.
+Introduction
+------------
+
+indent-finder is a vim plugin that detects the indentation of a file and sets
+vim's indentation settings appropriately to match.
+
+Installation
+------------
+
+To install this plugin, copy the contents of the `plugin`_ directory to your
+``~/.vim/plugin`` directory.
 
 .. _`plugin`: https://raw.github.com/myint/indent-finder/master/plugin/
 
