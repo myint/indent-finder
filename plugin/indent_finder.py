@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#
 # Indentation finder, by Philippe Fremy <phil at freehackers dot org>
 # Copyright 2002-2008 Philippe Fremy
 #
