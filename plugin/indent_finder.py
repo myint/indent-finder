@@ -6,7 +6,7 @@
 # This program is distributed under the BSD license. You should have received
 # a copy of the file LICENSE.txt along with this software.
 
-"""Usage : indent_finder.py [ --vim-output ] [file [file ...]]
+"""indent_finder.py [ --vim-output ] [file [file ...]]
 
 Display indentation used in the list of files. Possible answers are (with X
 being the number of spaces used for indentation):
@@ -14,7 +14,7 @@ space X
 tab 8
 mixed tab X space Y
 
-mixed means that indentation style is tab at the beginning of the line (tab
+Mixed means that indentation style is tab at the beginning of the line (tab
 being 8 positions) and then spaces to do the indentation, unless you reach 8
 spaces which are replaced by a tab. This is the vim source file indentation
 for example. In my opinion, this is the worst possible style.
