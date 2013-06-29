@@ -45,6 +45,7 @@ version 1.5:
 - Simplify installation process.
 - Detect when files have no valid indentation.
 - Add Python 3 support.
+- Default to user's ``tabstop`` when necessary.
 
 version 1.4:
 
