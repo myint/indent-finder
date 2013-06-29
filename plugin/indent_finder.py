@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 #
 # Indentation finder, by Philippe Fremy <phil at freehackers dot org>
-# Copyright 2002-2008 Philippe Fremy
+# Copyright (C) 2002-2010 Philippe Fremy
+# Copyright (C) 2013 Steven Myint
 #
 # This program is distributed under the BSD license. You should have received
 # a copy of the file LICENSE.txt along with this software.
