@@ -42,9 +42,10 @@ History:
 
 version 1.4:
 
-- improve the heuristic, some file where incorrectly reported as tab when being mixed
-- ('tab', 4) was returned instead of DEFAULT_OUTPUT when no decision could be made. This is now
-  configurable.
+- improve the heuristic, some file where incorrectly reported as tab when being
+  mixed
+- ('tab', 4) was returned instead of DEFAULT_OUTPUT when no decision could be
+  made. This is now configurable.
 - vim_output() now includes a comment about the detected indentation
 
 version 1.31:
