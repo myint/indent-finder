@@ -1,6 +1,7 @@
+*.pyc
+.tox/
+.travis-solo
+MANIFEST
 __pycache__/
 build/
-.tox/
 htmlcov/
-*.pyc
-MANIFEST
