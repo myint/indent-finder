@@ -51,16 +51,21 @@ LANGUAGE_PRE_INDENTATION = {
 }
 
 
-def parse_file(filename, default_result=DEFAULT_RESULT):
+def parse_file(filename,
+               default_tab_width=DEFAULT_TAB_WIDTH,
+               default_result=DEFAULT_RESULT):
     """Return result of indentation analysis.
 
     Interpret with results_to_string() or vim_output().
 
     """
-    return _parse_file(IndentFinder(), filename, default_result)
+    return _parse_file(IndentFinder(),
+                       filename=filename,
+                       default_tab_width=default_tab_width,
+                       default_result=default_result)
 
 
-def _parse_file(finder, filename, default_result=DEFAULT_RESULT):
+def _parse_file(finder, filename, default_tab_width, default_result):
     required_ending = None
     for extension, ending in LANGUAGE_PRE_INDENTATION.items():
         if filename.endswith(extension):
@@ -77,7 +82,9 @@ def _parse_file(finder, filename, default_result=DEFAULT_RESULT):
     if required_ending and not found_required_ending:
         return default_result
 
-    return results(finder.lines, default_result)
+    return results(finder.lines,
+                   default_tab_width=default_tab_width,
+                   default_result=default_result)
 
 
 class LineType:
@@ -243,7 +250,9 @@ class IndentFinder:
         return None
 
 
-def results(lines, default_result=DEFAULT_RESULT):
+def results(lines,
+            default_tab_width,
+            default_result):
     """Return analysis results.
 
     1. Space indented file
@@ -307,7 +316,7 @@ def results(lines, default_result=DEFAULT_RESULT):
 
     # Detect tab files
     elif max_line_tab > max_line_mixed and max_line_tab > max_line_space:
-        result = ('tab', DEFAULT_TAB_WIDTH)
+        result = ('tab', default_tab_width)
 
     # Detect mixed files
     elif (max_line_mixed >= max_line_tab and
@@ -341,7 +350,7 @@ def results_to_string(result_data):
         return '%s tab %d space %d' % (itype, itab, ispace)
 
 
-def vim_output(result_data):
+def vim_output(result_data, default_tab_width):
     (indent_type, n) = result_data
     if indent_type == 'space':
         # spaces:
@@ -360,7 +369,7 @@ def vim_output(result_data):
         #   => set shiftwidth to tabstop
         return ('set sts=0 | set tabstop=%d | set noexpandtab | '
                 'set shiftwidth=%d " (%s)' %
-                (DEFAULT_TAB_WIDTH, DEFAULT_TAB_WIDTH, indent_type))
+                (default_tab_width, default_tab_width, indent_type))
 
     if indent_type == 'mixed':
         tab_indent, space_indent = n
@@ -370,8 +379,8 @@ def vim_output(result_data):
         #   => set expandtab to false
         #   => set shiftwidth to space_indent
         return ('set sts=4 | set tabstop=%d | set noexpandtab | '
-                'set shiftwidth=%d " (%s %d)'
-                % (tab_indent, space_indent, indent_type, space_indent))
+                'set shiftwidth=%d " (%s %d)' %
+                (tab_indent, space_indent, indent_type, space_indent))
 
 
 def forcefully_read_lines(filename):
@@ -460,23 +469,37 @@ def main():
 
     parser.add_option('--vim-output', action='store_true',
                       help='output suitable to use inside vim')
+    parser.add_option('--default-tab-width', type=int,
+                      default=DEFAULT_TAB_WIDTH,
+                      help='default tab width (%default)')
 
     options, args = parser.parse_args()
 
     one_file = (len(args) == 1)
 
     for filename in args:
-        result_data = parse_file(filename)
+        result_data = parse_file(filename,
+                                 default_tab_width=options.default_tab_width)
 
         if not one_file:
             if options.vim_output:
-                print('%s : %s' % (filename, vim_output(result_data)))
+                print(
+                    '%s : %s' %
+                    (
+                        filename,
+                        vim_output(
+                            result_data,
+                            default_tab_width=options.default_tab_width)
+                    )
+                )
             else:
                 print('%s : %s' % (filename, results_to_string(result_data)))
 
     if one_file:
         if options.vim_output:
-            sys.stdout.write(vim_output(result_data))
+            sys.stdout.write(vim_output(
+                result_data,
+                default_tab_width=options.default_tab_width))
         else:
             print(results_to_string(result_data))
 
