@@ -21,7 +21,7 @@ for example. In my opinion, this is the worst possible style.
 
 """
 
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import optparse
 import re
