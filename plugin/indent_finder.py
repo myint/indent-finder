@@ -475,13 +475,19 @@ def main():
 
     options, args = parser.parse_args()
 
-    one_file = (len(args) == 1)
-
     for filename in args:
         result_data = parse_file(filename,
                                  default_tab_width=options.default_tab_width)
 
-        if not one_file:
+
+        if len(args) == 1:
+            if options.vim_output:
+                sys.stdout.write(vim_output(
+                    result_data,
+                    default_tab_width=options.default_tab_width))
+            else:
+                print(results_to_string(result_data))
+        else:
             if options.vim_output:
                 print(
                     '%s : %s' %
@@ -494,14 +500,6 @@ def main():
                 )
             else:
                 print('%s : %s' % (filename, results_to_string(result_data)))
-
-    if one_file:
-        if options.vim_output:
-            sys.stdout.write(vim_output(
-                result_data,
-                default_tab_width=options.default_tab_width))
-        else:
-            print(results_to_string(result_data))
 
 
 if __name__ == '__main__':
