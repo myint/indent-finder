@@ -40,34 +40,40 @@ See `web page`_ for more information.
 History:
 --------
 
+version 1.5:
+
+- Simplify installation process.
+- Detect when files have no valid indentation.
+- Add Python 3 support.
+
 version 1.4:
 
-- improve the heuristic, some file where incorrectly reported as tab when being
-  mixed
+- Improve the heuristic, some file where incorrectly reported as tab when being
+  mixed.
 - ('tab', 4) was returned instead of DEFAULT_OUTPUT when no decision could be
   made. This is now configurable.
-- vim_output() now includes a comment about the detected indentation
+- vim_output() now includes a comment about the detected indentation.
 
 version 1.31:
 
-- the --vim-output was not working. Fixed in this version
+- The --vim-output was not working. Fixed in this version.
 
 version 1.3:
 
-- remove indent_checker, this was a useless program
-- improve the indentation algorithm to be able to detecte mixed type
-  indentation
-- detect mixed type indentation, like the one used in vim source files
+- Remove indent_checker, this was a useless program.
+- Improve the indentation algorithm to be able to detecte mixed type
+  indentation.
+- Detect mixed type indentation, like the one used in vim source files.
 
 version 1.2:
 
-- add indent_checker, to check the consistency of the indentation of a source
-  tree
+- Add indent_checker, to check the consistency of the indentation of a source
+  tree.
 
 version 1.1:
 
-- improve the heuristic by detecting indentation steps
+- Improve the heuristic by detecting indentation steps.
 
 version 1.0:
 
-- initial release
+- Initial release.
