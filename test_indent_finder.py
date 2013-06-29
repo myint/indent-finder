@@ -243,11 +243,11 @@ class TestIndentFinder(unittest.TestCase):
 
     def test_system(self):
         process = subprocess.Popen(
-            ['python', '-m', 'indent_finder',
+            ['python', '-m', 'indent_finder', '--default-tab-width=7',
              os.path.join(ROOT_PATH, 'test_files', 'tab', 'pretty-make.py')],
             stdout=subprocess.PIPE)
 
-        self.assertEqual('tab 8\n', process.communicate()[0].decode('utf-8'))
+        self.assertEqual('tab 7\n', process.communicate()[0].decode('utf-8'))
         self.assertEqual(0, process.returncode)
 
     def test_system_with_vim_output(self):
