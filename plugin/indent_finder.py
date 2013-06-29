@@ -42,11 +42,12 @@ MIXED_RE = re.compile('^(\t+)( +)$')
 # Optionally used to fall back to default if pre-indentation line is not found.
 # This is not used by the main line detection algorithm.
 LANGUAGE_PRE_INDENTATION = {
-    '.py': ':',
-    '.h': '{',
     '.c': '{',
     '.cc': '{',
     '.cpp': '{',
+    '.h': '{',
+    '.py': ':',
+    '.rst': '::',
 }
 
 
