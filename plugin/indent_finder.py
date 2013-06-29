@@ -479,27 +479,19 @@ def main():
         result_data = parse_file(filename,
                                  default_tab_width=options.default_tab_width)
 
-
-        if len(args) == 1:
-            if options.vim_output:
-                sys.stdout.write(vim_output(
-                    result_data,
-                    default_tab_width=options.default_tab_width))
-            else:
-                print(results_to_string(result_data))
+        if options.vim_output:
+            output = vim_output(
+                result_data,
+                default_tab_width=options.default_tab_width)
         else:
-            if options.vim_output:
-                print(
-                    '%s : %s' %
-                    (
-                        filename,
-                        vim_output(
-                            result_data,
-                            default_tab_width=options.default_tab_width)
-                    )
-                )
-            else:
-                print('%s : %s' % (filename, results_to_string(result_data)))
+            output = results_to_string(result_data) + '\n'
+
+        if len(args) > 1:
+            output = '{0} : {1}'.format(filename, output).rstrip() + '\n'
+
+        sys.stdout.write(output)
+
+
 
 
 if __name__ == '__main__':
