@@ -2,8 +2,8 @@ indent-finder
 =============
 
 .. image:: https://travis-ci.org/myint/indent-finder.png?branch=master
-   :target: https://travis-ci.org/myint/indent-finder
-   :alt: Build status
+    :target: https://travis-ci.org/myint/indent-finder
+    :alt: Build status
 
 by Philippe Fremy <phil at freehackers dot org>
 Copyright 2002-2010 Philippe Fremy
