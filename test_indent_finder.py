@@ -243,7 +243,7 @@ class TestIndentFinder(unittest.TestCase):
 
     def test_system(self):
         process = subprocess.Popen(
-            ['python', '-m', 'indent_finder', '--default-tab-width=7',
+            ['./indent_finder.py', '--default-tab-width=7',
              os.path.join(ROOT_PATH, 'test_files', 'tab', 'pretty-make.py')],
             stdout=subprocess.PIPE)
 
@@ -252,7 +252,7 @@ class TestIndentFinder(unittest.TestCase):
 
     def test_system_with_vim_output(self):
         process = subprocess.Popen(
-            ['python', '-m', 'indent_finder', '--vim-output',
+            ['./indent_finder.py', '--vim-output',
              os.path.join(ROOT_PATH, 'test_files', 'tab', 'pretty-make.py')],
             stdout=subprocess.PIPE)
 
