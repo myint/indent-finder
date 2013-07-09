@@ -258,7 +258,7 @@ class TestIndentFinder(unittest.TestCase):
             stdout=subprocess.PIPE)
 
         self.assertEqual(
-            'set sts=0 | set tabstop=8 | set noexpandtab | '
+            'set softtabstop=0 | set tabstop=8 | set noexpandtab | '
             'set shiftwidth=8 " (tab)',
             process.communicate()[0].decode('utf-8'))
 

@@ -19,11 +19,11 @@ TEST_DEFAULT_RESULT = ('space', 0)
 
 class TestManyFiles(unittest.TestCase):
 
-    def check_file(self, fname, result, expected_vim_result):
+    def check_file(self, filename, result, expected_vim_result):
         ifi = indent_finder.IndentFinder()
         indent_finder.DEFAULT_TAB_WIDTH = 13
         results = indent_finder._parse_file(
-            ifi, fname,
+            ifi, filename,
             default_tab_width=indent_finder.DEFAULT_TAB_WIDTH,
             default_result=TEST_DEFAULT_RESULT)
         res = indent_finder.results_to_string(results)
@@ -40,17 +40,21 @@ class TestManyFiles(unittest.TestCase):
         l += glob.glob('test_files/space4/*.java')
         l += glob.glob('test_files/space4/*.vim')
         for f in l:
-            self.check_file(f, 'space 4',
-                            'set sts=4 | set tabstop=4 | set expandtab | '
-                            'set shiftwidth=4 " (space 4)')
+            self.check_file(
+                f,
+                'space 4',
+                'set softtabstop=4 | set tabstop=4 | set expandtab | '
+                'set shiftwidth=4 " (space 4)')
 
     def test_file_space2(self):
         l = []
         l += glob.glob('test_files/space2/*.cpp')
         for f in l:
-            self.check_file(f, 'space 2',
-                            'set sts=2 | set tabstop=2 | set expandtab | '
-                            'set shiftwidth=2 " (space 2)')
+            self.check_file(
+                f,
+                'space 2',
+                'set softtabstop=2 | set tabstop=2 | set expandtab | '
+                'set shiftwidth=2 " (space 2)')
 
     def test_file_tab(self):
         l = []
@@ -58,18 +62,19 @@ class TestManyFiles(unittest.TestCase):
         l += glob.glob('test_files/tab/*.cpp')
         l += glob.glob('test_files/tab/*.py')
         for f in l:
-            self.check_file(f, 'tab %d' % indent_finder.DEFAULT_TAB_WIDTH,
-                            'set sts=0 | set tabstop=%d | set noexpandtab | '
-                            'set shiftwidth=%d " (tab)' %
-                           (indent_finder.DEFAULT_TAB_WIDTH,
-                            indent_finder.DEFAULT_TAB_WIDTH))
+            self.check_file(
+                f,
+                'tab {0}'.format(indent_finder.DEFAULT_TAB_WIDTH),
+                'set softtabstop=0 | set tabstop={0} | set noexpandtab | '
+                'set shiftwidth={0} " (tab)'.format(
+                    indent_finder.DEFAULT_TAB_WIDTH))
 
     def test_file_mixed4(self):
         l = []
         l += glob.glob('test_files/mixed4/*.c')
         for f in l:
             self.check_file(f, 'mixed tab 8 space 4',
-                            'set sts=4 | set tabstop=8 | set noexpandtab | '
+                            'set softtabstop=4 | set tabstop=8 | set noexpandtab | '
                             'set shiftwidth=4 " (mixed 4)')
 
     def test_file_default(self):
@@ -77,7 +82,7 @@ class TestManyFiles(unittest.TestCase):
             self.check_file(
                 f,
                 'space {default}'.format(default=TEST_DEFAULT_RESULT[1]),
-                'set sts={default} | set tabstop={default} | '
+                'set softtabstop={default} | set tabstop={default} | '
                 'set expandtab | set shiftwidth={default} '
                 '" (space {default})'.format(default=TEST_DEFAULT_RESULT[1]))
 

@@ -355,31 +355,31 @@ def vim_output(result_data, default_tab_width):
     (indent_type, n) = result_data
     if indent_type == 'space':
         # spaces:
-        #   => set sts to the number of spaces
+        #   => set softtabstop to the number of spaces
         #   => set tabstop to the number of spaces
         #   => expand tabs to spaces
         #   => set shiftwidth to the number of spaces
-        return ('set sts=%d | set tabstop=%d | set expandtab | '
+        return ('set softtabstop=%d | set tabstop=%d | set expandtab | '
                 'set shiftwidth=%d " (%s %d)' % (n, n, n, indent_type, n))
 
     elif indent_type == 'tab':
         # tab:
-        #   => set sts to 0
+        #   => set softtabstop to 0
         #   => set tabstop to preferred value
         #   => set expandtab to false
         #   => set shiftwidth to tabstop
-        return ('set sts=0 | set tabstop=%d | set noexpandtab | '
+        return ('set softtabstop=0 | set tabstop=%d | set noexpandtab | '
                 'set shiftwidth=%d " (%s)' %
                 (default_tab_width, default_tab_width, indent_type))
 
     if indent_type == 'mixed':
         tab_indent, space_indent = n
         # tab:
-        #   => set sts to 0
+        #   => set softtabstop to 0
         #   => set tabstop to tab_indent
         #   => set expandtab to false
         #   => set shiftwidth to space_indent
-        return ('set sts=4 | set tabstop=%d | set noexpandtab | '
+        return ('set softtabstop=4 | set tabstop=%d | set noexpandtab | '
                 'set shiftwidth=%d " (%s %d)' %
                 (tab_indent, space_indent, indent_type, space_indent))
 
@@ -491,8 +491,6 @@ def main():
             output = '{0} : {1}'.format(filename, output).rstrip() + '\n'
 
         sys.stdout.write(output)
-
-
 
 
 if __name__ == '__main__':
