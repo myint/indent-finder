@@ -40,7 +40,7 @@ DEFAULT_RESULT = ('space', 4)
 INDENT_RE = re.compile('^([ \t]+)([^ \t]+)')
 MIXED_RE = re.compile('^(\t+)( +)$')
 
-MAX_LINES = 2000
+MAX_LINES = 3000
 
 # Optionally used to fall back to default if pre-indentation line is not found.
 # This is not used by the main line detection algorithm.
