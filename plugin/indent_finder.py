@@ -40,6 +40,8 @@ DEFAULT_RESULT = ('space', 4)
 INDENT_RE = re.compile('^([ \t]+)([^ \t]+)')
 MIXED_RE = re.compile('^(\t+)( +)$')
 
+MAX_LINES = 2000
+
 # Optionally used to fall back to default if pre-indentation line is not found.
 # This is not used by the main line detection algorithm.
 LANGUAGE_PRE_INDENTATION = {
@@ -74,7 +76,10 @@ def _parse_file(finder, filename, default_tab_width, default_result):
 
     finder.clear()
     found_required_ending = False
-    for line in forcefully_read_lines(filename):
+    for index, line in enumerate(forcefully_read_lines(filename)):
+        if index >= MAX_LINES:
+            break
+
         finder.analyse_line(line)
 
         if required_ending and line.rstrip().endswith(required_ending):
