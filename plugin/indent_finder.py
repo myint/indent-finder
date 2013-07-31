@@ -24,6 +24,7 @@ for example. In my opinion, this is the worst possible style.
 
 from __future__ import absolute_import, division, print_function
 
+import io
 import optparse
 import re
 import sys
@@ -40,7 +41,7 @@ DEFAULT_RESULT = ('space', 4)
 INDENT_RE = re.compile('^([ \t]+)([^ \t]+)')
 MIXED_RE = re.compile('^(\t+)( +)$')
 
-MAX_LINES = 3000
+MAX_LINES = 2000
 
 # Optionally used to fall back to default if pre-indentation line is not found.
 # This is not used by the main line detection algorithm.
@@ -395,7 +396,7 @@ def forcefully_read_lines(filename):
     Ignore UnicodeDecodeErrors.
 
     """
-    with open(filename) as f:
+    with io.open(filename) as f:
         line = None
         while line is None or line:
             # Line will only be '' on reaching the end.
