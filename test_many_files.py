@@ -27,7 +27,7 @@ class TestManyFiles(unittest.TestCase):
             default_tab_width=indent_finder.DEFAULT_TAB_WIDTH,
             default_result=TEST_DEFAULT_RESULT)
         res = indent_finder.results_to_string(results)
-        self.assertEqual(res, result)
+        self.assertEqual(res, result, filename)
         self.assertEqual(
             expected_vim_result,
             indent_finder.vim_output(

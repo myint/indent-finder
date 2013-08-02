@@ -44,7 +44,7 @@ DEFAULT_RESULT = ('space', 4)
 INDENT_RE = re.compile('^([ \t]+)([^ \t]+)')
 MIXED_RE = re.compile('^(\t+)( +)$')
 
-MAX_LINES = 2000
+MAX_BYTES = 100000
 
 # Optionally used to fall back to default if pre-indentation line is not found.
 # This is not used by the main line detection algorithm.
@@ -80,10 +80,7 @@ def _parse_file(finder, filename, default_tab_width, default_result):
 
     finder.clear()
     found_required_ending = False
-    for index, line in enumerate(forcefully_read_lines(filename)):
-        if index >= MAX_LINES:
-            break
-
+    for index, line in enumerate(forcefully_read_lines(filename, MAX_BYTES)):
         finder.analyse_line(line)
 
         if required_ending and line.rstrip().endswith(required_ending):
@@ -393,22 +390,19 @@ def vim_output(result_data, default_tab_width):
                 (tab_indent, space_indent, indent_type, space_indent))
 
 
-def forcefully_read_lines(filename):
+def forcefully_read_lines(filename, size):
     """Return lines from file.
 
     Ignore UnicodeDecodeErrors.
 
     """
-    with io.open(filename) as f:
-        line = None
-        while line is None or line:
-            # Line will only be '' on reaching the end.
-            try:
-                line = f.readline()
-            except UnicodeDecodeError:
-                continue
-
-            yield line
+    for encoding in ['utf-8', 'latin-1']:
+        try:
+            with io.open(filename, encoding=encoding) as f:
+                for line in f.read(size).splitlines():
+                    yield line
+        except UnicodeDecodeError:
+            pass
 
 
 def analyse_line_type(line):
