@@ -80,7 +80,7 @@ def _parse_file(finder, filename, default_tab_width, default_result):
 
     finder.clear()
     found_required_ending = False
-    for index, line in enumerate(forcefully_read_lines(filename, MAX_BYTES)):
+    for line in forcefully_read_lines(filename, MAX_BYTES):
         finder.analyse_line(line)
 
         if required_ending and line.rstrip().endswith(required_ending):
