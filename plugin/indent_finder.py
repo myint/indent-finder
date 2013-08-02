@@ -401,6 +401,7 @@ def forcefully_read_lines(filename, size):
             with io.open(filename, encoding=encoding) as f:
                 for line in f.read(size).splitlines():
                     yield line
+            break
         except UnicodeDecodeError:
             pass
 
