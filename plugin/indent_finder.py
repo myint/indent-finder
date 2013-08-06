@@ -54,8 +54,9 @@ LANGUAGE_PRE_INDENTATION = {
     '.cpp': '{',
     '.h': '{',
     '.py': ':',
-    '.rst': '::',
 }
+
+BLACKLISTED_EXTENSIONS = ('.rst',)
 
 
 def parse_file(filename,
@@ -73,6 +74,9 @@ def parse_file(filename,
 
 
 def _parse_file(finder, filename, default_tab_width, default_result):
+    if filename.endswith(BLACKLISTED_EXTENSIONS):
+        return default_result
+
     required_ending = None
     for extension, ending in LANGUAGE_PRE_INDENTATION.items():
         if filename.endswith(extension):
