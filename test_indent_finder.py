@@ -55,11 +55,14 @@ class TestIndentFinder(unittest.TestCase):
 
     def test_analyse_line_type(self):
         for n in range(1, 8):
-            self.assertEqual(indent_finder.analyse_line_type(' ' * n + 'coucou'),
-                             (indent_finder.LineType.BeginSpace, ' ' * n))
+            self.assertEqual(
+                indent_finder.analyse_line_type(' ' * n + 'coucou'),
+                (indent_finder.LineType.BeginSpace, ' ' * n))
+
         for n in range(8, 10):
-            self.assertEqual(indent_finder.analyse_line_type(' ' * n + 'coucou'),
-                             (indent_finder.LineType.SpaceOnly, ' ' * n))
+            self.assertEqual(
+                indent_finder.analyse_line_type(' ' * n + 'coucou'),
+                (indent_finder.LineType.SpaceOnly, ' ' * n))
 
         self.assertEqual(indent_finder.analyse_line_type('\t' + 'coucou'),
                          (indent_finder.LineType.TabOnly, '\t'))
@@ -76,13 +79,16 @@ class TestIndentFinder(unittest.TestCase):
             indent_finder.analyse_line_type('coucou'),
             (indent_finder.LineType.NoIndent, ''))
 
-        self.assertEqual(indent_finder.analyse_line_type(''), None)
         self.assertEqual(
-            indent_finder.analyse_line_type('\t\t' + ' ' * 8 + 'coucou'), None)
+            None, indent_finder.analyse_line_type(''))
         self.assertEqual(
-            indent_finder.analyse_line_type('\t\t' + ' ' * 9 + 'coucou'), None)
-        self.assertEqual(indent_finder.analyse_line_type('\t\t \t' + 'coucou'), None)
-        self.assertEqual(indent_finder.analyse_line_type('  \t\t' + 'coucou'), None)
+            None, indent_finder.analyse_line_type('\t\t' + ' ' * 8 + 'coucou'))
+        self.assertEqual(
+            None, indent_finder.analyse_line_type('\t\t' + ' ' * 9 + 'coucou'))
+        self.assertEqual(
+            None, indent_finder.analyse_line_type('\t\t \t' + 'coucou'))
+        self.assertEqual(
+            None, indent_finder.analyse_line_type('  \t\t' + 'coucou'))
 
     def test_ignored_lines_patterns(self):
         self.assertEqual(indent_finder.analyse_line_type(''), None)

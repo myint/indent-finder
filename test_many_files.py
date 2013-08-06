@@ -61,9 +61,11 @@ class TestManyFiles(unittest.TestCase):
 
     def test_file_mixed4(self):
         for f in glob.glob('test_files/mixed4/*'):
-            self.check_file(f, 'mixed tab 8 space 4',
-                            'set softtabstop=4 | set tabstop=8 | set noexpandtab | '
-                            'set shiftwidth=4 " (mixed 4)')
+            self.check_file(
+                f,
+                'mixed tab 8 space 4',
+                'set softtabstop=4 | set tabstop=8 | set noexpandtab | '
+                'set shiftwidth=4 " (mixed 4)')
 
     def test_file_default(self):
         for f in glob.glob('test_files/default/*'):
