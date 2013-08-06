@@ -36,9 +36,7 @@ class TestManyFiles(unittest.TestCase):
 
     def test_file_space4(self):
         l = []
-        l += glob.glob('test_files/space4/*.py')
-        l += glob.glob('test_files/space4/*.java')
-        l += glob.glob('test_files/space4/*.vim')
+        l += glob.glob('test_files/space4/*')
         for f in l:
             self.check_file(
                 f,
@@ -48,7 +46,7 @@ class TestManyFiles(unittest.TestCase):
 
     def test_file_space2(self):
         l = []
-        l += glob.glob('test_files/space2/*.cpp')
+        l += glob.glob('test_files/space2/*')
         for f in l:
             self.check_file(
                 f,
@@ -58,9 +56,7 @@ class TestManyFiles(unittest.TestCase):
 
     def test_file_tab(self):
         l = []
-        l += glob.glob('test_files/tab/*.c')
-        l += glob.glob('test_files/tab/*.cpp')
-        l += glob.glob('test_files/tab/*.py')
+        l += glob.glob('test_files/tab/*')
         for f in l:
             self.check_file(
                 f,
@@ -71,7 +67,7 @@ class TestManyFiles(unittest.TestCase):
 
     def test_file_mixed4(self):
         l = []
-        l += glob.glob('test_files/mixed4/*.c')
+        l += glob.glob('test_files/mixed4/*')
         for f in l:
             self.check_file(f, 'mixed tab 8 space 4',
                             'set softtabstop=4 | set tabstop=8 | set noexpandtab | '
