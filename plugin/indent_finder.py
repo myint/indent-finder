@@ -98,7 +98,7 @@ def _parse_file(finder, filename, default_tab_width, default_result):
                    default_result=default_result)
 
 
-class LineType:
+class LineType(object):
     NoIndent = 'NoIndent'
     SpaceOnly = 'SpaceOnly'
     TabOnly = 'TabOnly'
@@ -106,7 +106,7 @@ class LineType:
     BeginSpace = 'BeginSpace'
 
 
-class IndentFinder:
+class IndentFinder(object):
 
     r"""IndentFinder reports the indentation used in a source file.
 
