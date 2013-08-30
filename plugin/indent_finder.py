@@ -351,12 +351,12 @@ def results(lines,
 
 
 def results_to_string(result_data):
-    (itype, ival) = result_data
-    if itype != 'mixed':
-        return '%s %d' % (itype, ival)
+    (indent_type, indent_value) = result_data
+    if indent_type != 'mixed':
+        return '%s %d' % (indent_type, indent_value)
     else:
-        itab, ispace = ival
-        return '%s tab %d space %d' % (itype, itab, ispace)
+        tab, space = indent_value
+        return '%s tab %d space %d' % (indent_type, tab, space)
 
 
 def vim_output(result_data, default_tab_width):
