@@ -24,10 +24,8 @@ for example. In my opinion, this is the worst possible style.
 
 from __future__ import absolute_import
 from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import with_statement
 
-import io
 import optparse
 import re
 import sys
@@ -402,8 +400,8 @@ def forcefully_read_lines(filename, size):
     """
     for encoding in ['utf-8', 'latin-1']:
         try:
-            with io.open(filename, encoding=encoding) as f:
-                for line in f.read(size).splitlines():
+            with open(filename, mode='rb') as f:
+                for line in f.read(size).decode(encoding).splitlines():
                     yield line
             break
         except UnicodeDecodeError:
@@ -485,20 +483,24 @@ def main():
     options, args = parser.parse_args()
 
     for filename in args:
-        result_data = parse_file(filename,
-                                 default_tab_width=options.default_tab_width)
-
-        if options.vim_output:
-            output = vim_output(
-                result_data,
+        try:
+            result_data = parse_file(
+                filename,
                 default_tab_width=options.default_tab_width)
-        else:
-            output = results_to_string(result_data) + '\n'
 
-        if len(args) > 1:
-            output = '{0} : {1}'.format(filename, output).rstrip() + '\n'
+            if options.vim_output:
+                output = vim_output(
+                    result_data,
+                    default_tab_width=options.default_tab_width)
+            else:
+                output = results_to_string(result_data) + '\n'
 
-        sys.stdout.write(output)
+            if len(args) > 1:
+                output = filename + ' : ' + output.rstrip() + '\n'
+
+            sys.stdout.write(output)
+        except IOError:
+            pass
 
 
 if __name__ == '__main__':

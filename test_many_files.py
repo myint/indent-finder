@@ -6,8 +6,6 @@
 # This program is distributed under the BSD license. You should have received
 # a copy of the file LICENSE.txt along with this software.
 
-from __future__ import print_function
-
 import glob
 import unittest
 
@@ -52,12 +50,12 @@ class TestManyFiles(unittest.TestCase):
 
     def test_file_tab(self):
         for f in glob.glob('test_files/tab/*'):
+            width = str(indent_finder.DEFAULT_TAB_WIDTH)
             self.check_file(
                 f,
-                'tab {0}'.format(indent_finder.DEFAULT_TAB_WIDTH),
-                'set softtabstop=0 | set tabstop={0} | set noexpandtab | '
-                'set shiftwidth={0} " (tab)'.format(
-                    indent_finder.DEFAULT_TAB_WIDTH))
+                'tab ' + width,
+                'set softtabstop=0 | set tabstop=' + width +
+                ' | set noexpandtab | set shiftwidth=' + width + ' " (tab)')
 
     def test_file_mixed4(self):
         for f in glob.glob('test_files/mixed4/*'):
@@ -69,12 +67,14 @@ class TestManyFiles(unittest.TestCase):
 
     def test_file_default(self):
         for f in glob.glob('test_files/default/*'):
+            default = str(TEST_DEFAULT_RESULT[1])
+
             self.check_file(
                 f,
-                'space {default}'.format(default=TEST_DEFAULT_RESULT[1]),
-                'set softtabstop={default} | set tabstop={default} | '
-                'set expandtab | set shiftwidth={default} '
-                '" (space {default})'.format(default=TEST_DEFAULT_RESULT[1]))
+                'space ' + default,
+                'set softtabstop=' + default + ' | set tabstop=' + default +
+                ' | set expandtab | set shiftwidth=' + default +
+                ' " (space ' + default + ')')
 
 
 if __name__ == "__main__":
