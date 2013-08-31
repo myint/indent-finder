@@ -1,3 +1,7 @@
+if !has('python')
+    finish
+endif
+
 augroup IndentFinder
     au! IndentFinder
 
