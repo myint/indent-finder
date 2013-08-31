@@ -22,9 +22,7 @@ for example. In my opinion, this is the worst possible style.
 
 """
 
-from __future__ import absolute_import
 from __future__ import division
-from __future__ import with_statement
 
 import optparse
 import re
@@ -72,8 +70,9 @@ def parse_file(filename,
 
 
 def _parse_file(finder, filename, default_tab_width, default_result):
-    if filename.endswith(BLACKLISTED_EXTENSIONS):
-        return default_result
+    for extension in BLACKLISTED_EXTENSIONS:
+        if filename.endswith(extension):
+            return default_result
 
     required_ending = None
     for extension, ending in LANGUAGE_PRE_INDENTATION.items():
@@ -400,9 +399,12 @@ def forcefully_read_lines(filename, size):
     """
     for encoding in ['utf-8', 'latin-1']:
         try:
-            with open(filename, mode='rb') as f:
-                for line in f.read(size).decode(encoding).splitlines():
-                    yield line
+            try:
+                f = open(filename, mode='rb')
+                return f.read(size).decode(encoding).splitlines()
+            finally:
+                f.close()
+
             break
         except UnicodeDecodeError:
             pass
