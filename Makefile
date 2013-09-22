@@ -3,7 +3,11 @@ check:
 	pylint \
 		--rcfile=/dev/null \
 		--reports=no \
-		--disable=invalid-name,missing-docstring,too-few-public-methods,too-many-branches,too-many-return-statements \
+		--disable=invalid-name \
+		--disable=missing-docstring \
+		--disable=too-few-public-methods \
+		--disable=too-many-branches \
+		--disable=too-many-return-statements \
 		indent_finder.py
 	rst2html --strict README.rst > /dev/null
 	scspell indent_finder.py README.rst
