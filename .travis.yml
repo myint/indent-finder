@@ -10,3 +10,5 @@ python:
 
 script:
     - python run_tests.py
+    - python indent_finder.py indent_finder.py Makefile missing_file
+    - python indent_finder.py --vim-output indent_finder.py && echo

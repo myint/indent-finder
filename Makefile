@@ -14,7 +14,10 @@ check:
 
 coverage:
 	@rm -f .coverage
-	@coverage run run_tests.py
+	@coverage run --parallel-mode run_tests.py
+	@coverage run --parallel-mode indent_finder.py indent_finder.py Makefile missing_file
+	@coverage run --parallel-mode indent_finder.py --vim-output indent_finder.py && echo
+	@coverage combine
 	@coverage report
 	@coverage html
 	@rm -f .coverage
