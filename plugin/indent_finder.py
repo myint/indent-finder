@@ -307,7 +307,7 @@ def results(lines,
 
     result = None
 
-    # Detect space indented file
+    # Detect space indented file.
     if max_line_space >= max_line_mixed and max_line_space > max_line_tab:
         nb = 0
         indent_value = None
@@ -317,16 +317,14 @@ def results(lines,
                 indent_value = i
                 nb = lines['space%d' % indent_value]
 
-        if indent_value is None:  # no lines
-            result = default_result
-        else:
+        if indent_value is not None:
             result = ('space', indent_value)
 
-    # Detect tab files
+    # Detect tab files.
     elif max_line_tab > max_line_mixed and max_line_tab > max_line_space:
         result = ('tab', default_tab_width)
 
-    # Detect mixed files
+    # Detect mixed files.
     elif (max_line_mixed >= max_line_tab and
           max_line_mixed > max_line_space):
         nb = 0
@@ -337,16 +335,10 @@ def results(lines,
                 indent_value = i
                 nb = lines['mixed%d' % indent_value]
 
-        if indent_value is None:  # no lines
-            result = default_result
-        else:
+        if indent_value is not None:
             result = ('mixed', (8, indent_value))
 
-    else:
-        # not enough information to make a decision
-        result = default_result
-
-    return result
+    return default_result if result is None else result
 
 
 def results_to_string(result_data):
