@@ -404,7 +404,6 @@ def forcefully_read_lines(filename, size):
                 return input_file.read(size).decode(encoding).splitlines()
             finally:
                 input_file.close()
-            break
         except UnicodeDecodeError:
             pass
 
