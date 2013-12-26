@@ -29,7 +29,7 @@ To install this plugin, copy the contents of the `plugin`_ directory to your
 Or to install it using pathogen.vim_::
 
     $ cd ~/.vim/bundle
-    $ git clone https://github.com/tpope/vim-pathogen
+    $ git clone https://github.com/myint/indent-finder
 
 .. _`pathogen.vim`: https://github.com/tpope/vim-pathogen
 .. _`plugin`: https://github.com/myint/indent-finder/tree/master/plugin
