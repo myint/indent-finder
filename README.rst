@@ -8,6 +8,7 @@ indent-finder
 by Philippe Fremy <phil at freehackers dot org>
 
 Copyright (C) 2002-2010 Philippe Fremy
+
 Copyright (C) 2013 Steven Myint
 
 This program is distributed under the BSD license. You should have received
@@ -25,6 +26,12 @@ Installation
 To install this plugin, copy the contents of the `plugin`_ directory to your
 ``~/.vim/plugin`` directory.
 
+Or to install it using pathogen.vim_::
+
+    $ cd ~/.vim/bundle
+    $ git clone https://github.com/tpope/vim-pathogen
+
+.. _`pathogen.vim`: https://github.com/tpope/vim-pathogen
 .. _`plugin`: https://github.com/myint/indent-finder/tree/master/plugin
 
 Command-line usage
