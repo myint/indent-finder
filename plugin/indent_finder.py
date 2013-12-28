@@ -338,10 +338,7 @@ def results(lines,
         if indent_value is not None:
             result = ('mixed', (8, indent_value))
 
-    if result is None:
-        return default_result
-    else:
-        return result
+    return result or default_result
 
 
 def results_to_string(result_data):
