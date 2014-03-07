@@ -254,7 +254,7 @@ class TestIndentFinder(unittest.TestCase):
              os.path.join(ROOT_PATH, 'test_files', 'tab', 'pretty-make.py')],
             stdout=subprocess.PIPE)
 
-        self.assertEqual('tab 7\n', process.communicate()[0].decode('utf-8'))
+        self.assertEqual('tab 7\n', process.communicate()[0].decode())
         self.assertEqual(0, process.returncode)
 
     def test_system_with_vim_output(self):
@@ -266,7 +266,7 @@ class TestIndentFinder(unittest.TestCase):
         self.assertEqual(
             'set softtabstop=0 | set tabstop=8 | set noexpandtab | '
             'set shiftwidth=8 " (tab)',
-            process.communicate()[0].decode('utf-8'))
+            process.communicate()[0].decode())
 
         self.assertEqual(0, process.returncode)
 
