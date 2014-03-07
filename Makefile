@@ -9,7 +9,7 @@ check:
 		--disable=too-many-branches \
 		--disable=too-many-return-statements \
 		indent_finder.py
-	rst2html --strict README.rst > /dev/null
+	rstcheck README.rst
 	scspell indent_finder.py README.rst
 
 coverage:
