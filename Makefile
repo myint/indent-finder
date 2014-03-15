@@ -34,5 +34,4 @@ test:
 	python2.5 run_tests.py
 	python2.6 run_tests.py
 	python2.7 run_tests.py
-	python3.2 run_tests.py
 	python3.3 run_tests.py
