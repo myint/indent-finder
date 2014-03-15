@@ -10,7 +10,7 @@ augroup IndentFinder
 
     au BufRead * execute b:indent_finder_result
 
-    " Uncomment the next line to see which indentation is applied on all your
-    " loaded files.
-    "au BufRead * echo "Indent Finder: " . b:indent_finder_result
+    if exists('g:indent_finder_debug') && g:indent_finder_debug
+        au BufRead * echo "Indent Finder: " . b:indent_finder_result
+    endif
 augroup End
