@@ -45,10 +45,12 @@ MAX_BYTES = 100000
 # Optionally used to fall back to default if pre-indentation line is not found.
 # This is not used by the main line detection algorithm.
 LANGUAGE_PRE_INDENTATION = {
+    '.C': '{',
     '.c': '{',
     '.cc': '{',
     '.cpp': '{',
     '.h': '{',
+    '.hpp': '{',
     '.py': ':',
 }
 
