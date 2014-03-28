@@ -77,5 +77,5 @@ class TestManyFiles(unittest.TestCase):
                 ' " (space ' + default + ')')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main(testRunner=unittest.TextTestRunner())
