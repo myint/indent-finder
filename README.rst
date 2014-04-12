@@ -1,7 +1,7 @@
 indent-finder
 =============
 
-.. image:: https://travis-ci.org/myint/indent-finder.png?branch=master
+.. image:: https://travis-ci.org/myint/indent-finder.svg?branch=master
     :target: https://travis-ci.org/myint/indent-finder
     :alt: Build status
 
