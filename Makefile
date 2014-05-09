@@ -32,4 +32,4 @@ readme:
 
 test:
 	python2.4 run_tests.py
-	python3.3 run_tests.py
+	python3.4 run_tests.py
