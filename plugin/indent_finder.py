@@ -400,6 +400,7 @@ def forcefully_read_lines(filename, size):
                 input_file.close()
         except UnicodeDecodeError:
             pass
+    return []
 
 
 def analyse_line_type(line):
