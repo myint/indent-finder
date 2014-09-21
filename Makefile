@@ -29,7 +29,8 @@ coverage:
 readme:
 	@restview --strict README.rst
 
-
 test:
 	python2.4 run_tests.py
 	python3.4 run_tests.py
+
+.PHONY: check coverage readme test

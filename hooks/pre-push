@@ -7,6 +7,6 @@ while read _ local_sha _ _
 do
     if [ "$local_sha" != $z40 ]
     then
-        make check
+        make check test
     fi
 done
