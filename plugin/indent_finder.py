@@ -29,7 +29,7 @@ import re
 import sys
 
 
-__version__ = '1.5'
+__version__ = '1.5.1'
 
 # Used when indentation is tab, to set tabstop in vim.
 DEFAULT_TAB_WIDTH = 8
