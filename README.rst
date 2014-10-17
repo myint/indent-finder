@@ -24,7 +24,10 @@ Installation
 ------------
 
 To install this plugin, copy the contents of the `plugin`_ directory to your
-``~/.vim/plugin`` directory.
+``~/.vim/plugin`` directory::
+
+    $ git clone https://github.com/myint/indent-finder
+    $ cp -r ./indent-finder/plugin/* ~/.vim/
 
 Or to install it using pathogen.vim_::
 
@@ -48,6 +51,14 @@ See `web page`_ for more information.
 
 History:
 --------
+
+version 1.6:
+
+- Support one-space indentation.
+
+version 1.5.1:
+
+- Improve performance.
 
 version 1.5:
 

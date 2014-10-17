@@ -48,6 +48,14 @@ class TestManyFiles(unittest.TestCase):
                 'set softtabstop=2 | set tabstop=2 | set expandtab | '
                 'set shiftwidth=2 " (space 2)')
 
+    def test_file_space1(self):
+        for f in glob.glob('test_files/space1/*'):
+            self.check_file(
+                f,
+                'space 1',
+                'set softtabstop=1 | set tabstop=1 | set expandtab | '
+                'set shiftwidth=1 " (space 1)')
+
     def test_file_tab(self):
         for f in glob.glob('test_files/tab/*'):
             width = str(indent_finder.DEFAULT_TAB_WIDTH)
