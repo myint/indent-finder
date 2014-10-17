@@ -45,6 +45,8 @@ MAX_BYTES = 100000
 MIN_SPACES = 1
 MAX_SPACES = 8
 
+assert 0 < MIN_SPACES < MAX_SPACES
+
 # Optionally used to fall back to default if pre-indentation line is not found.
 # This is not used by the main line detection algorithm.
 LANGUAGE_PRE_INDENTATION = {
