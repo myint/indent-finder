@@ -53,6 +53,10 @@ version 1.6:
 
 - Support one-space indentation.
 
+version 1.5.1:
+
+- Improve performance.
+
 version 1.5:
 
 - Simplify installation process.
