@@ -49,6 +49,10 @@ See `web page`_ for more information.
 History:
 --------
 
+version 1.6:
+
+- Support one-space indentation.
+
 version 1.5:
 
 - Simplify installation process.
