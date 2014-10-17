@@ -42,6 +42,9 @@ MIXED_RE = re.compile('^(\t+)( +)$')
 
 MAX_BYTES = 100000
 
+MIN_SPACES = 1
+MAX_SPACES = 8
+
 # Optionally used to fall back to default if pre-indentation line is not found.
 # This is not used by the main line detection algorithm.
 LANGUAGE_PRE_INDENTATION = {
@@ -128,11 +131,11 @@ class IndentFinder(object):
     for example, do not always obey the indentation of the rest of the code).
 
     Each line is analysed as:
-    - SpaceOnly: indentation of more than 8 space
+    - SpaceOnly: indentation of more than MAX_SPACES space
     - TabOnly: indentation of tab only
-    - Mixed: indentation of tab, then less than 8 spaces
-    - BeginSpace: indentation of less than 8 space, that could be either a
-      mixed indentation or a pure space indentation.
+    - Mixed: indentation of tab, then less than MAX_SPACES spaces
+    - BeginSpace: indentation of less than MAX_SPACES space, that could be
+      either a mixed indentation or a pure space indentation.
     - non-significant
 
     Then two consecutive significant lines are then considered. The only valid
@@ -167,9 +170,9 @@ class IndentFinder(object):
 
     def clear(self):
         self.lines = {}
-        for i in range(2, 9):
+        for i in range(MIN_SPACES, MAX_SPACES + 1):
             self.lines['space%d' % i] = 0
-        for i in range(2, 9):
+        for i in range(MIN_SPACES, MAX_SPACES + 1):
             self.lines['mixed%d' % i] = 0
         self.lines['tab'] = 0
 
@@ -211,7 +214,7 @@ class IndentFinder(object):
               or t == (LineType.BeginSpace, LineType.SpaceOnly)
               or t == (LineType.NoIndent, LineType.SpaceOnly)):
             nb_space = len(current_line_info[1]) - len(previous_line_info[1])
-            if 1 < nb_space <= 8:
+            if MIN_SPACES <= nb_space <= MAX_SPACES:
                 key = 'space%d' % nb_space
                 self.lines[key] += 1
                 return key
@@ -219,7 +222,7 @@ class IndentFinder(object):
         elif (t == (LineType.BeginSpace, LineType.BeginSpace)
               or t == (LineType.NoIndent, LineType.BeginSpace)):
             nb_space = len(current_line_info[1]) - len(previous_line_info[1])
-            if 1 < nb_space <= 8:
+            if MIN_SPACES <= nb_space <= MAX_SPACES:
                 key1 = 'space%d' % nb_space
                 key2 = 'mixed%d' % nb_space
                 self.lines[key1] += 1
@@ -227,12 +230,14 @@ class IndentFinder(object):
                 return key1
 
         elif t == (LineType.BeginSpace, LineType.TabOnly):
-            # we assume that mixed indentation used 8 characters tabs
+            # we assume that mixed indentation used MAX_SPACES characters tabs
             if len(current_line_info[1]) == 1:
                 # more than one tab on the line --> not mixed mode !
-                nb_space = len(
-                    current_line_info[1]) * 8 - len(previous_line_info[1])
-                if 1 < nb_space <= 8:
+                nb_space = (
+                    len(current_line_info[1]) *
+                    MAX_SPACES - len(previous_line_info[1])
+                )
+                if MIN_SPACES <= nb_space <= MAX_SPACES:
                     key = 'mixed%d' % nb_space
                     self.lines[key] += 1
                     return key
@@ -241,7 +246,7 @@ class IndentFinder(object):
             tab_part, space_part = tuple(current_line_info[1:3])
             if len(previous_line_info[1]) == len(tab_part):
                 nb_space = len(space_part)
-                if 1 < nb_space <= 8:
+                if MIN_SPACES <= nb_space <= MAX_SPACES:
                     key = 'mixed%d' % nb_space
                     self.lines[key] += 1
                     return key
@@ -249,8 +254,8 @@ class IndentFinder(object):
         elif t == (LineType.Mixed, LineType.TabOnly):
             tab_part, space_part = previous_line_info[1:3]
             if len(tab_part) + 1 == len(current_line_info[1]):
-                nb_space = 8 - len(space_part)
-                if 1 < nb_space <= 8:
+                nb_space = MAX_SPACES - len(space_part)
+                if MIN_SPACES <= nb_space <= MAX_SPACES:
                     key = 'mixed%d' % nb_space
                     self.lines[key] += 1
                     return key
@@ -266,9 +271,10 @@ def results(lines,
     """Return analysis results.
 
     1. Space indented file
-       - lines indented with less than 8 space will fill mixed and space
+       - lines indented with less than MAX_SPACES space will fill mixed and
+         space array
+       - lines indented with MAX_SPACES space or more will fill only the space
          array
-       - lines indented with 8 space or more will fill only the space array
        - almost no lines indented with tab
 
     => more lines with space than lines with mixed
@@ -283,8 +289,9 @@ def results(lines,
     => a lot more lines with tab than lines with space
 
     3. Mixed tab/space indented file
-       - some lines are tab-only (lines with exactly 8 step indentation)
-       - some lines are space only (less than 8 space)
+       - some lines are tab-only (lines with exactly MAX_SPACES step
+         indentation)
+       - some lines are space only (less than MAX_SPACES space)
        - all other lines are mixed
 
     If mixed is tab + 2 space indentation:
@@ -292,7 +299,7 @@ def results(lines,
     If mixed is tab + 4 space indentation
         - as many lines with mixed than with tab
 
-    If no lines exceed 8 space, there will be only lines with space
+    If no lines exceed MAX_SPACES space, there will be only lines with space
     and tab but no lines with mixed. Impossible to detect mixed indentation
     in this case, the file looks like it's actually indented as space only
     and will be detected so.
@@ -302,9 +309,9 @@ def results(lines,
 
     """
     max_line_space = max(
-        [lines['space%d' % i] for i in range(2, 9)])
+        [lines['space%d' % i] for i in range(MIN_SPACES, MAX_SPACES + 1)])
     max_line_mixed = max(
-        [lines['mixed%d' % i] for i in range(2, 9)])
+        [lines['mixed%d' % i] for i in range(MIN_SPACES, MAX_SPACES + 1)])
     max_line_tab = lines['tab']
 
     result = None
@@ -313,7 +320,7 @@ def results(lines,
     if max_line_space >= max_line_mixed and max_line_space > max_line_tab:
         nb = 0
         indent_value = None
-        for i in range(8, 1, -1):
+        for i in range(MAX_SPACES, MIN_SPACES - 1, -1):
             # Give a 10% threshold.
             if lines['space%d' % i] > int(nb * 1.1):
                 indent_value = i
@@ -331,14 +338,14 @@ def results(lines,
           max_line_mixed > max_line_space):
         nb = 0
         indent_value = None
-        for i in range(8, 1, -1):
+        for i in range(MAX_SPACES, 1, -1):
             # Give a 10% threshold.
             if lines['mixed%d' % i] > int(nb * 1.1):
                 indent_value = i
                 nb = lines['mixed%d' % indent_value]
 
         if indent_value is not None:
-            result = ('mixed', (8, indent_value))
+            result = ('mixed', (MAX_SPACES, indent_value))
 
     return result or default_result
 
@@ -446,7 +453,7 @@ def analyse_line_type(line):
         space_part = mo.group(2)
 
     if mixed_mode:
-        if len(space_part) >= 8:
+        if len(space_part) >= MAX_SPACES:
             # this is not mixed mode, this is garbage !
             return None
         return (LineType.Mixed, tab_part, space_part)
@@ -456,7 +463,7 @@ def analyse_line_type(line):
 
     assert ' ' in indent_part
 
-    if len(indent_part) < 8:
+    if len(indent_part) < MAX_SPACES:
         # this could be mixed mode too
         return (LineType.BeginSpace, indent_part)
     else:
