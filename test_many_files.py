@@ -13,16 +13,16 @@ import indent_finder
 
 
 TEST_DEFAULT_RESULT = (indent_finder.IndentType.SPACE, 0)
+TEST_DEFAULT_TAB_WIDTH = 13
 
 
 class TestManyFiles(unittest.TestCase):
 
     def check_file(self, filename, result, expected_vim_result):
         ifi = indent_finder.IndentFinder()
-        indent_finder.DEFAULT_TAB_WIDTH = 13
         results = indent_finder._parse_file(
             ifi, filename,
-            default_tab_width=indent_finder.DEFAULT_TAB_WIDTH,
+            default_tab_width=TEST_DEFAULT_TAB_WIDTH,
             default_result=TEST_DEFAULT_RESULT)
         res = indent_finder.results_to_string(results)
         self.assertEqual(res, result, filename)
@@ -30,7 +30,7 @@ class TestManyFiles(unittest.TestCase):
             expected_vim_result,
             indent_finder.vim_output(
                 results,
-                default_tab_width=indent_finder.DEFAULT_TAB_WIDTH))
+                default_tab_width=TEST_DEFAULT_TAB_WIDTH))
 
     def test_file_space4(self):
         for f in glob.glob('test_files/space4/*'):
@@ -58,7 +58,7 @@ class TestManyFiles(unittest.TestCase):
 
     def test_file_tab(self):
         for f in glob.glob('test_files/tab/*'):
-            width = str(indent_finder.DEFAULT_TAB_WIDTH)
+            width = str(TEST_DEFAULT_TAB_WIDTH)
             self.check_file(
                 f,
                 'tab ' + width,
