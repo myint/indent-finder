@@ -54,6 +54,11 @@ To use from command line::
 History
 =======
 
+1.6.1a0
+-------
+
+- Respect user's ``expandtab`` and ``shiftwidth`` settings.
+
 1.6
 ---
 

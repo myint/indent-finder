@@ -31,12 +31,6 @@ import sys
 
 __version__ = '1.5.1'
 
-# Used when indentation is tab, to set tabstop in vim.
-DEFAULT_TAB_WIDTH = 8
-
-# Default values for files where indentation is not meaningful (empty files).
-DEFAULT_RESULT = ('space', 4)
-
 INDENT_RE = re.compile('^([ \t]+)([^ \t]+)')
 MIXED_RE = re.compile('^(\t+)( +)$')
 
@@ -63,8 +57,8 @@ BLACKLISTED_EXTENSIONS = ('.rst',)
 
 
 def parse_file(filename,
-               default_tab_width=DEFAULT_TAB_WIDTH,
-               default_result=DEFAULT_RESULT):
+               default_tab_width,
+               default_result):
     """Return result of indentation analysis.
 
     Interpret with results_to_string() or vim_output().
@@ -156,7 +150,7 @@ class IndentFinder(object):
     At the end, the number of lines with space indentation, mixed space and tab
     indentation are compared and a decision is made.
 
-    If no decision can be made, DEFAULT_RESULT is returned.
+    If no decision can be made, None is returned.
 
     If IndentFinder ever reports wrong indentation, send me immediately a
     mail, if possible with the offending file.
@@ -481,16 +475,27 @@ def main():
     parser.add_option('--vim-output', action='store_true',
                       help='output suitable to use inside vim')
     parser.add_option('--default-tab-width', type=int,
-                      default=DEFAULT_TAB_WIDTH,
+                      default=8,
                       help='default tab width (%default)')
+    parser.add_option('--default-spaces', type=int,
+                      default=4,
+                      help='default indentation width (%default)')
+    parser.add_option('--default-to-tabs', action='store_true',
+                      help='default to tabs')
 
     options, args = parser.parse_args()
+
+    if options.default_to_tabs:
+        default_result = ('tab', options.default_tab_width)
+    else:
+        default_result = ('space', options.default_spaces)
 
     for filename in args:
         try:
             result_data = parse_file(
                 filename,
-                default_tab_width=options.default_tab_width)
+                default_tab_width=options.default_tab_width,
+                default_result=default_result)
 
             if options.vim_output:
                 output = vim_output(
