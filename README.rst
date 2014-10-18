@@ -23,11 +23,14 @@ vim's indentation settings appropriately to match.
 Installation
 ------------
 
+Make sure ``set nocompatible`` is in your ``~/.vimrc``.
+
 To install this plugin, copy the contents of the `plugin`_ directory to your
 ``~/.vim/plugin`` directory::
 
     $ git clone https://github.com/myint/indent-finder
-    $ cp -r ./indent-finder/plugin/* ~/.vim/
+    $ mkdir -p ~/.vim/plugin/
+    $ cp -r ./indent-finder/plugin/* ~/.vim/plugin/
 
 Or to install it using pathogen.vim_::
 
@@ -44,10 +47,6 @@ To use from command line::
 
     $ ./indent_finder example.py
     space 4
-
-See `web page`_ for more information.
-
-.. _`web page`: http://www.freehackers.org/Indent_Finder
 
 History:
 --------
