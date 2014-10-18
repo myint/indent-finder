@@ -31,6 +31,7 @@ import sys
 
 __version__ = '1.5.1'
 
+
 INDENT_RE = re.compile('^([ \t]+)([^ \t]+)')
 MIXED_RE = re.compile('^(\t+)( +)$')
 
@@ -54,6 +55,13 @@ LANGUAGE_PRE_INDENTATION = {
 }
 
 BLACKLISTED_EXTENSIONS = ('.rst',)
+
+
+class IndentType(object):
+
+    SPACE = 'space'
+    TAB = 'tab'
+    MIXED = 'mixed'
 
 
 def parse_file(filename,
@@ -182,7 +190,6 @@ class IndentFinder(object):
         skip_current_line = self.skip_next_line
         self.skip_next_line = False
         if line[-1:] == '\\':
-            # skip lines after lines ending in \
             self.skip_next_line = True
 
         if skip_current_line:
@@ -204,7 +211,7 @@ class IndentFinder(object):
                 or t == (LineType.NoIndent, LineType.TabOnly)):
             if len(current_line_info[1]) - len(previous_line_info[1]) == 1:
                 self.lines['tab'] += 1
-                return 'tab'
+                return IndentType.TAB
 
         elif (t == (LineType.SpaceOnly, LineType.SpaceOnly)
               or t == (LineType.BeginSpace, LineType.SpaceOnly)
@@ -323,11 +330,11 @@ def results(lines,
                 nb = lines['space%d' % indent_value]
 
         if indent_value is not None:
-            result = ('space', indent_value)
+            result = (IndentType.SPACE, indent_value)
 
     # Detect tab files.
     elif max_line_tab > max_line_mixed and max_line_tab > max_line_space:
-        result = ('tab', default_tab_width)
+        result = (IndentType.TAB, default_tab_width)
 
     # Detect mixed files.
     elif (max_line_mixed >= max_line_tab and
@@ -341,14 +348,14 @@ def results(lines,
                 nb = lines['mixed%d' % indent_value]
 
         if indent_value is not None:
-            result = ('mixed', (MAX_SPACES, indent_value))
+            result = (IndentType.MIXED, (MAX_SPACES, indent_value))
 
     return result or default_result
 
 
 def results_to_string(result_data):
     (indent_type, indent_value) = result_data
-    if indent_type != 'mixed':
+    if indent_type != IndentType.MIXED:
         return '%s %d' % (indent_type, indent_value)
     else:
         tab, space = indent_value
@@ -357,16 +364,16 @@ def results_to_string(result_data):
 
 def vim_output(result_data, default_tab_width):
     (indent_type, n) = result_data
-    if indent_type == 'space':
+    if indent_type == IndentType.SPACE:
         return ('set softtabstop=%d | set tabstop=%d | set expandtab | '
                 'set shiftwidth=%d " (%s %d)' % (n, n, n, indent_type, n))
-
-    elif indent_type == 'tab':
+    elif indent_type == IndentType.TAB:
         return ('set softtabstop=0 | set tabstop=%d | set noexpandtab | '
                 'set shiftwidth=%d " (%s)' %
                 (default_tab_width, default_tab_width, indent_type))
+    else:
+        assert indent_type == IndentType.MIXED
 
-    if indent_type == 'mixed':
         tab_indent, space_indent = n
         return ('set softtabstop=0 | set tabstop=%d | set noexpandtab | '
                 'set shiftwidth=%d " (%s %d)' %
@@ -471,9 +478,9 @@ def main():
     options, args = parser.parse_args()
 
     if options.default_to_tabs:
-        default_result = ('tab', options.default_tab_width)
+        default_result = (IndentType.TAB, options.default_tab_width)
     else:
-        default_result = ('space', options.default_spaces)
+        default_result = (IndentType.SPACE, options.default_spaces)
 
     for filename in args:
         try:

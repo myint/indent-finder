@@ -12,7 +12,7 @@ import unittest
 import indent_finder
 
 
-TEST_DEFAULT_RESULT = ('space', 0)
+TEST_DEFAULT_RESULT = (indent_finder.IndentType.SPACE, 0)
 
 
 class TestManyFiles(unittest.TestCase):
