@@ -24,7 +24,10 @@ Installation
 ------------
 
 To install this plugin, copy the contents of the `plugin`_ directory to your
-``~/.vim/plugin`` directory.
+``~/.vim/plugin`` directory::
+
+    $ git clone https://github.com/myint/indent-finder
+    $ cp -r ./indent-finder/plugin/* ~/.vim/
 
 Or to install it using pathogen.vim_::
 
