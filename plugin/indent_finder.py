@@ -358,32 +358,17 @@ def results_to_string(result_data):
 def vim_output(result_data, default_tab_width):
     (indent_type, n) = result_data
     if indent_type == 'space':
-        # spaces:
-        #   => set softtabstop to the number of spaces
-        #   => set tabstop to the number of spaces
-        #   => expand tabs to spaces
-        #   => set shiftwidth to the number of spaces
         return ('set softtabstop=%d | set tabstop=%d | set expandtab | '
                 'set shiftwidth=%d " (%s %d)' % (n, n, n, indent_type, n))
 
     elif indent_type == 'tab':
-        # tab:
-        #   => set softtabstop to 0
-        #   => set tabstop to preferred value
-        #   => set expandtab to false
-        #   => set shiftwidth to tabstop
         return ('set softtabstop=0 | set tabstop=%d | set noexpandtab | '
                 'set shiftwidth=%d " (%s)' %
                 (default_tab_width, default_tab_width, indent_type))
 
     if indent_type == 'mixed':
         tab_indent, space_indent = n
-        # tab:
-        #   => set softtabstop to 0
-        #   => set tabstop to tab_indent
-        #   => set expandtab to false
-        #   => set shiftwidth to space_indent
-        return ('set softtabstop=4 | set tabstop=%d | set noexpandtab | '
+        return ('set softtabstop=0 | set tabstop=%d | set noexpandtab | '
                 'set shiftwidth=%d " (%s %d)' %
                 (tab_indent, space_indent, indent_type, space_indent))
 

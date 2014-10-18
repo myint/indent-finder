@@ -70,7 +70,7 @@ class TestManyFiles(unittest.TestCase):
             self.check_file(
                 f,
                 'mixed tab 8 space 4',
-                'set softtabstop=4 | set tabstop=8 | set noexpandtab | '
+                'set softtabstop=0 | set tabstop=8 | set noexpandtab | '
                 'set shiftwidth=4 " (mixed 4)')
 
     def test_file_default(self):
