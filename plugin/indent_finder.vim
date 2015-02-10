@@ -10,7 +10,7 @@ augroup IndentFinder
 
     let s:default_spaces_option = '--default-spaces=' . &l:shiftwidth
 
-    au BufRead *.* let b:indent_finder_result = system(
+    au BufRead * let b:indent_finder_result = system(
         \ fnamemodify(expand('<sfile>'), ':p:h') .
         \ '/indent_finder.py --vim-output ' .
         \ s:default_tab_width_option . ' ' .
@@ -18,9 +18,9 @@ augroup IndentFinder
         \ s:default_spaces_option . ' ' .
         \ ' "' . expand('%') . '"' )
 
-    au BufRead *.* execute b:indent_finder_result
+    au BufRead * execute b:indent_finder_result
 
     if exists('g:indent_finder_debug') && g:indent_finder_debug
-        au BufRead *.* echo "Indent Finder: " . b:indent_finder_result
+        au BufRead * echo "Indent Finder: " . b:indent_finder_result
     endif
 augroup End

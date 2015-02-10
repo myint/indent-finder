@@ -501,7 +501,10 @@ def main():
 
             sys.stdout.write(output)
         except IOError:
-            sys.stderr.write('%s\n' % (sys.exc_info()[1],))
+            # Only print error message in non-Vim mode. Otherwise, we will be
+            # passing garbage to Vim.
+            if not options.vim_output:
+                sys.stderr.write('%s\n' % (sys.exc_info()[1],))
 
 
 if __name__ == '__main__':
