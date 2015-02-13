@@ -9,6 +9,7 @@ python:
     - "3.4"
 
 install:
+    - sudo apt-get update
     - sudo apt-get install vim-gnome
     - wget https://github.com/google/vroom/releases/download/v0.11.0/vroom_0.11.0-1_all.deb
     - sudo dpkg -i vroom_0.11.0-1_all.deb
