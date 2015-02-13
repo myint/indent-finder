@@ -35,7 +35,7 @@ It should use three-space indentation:
   @clear
 
 
-Set up a five-space indentation example:
+Do the same test, but save to a file with a space, but not dot in it:
 
   % int main()<cr>
   % {<cr>
@@ -46,6 +46,37 @@ Set up a five-space indentation example:
 Save and reload and to invoke indent-finder:
 
   :saveas! tmp.cc
+
+  @system (RELAXED)
+  :edit
+
+Check by reformatting:
+
+  > gg=G
+
+It should use five-space indentation:
+
+  int main()
+  {
+       int x = 1;
+       return x;
+  }
+  &
+  @end
+  @clear
+
+
+Set up a five-space indentation example:
+
+  % int main()<cr>
+  % {<cr>
+  %      int x = 1;<cr>
+  %      return x;<cr>
+  % }<cr>
+
+Save and reload and to invoke indent-finder:
+
+  :saveas! one\ two
 
   @system (RELAXED)
   :edit
