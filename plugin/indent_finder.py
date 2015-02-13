@@ -29,7 +29,7 @@ import re
 import sys
 
 
-__version__ = '1.5.1'
+__version__ = '1.6.1'
 
 
 INDENT_RE = re.compile('^([ \t]+)([^ \t]+)')
