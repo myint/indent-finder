@@ -33,7 +33,6 @@ It should use three-space indentation:
   @end
   @clear
 
-
 Set up a five-space indentation example:
 
   % int main()<cr>
