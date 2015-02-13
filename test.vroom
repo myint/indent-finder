@@ -3,6 +3,7 @@ Enable plugin manually:
   :set nocompatible
   :source plugin/indent_finder.vim
 
+
 Set up a three-space indentation example:
 
   % int main()<cr>
@@ -32,6 +33,7 @@ It should use three-space indentation:
   &
   @end
   @clear
+
 
 Set up a five-space indentation example:
 
