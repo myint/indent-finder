@@ -54,10 +54,11 @@ To use from command line::
 History
 =======
 
-1.6.1a0
--------
+1.6.1
+-----
 
 - Respect user's ``expandtab`` and ``shiftwidth`` settings.
+- Detect indentation on all files and not just files with ``.`` in them.
 
 1.6
 ---
