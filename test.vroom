@@ -35,7 +35,7 @@ It should use three-space indentation:
   @clear
 
 
-Do the same test, but save to a file with a space, but not dot in it:
+Set up a five-space indentation example:
 
   % int main()<cr>
   % {<cr>
@@ -66,7 +66,7 @@ It should use five-space indentation:
   @clear
 
 
-Set up a five-space indentation example:
+Do the same test, but save to a file with a space, but not dot in it:
 
   % int main()<cr>
   % {<cr>
