@@ -207,23 +207,25 @@ class IndentFinder(object):
             return
 
         t = (previous_line_info[0], current_line_info[0])
-        if (t == (LineType.TabOnly, LineType.TabOnly)
-                or t == (LineType.NoIndent, LineType.TabOnly)):
+        if (
+            t == (LineType.TabOnly, LineType.TabOnly) or
+            t == (LineType.NoIndent, LineType.TabOnly)
+        ):
             if len(current_line_info[1]) - len(previous_line_info[1]) == 1:
                 self.lines['tab'] += 1
                 return IndentType.TAB
 
-        elif (t == (LineType.SpaceOnly, LineType.SpaceOnly)
-              or t == (LineType.BeginSpace, LineType.SpaceOnly)
-              or t == (LineType.NoIndent, LineType.SpaceOnly)):
+        elif (t == (LineType.SpaceOnly, LineType.SpaceOnly) or
+              t == (LineType.BeginSpace, LineType.SpaceOnly) or
+              t == (LineType.NoIndent, LineType.SpaceOnly)):
             nb_space = len(current_line_info[1]) - len(previous_line_info[1])
             if MIN_SPACES <= nb_space <= MAX_SPACES:
                 key = 'space%d' % nb_space
                 self.lines[key] += 1
                 return key
 
-        elif (t == (LineType.BeginSpace, LineType.BeginSpace)
-              or t == (LineType.NoIndent, LineType.BeginSpace)):
+        elif (t == (LineType.BeginSpace, LineType.BeginSpace) or
+              t == (LineType.NoIndent, LineType.BeginSpace)):
             nb_space = len(current_line_info[1]) - len(previous_line_info[1])
             if MIN_SPACES <= nb_space <= MAX_SPACES:
                 key1 = 'space%d' % nb_space
