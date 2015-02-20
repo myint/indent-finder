@@ -3,6 +3,7 @@ check:
 	pylint \
 		--rcfile=/dev/null \
 		--reports=no \
+		--disable=bad-continuation \
 		--disable=deprecated-module \
 		--disable=invalid-name \
 		--disable=missing-docstring \
