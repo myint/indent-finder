@@ -57,27 +57,27 @@ class TestIndentFinder(unittest.TestCase):
         for n in range(1, 8):
             self.assertEqual(
                 indent_finder.analyse_line_type(' ' * n + 'coucou'),
-                (indent_finder.LineType.BeginSpace, ' ' * n))
+                (indent_finder.LineType.begin_space, ' ' * n))
 
         for n in range(8, 10):
             self.assertEqual(
                 indent_finder.analyse_line_type(' ' * n + 'coucou'),
-                (indent_finder.LineType.SpaceOnly, ' ' * n))
+                (indent_finder.LineType.space_only, ' ' * n))
 
         self.assertEqual(indent_finder.analyse_line_type('\t' + 'coucou'),
-                         (indent_finder.LineType.TabOnly, '\t'))
+                         (indent_finder.LineType.tab_only, '\t'))
 
         self.assertEqual(indent_finder.analyse_line_type('\t\t' + 'coucou'),
-                         (indent_finder.LineType.TabOnly, '\t\t'))
+                         (indent_finder.LineType.tab_only, '\t\t'))
 
         for i in range(1, 8):
             self.assertEqual(
                 indent_finder.analyse_line_type('\t\t' + ' ' * i + 'coucou'),
-                (indent_finder.LineType.Mixed, '\t\t', ' ' * i))
+                (indent_finder.LineType.mixed, '\t\t', ' ' * i))
 
         self.assertEqual(
             indent_finder.analyse_line_type('coucou'),
-            (indent_finder.LineType.NoIndent, ''))
+            (indent_finder.LineType.no_indent, ''))
 
         self.assertEqual(
             None, indent_finder.analyse_line_type(''))

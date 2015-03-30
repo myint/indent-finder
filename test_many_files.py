@@ -12,7 +12,7 @@ import unittest
 import indent_finder
 
 
-TEST_DEFAULT_RESULT = (indent_finder.IndentType.SPACE, 0)
+TEST_DEFAULT_RESULT = (indent_finder.IndentType.space, 0)
 TEST_DEFAULT_TAB_WIDTH = 13
 
 

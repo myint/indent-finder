@@ -59,9 +59,9 @@ BLACKLISTED_EXTENSIONS = ('.rst',)
 
 class IndentType(object):
 
-    SPACE = 'space'
-    TAB = 'tab'
-    MIXED = 'mixed'
+    space = 'space'
+    tab = 'tab'
+    mixed = 'mixed'
 
 
 def parse_file(filename,
@@ -105,11 +105,12 @@ def _parse_file(finder, filename, default_tab_width, default_result):
 
 
 class LineType(object):
-    NoIndent = 'NoIndent'
-    SpaceOnly = 'SpaceOnly'
-    TabOnly = 'TabOnly'
-    Mixed = 'Mixed'
-    BeginSpace = 'BeginSpace'
+
+    no_indent = 'no_indent'
+    space_only = 'space_only'
+    tab_only = 'tab_only'
+    mixed = 'mixed'
+    begin_space = 'begin_space'
 
 
 class IndentFinder(object):
@@ -135,23 +136,23 @@ class IndentFinder(object):
     for example, do not always obey the indentation of the rest of the code).
 
     Each line is analysed as:
-    - SpaceOnly: indentation of more than MAX_SPACES space
-    - TabOnly: indentation of tab only
-    - Mixed: indentation of tab, then less than MAX_SPACES spaces
-    - BeginSpace: indentation of less than MAX_SPACES space, that could be
+    - space_only: indentation of more than MAX_SPACES space
+    - tab_only: indentation of tab only
+    - mixed: indentation of tab, then less than MAX_SPACES spaces
+    - begin_space: indentation of less than MAX_SPACES space, that could be
       either a mixed indentation or a pure space indentation.
     - non-significant
 
     Then two consecutive significant lines are then considered. The only valid
     combinations are:
-    - (NoIndent, BeginSpace)    => space or mixed
-    - (NoIndent, Tab)           => tab
-    - (BeginSpace, BeginSpace)  => space or mixed
-    - (BeginSpace, SpaceOnly)   => space
-    - (SpaceOnly, SpaceOnly)    => space
-    - (TabOnly, TabOnly)        => tab
-    - (TabOnly, Mixed)          => mixed
-    - (Mixed, TabOnly)          => mixed
+    - (no_indent, begin_space)    => space or mixed
+    - (no_indent, tab)            => tab
+    - (begin_space, begin_space)  => space or mixed
+    - (begin_space, space_only)   => space
+    - (space_only, space_only)    => space
+    - (tab_only, tab_only)        => tab
+    - (tab_only, mixed)           => mixed
+    - (mixed, tab_only)           => mixed
 
     The increment in number of spaces is then recorded.
 
@@ -208,24 +209,24 @@ class IndentFinder(object):
 
         t = (previous_line_info[0], current_line_info[0])
         if (
-            t == (LineType.TabOnly, LineType.TabOnly) or
-            t == (LineType.NoIndent, LineType.TabOnly)
+            t == (LineType.tab_only, LineType.tab_only) or
+            t == (LineType.no_indent, LineType.tab_only)
         ):
             if len(current_line_info[1]) - len(previous_line_info[1]) == 1:
                 self.lines['tab'] += 1
-                return IndentType.TAB
+                return IndentType.tab
 
-        elif (t == (LineType.SpaceOnly, LineType.SpaceOnly) or
-              t == (LineType.BeginSpace, LineType.SpaceOnly) or
-              t == (LineType.NoIndent, LineType.SpaceOnly)):
+        elif (t == (LineType.space_only, LineType.space_only) or
+              t == (LineType.begin_space, LineType.space_only) or
+              t == (LineType.no_indent, LineType.space_only)):
             nb_space = len(current_line_info[1]) - len(previous_line_info[1])
             if MIN_SPACES <= nb_space <= MAX_SPACES:
                 key = 'space%d' % nb_space
                 self.lines[key] += 1
                 return key
 
-        elif (t == (LineType.BeginSpace, LineType.BeginSpace) or
-              t == (LineType.NoIndent, LineType.BeginSpace)):
+        elif (t == (LineType.begin_space, LineType.begin_space) or
+              t == (LineType.no_indent, LineType.begin_space)):
             nb_space = len(current_line_info[1]) - len(previous_line_info[1])
             if MIN_SPACES <= nb_space <= MAX_SPACES:
                 key1 = 'space%d' % nb_space
@@ -234,10 +235,10 @@ class IndentFinder(object):
                 self.lines[key2] += 1
                 return key1
 
-        elif t == (LineType.BeginSpace, LineType.TabOnly):
-            # we assume that mixed indentation used MAX_SPACES characters tabs
+        elif t == (LineType.begin_space, LineType.tab_only):
+            # We assume that mixed indentation used MAX_SPACES characters tabs.
             if len(current_line_info[1]) == 1:
-                # more than one tab on the line --> not mixed mode !
+                # More than one tab on the line --> not mixed mode!
                 nb_space = (
                     len(current_line_info[1]) *
                     MAX_SPACES - len(previous_line_info[1])
@@ -247,7 +248,7 @@ class IndentFinder(object):
                     self.lines[key] += 1
                     return key
 
-        elif t == (LineType.TabOnly, LineType.Mixed):
+        elif t == (LineType.tab_only, LineType.mixed):
             tab_part, space_part = tuple(current_line_info[1:3])
             if len(previous_line_info[1]) == len(tab_part):
                 nb_space = len(space_part)
@@ -256,7 +257,7 @@ class IndentFinder(object):
                     self.lines[key] += 1
                     return key
 
-        elif t == (LineType.Mixed, LineType.TabOnly):
+        elif t == (LineType.mixed, LineType.tab_only):
             tab_part, space_part = previous_line_info[1:3]
             if len(tab_part) + 1 == len(current_line_info[1]):
                 nb_space = MAX_SPACES - len(space_part)
@@ -332,11 +333,11 @@ def results(lines,
                 nb = lines['space%d' % indent_value]
 
         if indent_value is not None:
-            result = (IndentType.SPACE, indent_value)
+            result = (IndentType.space, indent_value)
 
     # Detect tab files.
     elif max_line_tab > max_line_mixed and max_line_tab > max_line_space:
-        result = (IndentType.TAB, default_tab_width)
+        result = (IndentType.tab, default_tab_width)
 
     # Detect mixed files.
     elif (max_line_mixed >= max_line_tab and
@@ -350,14 +351,14 @@ def results(lines,
                 nb = lines['mixed%d' % indent_value]
 
         if indent_value is not None:
-            result = (IndentType.MIXED, (MAX_SPACES, indent_value))
+            result = (IndentType.mixed, (MAX_SPACES, indent_value))
 
     return result or default_result
 
 
 def results_to_string(result_data):
     (indent_type, indent_value) = result_data
-    if indent_type != IndentType.MIXED:
+    if indent_type != IndentType.mixed:
         return '%s %d' % (indent_type, indent_value)
     else:
         tab, space = indent_value
@@ -366,15 +367,15 @@ def results_to_string(result_data):
 
 def vim_output(result_data, default_tab_width):
     (indent_type, n) = result_data
-    if indent_type == IndentType.SPACE:
+    if indent_type == IndentType.space:
         return ('set softtabstop=%d | set tabstop=%d | set expandtab | '
                 'set shiftwidth=%d " (%s %d)' % (n, n, n, indent_type, n))
-    elif indent_type == IndentType.TAB:
+    elif indent_type == IndentType.tab:
         return ('set softtabstop=0 | set tabstop=%d | set noexpandtab | '
                 'set shiftwidth=%d " (%s)' %
                 (default_tab_width, default_tab_width, indent_type))
     else:
-        assert indent_type == IndentType.MIXED
+        assert indent_type == IndentType.mixed
 
         tab_indent, space_indent = n
         return ('set softtabstop=0 | set tabstop=%d | set noexpandtab | '
@@ -414,7 +415,7 @@ def analyse_line_type(line):
     space_part = ''
 
     if len(line) > 0 and line[0] != ' ' and line[0] != '\t':
-        return (LineType.NoIndent, '')
+        return (LineType.no_indent, '')
 
     mo = INDENT_RE.match(line)
     if not mo:
@@ -424,19 +425,19 @@ def analyse_line_type(line):
     text_part = mo.group(2)
 
     if text_part[0] == '*':
-        # continuation of a C/C++ comment, unlikely to be indented
-        # correctly
+        # Continuation of a C/C++ comment, unlikely to be indented
+        # correctly.
         return None
 
     if text_part[0:2] == '/*' or text_part[0] == '#':
-        # python, C/C++ comment, might not be indented correctly
+        # Python, C/C++ comment, might not be indented correctly.
         return None
 
     if '\t' in indent_part and ' ' in indent_part:
-        # mixed mode
+        # Mixed mode.
         mo = MIXED_RE.match(indent_part)
         if not mo:
-            # line is not composed of '\t\t\t    ', ignore it
+            # Line is not composed of '\t\t\t    ', ignore it.
             return None
         mixed_mode = True
         tab_part = mo.group(1)
@@ -444,21 +445,21 @@ def analyse_line_type(line):
 
     if mixed_mode:
         if len(space_part) >= MAX_SPACES:
-            # this is not mixed mode, this is garbage !
+            # This is not mixed mode, this is garbage!
             return None
-        return (LineType.Mixed, tab_part, space_part)
+        return (LineType.mixed, tab_part, space_part)
 
     if '\t' in indent_part:
-        return (LineType.TabOnly, indent_part)
+        return (LineType.tab_only, indent_part)
 
     assert ' ' in indent_part
 
     if len(indent_part) < MAX_SPACES:
-        # this could be mixed mode too
-        return (LineType.BeginSpace, indent_part)
+        # This could be mixed mode too.
+        return (LineType.begin_space, indent_part)
     else:
-        # this is really a line indented with spaces
-        return (LineType.SpaceOnly, indent_part)
+        # This is really a line indented with spaces.
+        return (LineType.space_only, indent_part)
 
 
 def main():
@@ -480,9 +481,9 @@ def main():
     options, args = parser.parse_args()
 
     if options.default_to_tabs:
-        default_result = (IndentType.TAB, options.default_tab_width)
+        default_result = (IndentType.tab, options.default_tab_width)
     else:
-        default_result = (IndentType.SPACE, options.default_spaces)
+        default_result = (IndentType.space, options.default_spaces)
 
     for filename in args:
         try:
