@@ -389,15 +389,11 @@ def forcefully_read_lines(filename, size):
     Ignore UnicodeDecodeErrors.
 
     """
-    for encoding in ['utf-8', 'latin-1']:
-        try:
-            input_file = open(filename, mode='rb')
-            try:
-                return input_file.read(size).decode(encoding).splitlines()
-            finally:
-                input_file.close()
-        except UnicodeDecodeError:
-            pass
+    input_file = open(filename, mode='rb')
+    try:
+        return input_file.read(size).decode('utf-8', 'replace').splitlines()
+    finally:
+        input_file.close()
     return []
 
 
