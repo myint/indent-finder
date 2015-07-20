@@ -54,7 +54,7 @@ LANGUAGE_PRE_INDENTATION = {
     '.py': ':',
 }
 
-BLACKLISTED_EXTENSIONS = ('.rst',)
+BLACKLISTED_EXTENSIONS = ['.rst']
 
 
 class IndentType(object):
