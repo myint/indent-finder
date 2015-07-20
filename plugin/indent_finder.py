@@ -7,7 +7,7 @@
 # This program is distributed under the BSD license. You should have received
 # a copy of the file LICENSE.txt along with this software.
 
-"""indent_finder.py [ --vim-output ] [file [file ...]]
+"""indent_finder.py [--vim-output] [file [file ...]]
 
 Display indentation used in the list of files. Possible answers are (with X
 being the number of spaces used for indentation):
