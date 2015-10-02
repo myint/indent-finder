@@ -10,6 +10,8 @@ check:
 		--disable=too-few-public-methods \
 		--disable=too-many-branches \
 		--disable=too-many-return-statements \
+		--disable=unbalanced-tuple-unpacking \
+		--disable=unpacking-non-sequence \
 		indent_finder.py
 	rstcheck README.rst
 	scspell indent_finder.py README.rst
