@@ -249,7 +249,7 @@ class IndentFinder(object):
                     return key
 
         elif t == (LineType.tab_only, LineType.mixed):
-            tab_part, space_part = tuple(current_line_info[1:3])
+            (_, tab_part, space_part) = current_line_info
             if len(previous_line_info[1]) == len(tab_part):
                 nb_space = len(space_part)
                 if MIN_SPACES <= nb_space <= MAX_SPACES:
@@ -258,7 +258,7 @@ class IndentFinder(object):
                     return key
 
         elif t == (LineType.mixed, LineType.tab_only):
-            tab_part, space_part = previous_line_info[1:3]
+            (_, tab_part, space_part) = previous_line_info
             if len(tab_part) + 1 == len(current_line_info[1]):
                 nb_space = MAX_SPACES - len(space_part)
                 if MIN_SPACES <= nb_space <= MAX_SPACES:
@@ -361,7 +361,7 @@ def results_to_string(result_data):
     if indent_type != IndentType.mixed:
         return '%s %d' % (indent_type, indent_value)
     else:
-        tab, space = indent_value
+        (tab, space) = indent_value
         return '%s tab %d space %d' % (indent_type, tab, space)
 
 
@@ -377,7 +377,7 @@ def vim_output(result_data, default_tab_width):
     else:
         assert indent_type == IndentType.mixed
 
-        tab_indent, space_indent = n
+        (tab_indent, space_indent) = n
         return ('set softtabstop=0 | set tabstop=%d | set noexpandtab | '
                 'set shiftwidth=%d " (%s %d)' %
                 (tab_indent, space_indent, indent_type, space_indent))
@@ -474,7 +474,7 @@ def main():
     parser.add_option('--default-to-tabs', action='store_true',
                       help='default to tabs')
 
-    options, args = parser.parse_args()
+    (options, args) = parser.parse_args()
 
     if options.default_to_tabs:
         default_result = (IndentType.tab, options.default_tab_width)
