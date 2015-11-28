@@ -460,7 +460,6 @@ def analyse_line_type(line):
 
 def main():
     parser = optparse.OptionParser(
-        usage=__doc__.strip(),
         version='indent_finder: %s' % (__version__,))
 
     parser.add_option('--vim-output', action='store_true',
