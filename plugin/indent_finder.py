@@ -7,7 +7,7 @@
 # This program is distributed under the BSD license. You should have received
 # a copy of the file LICENSE.txt along with this software.
 
-"""indent_finder.py [--vim-output] [file [file ...]]
+"""indent_finder.py
 
 Display indentation used in the list of files. Possible answers are (with X
 being the number of spaces used for indentation):
@@ -460,7 +460,7 @@ def analyse_line_type(line):
 
 def main():
     parser = optparse.OptionParser(
-        version='indent_finder: %s' % (__version__,))
+        version='indent_finder.py %s' % (__version__,))
 
     parser.add_option('--vim-output', action='store_true',
                       help='output suitable to use inside vim')
