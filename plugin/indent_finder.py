@@ -410,7 +410,7 @@ def analyse_line_type(line):
     tab_part = ''
     space_part = ''
 
-    if len(line) > 0 and line[0] != ' ' and line[0] != '\t':
+    if line and line[0] != ' ' and line[0] != '\t':
         return (LineType.no_indent, '')
 
     mo = INDENT_RE.match(line)

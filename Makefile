@@ -7,6 +7,7 @@ check:
 		--disable=deprecated-module \
 		--disable=invalid-name \
 		--disable=missing-docstring \
+		--disable=no-else-return \
 		--disable=too-few-public-methods \
 		--disable=too-many-branches \
 		--disable=too-many-return-statements \
