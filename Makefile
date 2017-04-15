@@ -35,6 +35,6 @@ readme:
 
 test:
 	python2.4 run_tests.py
-	python3.4 run_tests.py
+	python3.6 run_tests.py
 
 .PHONY: check coverage readme test
