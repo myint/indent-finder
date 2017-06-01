@@ -504,6 +504,8 @@ def main():
             if not options.vim_output:
                 sys.stderr.write('%s\n' % (sys.exc_info()[1],))
 
+                return 1
+
 
 if __name__ == '__main__':
     sys.exit(main())
