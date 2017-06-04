@@ -79,6 +79,9 @@ def parse_file(filename,
 
 
 def _parse_file(finder, filename, default_tab_width, default_result):
+    if filename.lower() == 'makefile' or filename.endswith('.mk'):
+        return (IndentType.tab, default_tab_width)
+
     for extension in BLACKLISTED_EXTENSIONS:
         if filename.endswith(extension):
             return default_result
