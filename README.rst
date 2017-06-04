@@ -54,6 +54,11 @@ To use from command line::
 History
 =======
 
+1.x
+---
+
+- Always use tabs for makefiles.
+
 1.6.2
 -----
 
