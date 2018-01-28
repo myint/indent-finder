@@ -54,7 +54,7 @@ To use from command line::
 History
 =======
 
-1.x
+2.x
 ---
 
 - Always use tabs for makefiles.
