@@ -8,7 +8,7 @@ indent-finder
 
 Copyright (C) 2002-2010 Philippe Fremy
 
-Copyright (C) 2013-2017 Steven Myint
+Copyright (C) 2013-2018 Steven Myint
 
 This program is distributed under the BSD license. You should have received
 a copy of the file ``LICENSE.txt`` along with this software.
